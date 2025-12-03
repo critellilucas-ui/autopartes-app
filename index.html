@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Autopartes Net - Paginado</title>
+    
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Librerías -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        :root { 
+            --primary: #319795; --primary-dark: #285e61; --bg: #f0fdfa; --surface: #ffffff;
+            --text: #2d3748; --text-muted: #718096; --border: #e2e8f0;
+            --danger: #e53e3e; --success: #38a169; --whatsapp: #48bb78; --cost-color: #d53f8c;
+            --role-admin: #805ad5; --role-seller: #3182ce;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; padding-bottom: 90px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* HEADER & CARDS */
+        .header-app { background: var(--surface); padding: 15px 20px; border-radius: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .card { background: var(--surface); padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+
+        /* INPUTS & BTNS */
+        input, select { width: 100%; padding: 12px 15px; margin: 5px 0; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; outline: none; background: #fcfcfc; transition: border-color 0.3s; }
+        input:focus, select:focus { border-color: var(--primary); background: white; }
+        
+        button { padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; display: inline-flex; justify-content: center; align-items: center; gap: 6px; color:white; transition: 0.2s; }
+        button:active { transform: scale(0.98); }
+        
+        .btn-blue { background: var(--primary); } .btn-green { background: var(--success); } 
+        .btn-red { background: var(--danger); } .btn-grey { background: #cbd5e0; color: var(--text); } 
+        .btn-whatsapp { background: var(--whatsapp); } .btn-purple { background: var(--role-admin); }
+        .d-none { display: none !important; }
+
+        /* PAGINACIÓN (NUEVO) */
+        .pagination-container { display: flex; justify-content: center; gap: 5px; margin-top: 20px; flex-wrap: wrap; }
+        .page-btn { background: white; border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.9em; min-width: 35px; }
+        .page-btn:hover { background: #f7fafc; }
+        .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* TABS & BADGES */
+        .tabs-wrapper { overflow-x: auto; white-space: nowrap; padding-bottom: 10px; margin-bottom: 15px; }
+        .tab-btn { display: inline-block; padding: 8px 20px; border-radius: 30px; background: white; border: 1px solid var(--border); color: var(--text-muted); font-weight: 500; cursor: pointer; margin-right: 8px; transition: all 0.3s ease; }
+        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        .code-badge { background: #e6fffa; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; padding: 3px 8px; border-radius: 6px; display: inline-block; border: 1px solid #b2f5ea; margin-right: 5px;}
+        .prov-badge { background: #fffaf0; color: #d69e2e; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; border:1px solid #fceeb5; }
+        .role-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; color: white; text-transform: uppercase; }
+        .bg-admin { background-color: var(--role-admin); } .bg-seller { background-color: var(--role-seller); }
+
+        /* LOGIN */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .card-login { background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 360px; text-align: center; box-shadow: 0 10px 25px rgba(49, 151, 149, 0.15); }
+
+        /* CART & TABLES */
+        .cart-item { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 12px; background: #fafafa; }
+        .cart-row-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom:8px; }
+        .cart-row-bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; background: white; padding: 8px; border-radius: 8px; border:1px solid var(--border); }
+        .input-mini { padding: 6px; text-align: center; font-size: 13px; margin: 0; border-radius:6px;}
+        .label-mini { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; display: block; text-align: center; margin-bottom:2px;}
+
+        .table-responsive { width: 100%; border-collapse: collapse; }
+        .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        @media (max-width: 768px) {
+            .table-responsive thead { display: none; } 
+            .table-responsive tr { display: block; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 12px; padding: 15px; position: relative; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+            .table-responsive td { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border: none; }
+            .td-actions { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); justify-content: flex-end; gap: 10px; }
+        }
+
+        /* MODALS & UTILS */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 55, 72, 0.4); backdrop-filter: blur(3px); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .cost-field { color: var(--cost-color); font-size: 0.85em; font-weight: bold; background: #fff5f7; padding: 3px 6px; border-radius: 4px; }
+        .form-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+        .form-grid input { flex: 1; min-width: 120px; }
+        .floating-total { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); border-top: 1px solid var(--border); padding: 15px 20px; justify-content: space-between; align-items: center; z-index: 100; box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05); }
+        @media (max-width: 768px) { .floating-total { display: flex; } }
+        #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #2d3748; color: white; padding: 12px 24px; border-radius: 30px; display: none; z-index: 4000; font-weight:500; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .users-table { width: 100%; margin-top: 10px; border-collapse: collapse;}
+        .users-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        .admin-only { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN -->
+    <div id="login-screen">
+        <div class="card-login">
+            <h2 style="color:var(--primary); margin:0 0 10px 0;">AUTOPARTES NET</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px;">Sistema Seguro</p>
+            <input type="text" id="user" placeholder="Usuario" autocomplete="off">
+            <input type="password" id="pass" placeholder="Contraseña">
+            <button id="btn-ingresar" class="btn-blue" onclick="app.login()" style="width: 100%; margin-top: 20px;">INGRESAR</button>
+            <div id="login-msg" style="margin-top:20px; font-size:0.8em; color:#a0aec0;">Conectando...</div>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div id="app-content" class="d-none">
+        <header class="header-app">
+            <div>
+                <h1 style="font-size:1.4rem; color:var(--primary); margin:0;">AUTOPARTES NET</h1>
+                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:500;">Sistema de Gestión Online</div>
+            </div>
+            <div style="text-align:right; display:flex; gap:10px; align-items:center;">
+                <div style="text-align:right;">
+                    <span id="user-display" style="font-weight:600; font-size:0.9rem; color:var(--primary-dark); display:block;">Usuario</span>
+                    <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
+                </div>
+                <button id="btn-usuarios" class="btn-purple d-none" onclick="app.openUsersModal()" title="Gestionar Usuarios">👥</button>
+                <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- INVENTARIO -->
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 style="margin:0; color:var(--text);">📦 Inventario</h3>
+                    <span style="font-size:0.8rem; color:var(--text-muted);"><span id="items-count">0</span> productos</span>
+                </div>
+
+                <div class="tabs-wrapper" id="tabs-container"><button class="tab-btn active">TODOS</button></div>
+
+                <div style="display:flex; gap:10px; margin-bottom:20px;">
+                    <input id="search" placeholder="🔍 Buscar repuesto..." onkeyup="app.filter()" style="margin:0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <button id="btn-config" class="btn-grey d-none" onclick="document.getElementById('admin-panel').classList.toggle('d-none')">⚙️</button>
+                </div>
+
+                <div id="admin-panel" class="d-none" style="background:#f7fafc; padding:20px; border-radius:12px; margin-bottom:25px; border:1px dashed var(--border);">
+                    <h4 style="margin:0 0 15px 0; color:var(--primary);">Agregar Producto</h4>
+                    <div class="form-grid"><input id="n-code" placeholder="CÓDIGO"><input id="n-prov" placeholder="PROVEEDOR"></div>
+                    <div class="form-grid"><input id="n-desc" placeholder="Descripción" style="flex:2;"><input id="n-brand" placeholder="Marca"></div>
+                    <div style="background:white; padding:15px; border-radius:10px; border:1px solid var(--border); margin-top:10px;">
+                        <div class="form-grid">
+                            <div><label style="font-size:0.7em;">COSTO</label><input id="n-cost" type="number" oninput="app.calcPrice('n')"></div>
+                            <div><label style="font-size:0.7em;">MARGEN %</label><input id="n-margin" type="number" value="40" oninput="app.calcPrice('n')"></div>
+                            <div><label style="font-size:0.7em;">VENTA</label><input id="n-price" type="number" style="background:#f0fdf4; border-color:var(--success); font-weight:bold;"></div>
+                        </div>
+                    </div>
+                    <button class="btn-green" onclick="app.add()" style="width:100%; margin-top:15px;">Guardar Producto</button>
+                    <div style="display:flex; gap:10px; margin-top:15px; border-top:1px solid var(--border); padding-top:15px; flex-wrap:wrap;">
+                        <label class="btn-blue" style="flex:1; cursor:pointer; font-size:0.85rem; min-width:120px;">📂 Excel <input type="file" onchange="app.uploadExcel(this)" style="display:none;"></label>
+                        <button class="btn-red" onclick="app.openBulkUpdate()" style="flex:1; font-size:0.85rem; min-width:120px;">📈 Aumentos</button>
+                        <button class="btn-red" onclick="app.openDeleteBulk()" style="flex:1; background:var(--danger); font-size:0.85rem; min-width:120px;">🗑️ Eliminar x Prov</button>
+                    </div>
+                </div>
+
+                <table class="table-responsive">
+                    <thead id="table-head"><tr><th>Producto</th><th>Marca</th><th style="text-align:right;">Precio Venta</th><th style="text-align:center;">Acción</th></tr></thead>
+                    <tbody id="inv-table-body"><tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">Cargando...</td></tr></tbody>
+                </table>
+                
+                <!-- PAGINACIÓN -->
+                <div id="pagination" class="pagination-container"></div>
+            </div>
+
+            <!-- COTIZADOR -->
+            <div class="card" style="border-left: 5px solid var(--primary);">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="margin:0; color:var(--text);">🛒 Cotizador</h3>
+                    <button class="btn-red" onclick="app.clearCart()" style="font-size:0.8rem; padding:6px 12px;">Limpiar</button>
+                </div>
+                <input id="cliente" placeholder="Nombre del Cliente" style="font-weight:600; margin-top:15px;">
+                <div id="cart-container" style="max-height:300px; overflow-y:auto; margin-top:15px;">
+                    <div style="text-align:center; padding:30px; color:var(--text-muted);">Agrega productos</div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button class="btn-blue" onclick="app.printPDF()" style="flex:1">PDF</button>
+                    <button class="btn-whatsapp" onclick="app.shareWhatsApp()" style="flex:1">WhatsApp</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-total">
+        <div><span style="font-size:0.75rem; color:var(--text-muted);">TOTAL:</span> <strong style="color:var(--primary); font-size:1.3rem;">$<span id="float-total">0.00</span></strong></div>
+        <button class="btn-whatsapp" onclick="app.shareWhatsApp()" style="padding:10px 20px; border-radius:20px;">Enviar 📲</button>
+    </div>
+
+    <!-- MODALES VARIOS -->
+    <div id="modalUsers" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:var(--primary);">👥 Gestión de Usuarios</h3>
+            <div style="background:#f7fafc; padding:15px; border-radius:10px; margin-bottom:15px;">
+                <h4 style="margin:0 0 10px 0;">Crear Nuevo</h4>
+                <input id="u-name" placeholder="Nombre (Ej: Juan Perez)">
+                <div class="form-grid"><input id="u-user" placeholder="Usuario"><input id="u-pass" placeholder="Contraseña"></div>
+                <select id="u-role"><option value="vendedor">Vendedor</option><option value="admin">Administrador</option></select>
+                <button class="btn-green" onclick="app.createUser()" style="width:100%; margin-top:10px;">Crear Usuario</button>
+            </div>
+            <h4>Usuarios Existentes</h4>
+            <table class="users-table"><tbody id="users-list"></tbody></table>
+            <button class="btn-grey" onclick="document.getElementById('modalUsers').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="modalEdicion" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:var(--primary);">✏️ Editar</h3>
+            <input type="hidden" id="edit-id">
+            <input id="e-code" placeholder="Código"> <input id="e-prov" placeholder="Proveedor">
+            <input id="e-desc" placeholder="Descripción"> <input id="e-brand" placeholder="Marca">
+            <div style="background:#f7fafc; padding:10px; border-radius:8px; margin-top:10px;">
+                <div class="form-grid">
+                    <div><label style="font-size:0.7em;">COSTO</label><input id="e-cost" type="number" oninput="app.calcPrice('e')"></div>
+                    <div><label style="font-size:0.7em;">MARGEN %</label><input id="e-margin" type="number" oninput="app.calcPrice('e')"></div>
+                </div>
+                <div><label style="font-size:0.7em;">VENTA</label><input id="e-price" type="number" style="background:white; font-weight:bold;"></div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="btn-green" onclick="app.saveEdit()" style="flex:1">Guardar</button>
+                <button class="btn-red" onclick="app.delFromModal()" style="flex:1">Eliminar</button>
+            </div>
+            <button class="btn-grey" onclick="document.getElementById('modalEdicion').style.display='none'" style="width:100%; margin-top:10px;">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="modalBulk" class="modal-overlay">
+        <div class="modal-content" style="text-align:center;">
+            <h3 style="color:var(--primary);">📈 Actualizar Costos</h3>
+            <select id="bulk-provider" style="width:100%; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid var(--border);"></select>
+            <input type="number" id="bulk-percent" placeholder="Porcentaje % (ej: 10)">
+            <button class="btn-green" onclick="app.applyBulkUpdate()" style="width:100%; margin-top:15px;">Aplicar</button>
+            <button class="btn-grey" onclick="document.getElementById('modalBulk').style.display='none'" style="width:100%; margin-top:10px;">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="modalDeleteProv" class="modal-overlay">
+        <div class="modal-content" style="text-align:center;">
+            <h3 style="color:var(--danger);">🗑️ Eliminar por Proveedor</h3>
+            <p style="font-size:0.9em; color:#666;">Selecciona el proveedor para <b>ELIMINAR TODOS</b> sus productos.</p>
+            <select id="del-provider-select" style="width:100%; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid var(--danger);"></select>
+            <button class="btn-red" onclick="app.executeDeleteBulk()" style="width:100%; margin-top:10px;">Eliminar Todo</button>
+            <button class="btn-grey" onclick="document.getElementById('modalDeleteProv').style.display='none'" style="width:100%; margin-top:10px;">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="toast">Notificación</div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBRKQErLOmU98F230oKBJTe7cc9zJjmQP0",
+            authDomain: "repuestosdaytona-fd624.firebaseapp.com",
+            databaseURL: "https://repuestosdaytona-fd624-default-rtdb.firebaseio.com",
+            projectId: "repuestosdaytona-fd624",
+            storageBucket: "repuestosdaytona-fd624.firebasestorage.app",
+            messagingSenderId: "196034950400",
+            appId: "1:196034950400:web:535666ebcf6f9b61fd2fe5",
+            measurementId: "G-2XCR93C92T"
+        };
+
+        let db, ref, usersRef;
+        try {
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+            ref = db.ref('inventario');
+            usersRef = db.ref('usuarios');
+        } catch (error) { alert("Error Firebase: " + error.message); }
+
+        const app = {
+            data: [], cart: [], user: null, userRole: null, activeTab: 'TODOS',
+            currentPage: 1, itemsPerPage: 20, filteredList: [],
+
+            // --- LOGIN ---
+            login: () => {
+                const u = document.getElementById('user').value.toLowerCase().trim();
+                const p = document.getElementById('pass').value;
+                const btn = document.getElementById('btn-ingresar');
+                if(!u || !p) return alert("Ingrese datos");
+                btn.innerText = "VERIFICANDO...";
+                
+                usersRef.once('value').then(snapshot => {
+                    const users = snapshot.val();
+                    if (!users) {
+                        if (u === 'admin' && p === '1234') {
+                            const newAdmin = { user: 'admin', pass: '1234', role: 'admin', nombre: 'Admin Default' };
+                            usersRef.push(newAdmin); app.setSession(newAdmin); return;
+                        } else { alert("Base vacía. Ingrese con admin/1234"); btn.innerText = "INGRESAR"; return; }
+                    }
+                    let found = false;
+                    Object.keys(users).forEach(key => {
+                        const usr = users[key];
+                        if (usr.user.toLowerCase() === u && usr.pass === p) { app.setSession(usr); found = true; }
+                    });
+                    if (!found) { alert("Datos incorrectos"); btn.innerText = "INGRESAR"; }
+                }).catch(err => { alert(err.message); btn.innerText = "INGRESAR"; });
+            },
+
+            setSession: (userData) => {
+                app.user = userData.user;
+                app.userRole = userData.role;
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-content').classList.remove('d-none');
+                document.getElementById('user-display').innerText = userData.nombre || userData.user;
+                document.getElementById('role-display').innerText = userData.role.toUpperCase();
+
+                if(app.userRole === 'admin') {
+                    document.getElementById('btn-usuarios').classList.remove('d-none');
+                    document.getElementById('btn-config').classList.remove('d-none');
+                    const thead = document.querySelector('#table-head tr');
+                    if (thead && !thead.innerHTML.includes('Costo')) {
+                        const thCosto = document.createElement('th');
+                        thCosto.innerText = "Costo";
+                        thead.insertBefore(thCosto, thead.children[2]);
+                    }
+                }
+                app.startListeners();
+            },
+
+            startListeners: () => {
+                ref.on('value', snap => {
+                    const val = snap.val();
+                    app.data = val ? Object.keys(val).map(k => ({ id: k, ...val[k] })) : [];
+                    app.renderTabs(); app.filter();
+                });
+            },
+
+            // --- PAGINACIÓN ---
+            changePage: (page) => {
+                if (page < 1 || page > Math.ceil(app.filteredList.length / app.itemsPerPage)) return;
+                app.currentPage = page;
+                app.renderInv();
+            },
+
+            renderPagination: () => {
+                const totalPages = Math.ceil(app.filteredList.length / app.itemsPerPage);
+                const container = document.getElementById('pagination');
+                container.innerHTML = '';
+
+                if (totalPages <= 1) return;
+
+                // Prev Button
+                container.innerHTML += `<button class="page-btn" onclick="app.changePage(${app.currentPage - 1})" ${app.currentPage === 1 ? 'disabled' : ''}>❮</button>`;
+
+                // Start
+                if (app.currentPage > 3) {
+                    container.innerHTML += `<button class="page-btn" onclick="app.changePage(1)">1</button>`;
+                    if (app.currentPage > 4) container.innerHTML += `<span style="padding:5px">...</span>`;
+                }
+
+                // Window around current
+                const start = Math.max(1, app.currentPage - 2);
+                const end = Math.min(totalPages, app.currentPage + 2);
+
+                for (let i = start; i <= end; i++) {
+                    const active = i === app.currentPage ? 'active' : '';
+                    container.innerHTML += `<button class="page-btn ${active}" onclick="app.changePage(${i})">${i}</button>`;
+                }
+
+                // End
+                if (app.currentPage < totalPages - 2) {
+                    if (app.currentPage < totalPages - 3) container.innerHTML += `<span style="padding:5px">...</span>`;
+                    container.innerHTML += `<button class="page-btn" onclick="app.changePage(${totalPages})">${totalPages}</button>`;
+                }
+
+                // Next Button
+                container.innerHTML += `<button class="page-btn" onclick="app.changePage(${app.currentPage + 1})" ${app.currentPage === totalPages ? 'disabled' : ''}>❯</button>`;
+            },
+
+            // --- RENDER & LOGIC ---
+            renderTabs: () => {
+                const providers = [...new Set(app.data.map(i => i.proveedor || 'General'))].sort();
+                const c = document.getElementById('tabs-container');
+                let h = `<button class="tab-btn ${app.activeTab==='TODOS'?'active':''}" onclick="app.setTab('TODOS')">TODOS</button>`;
+                providers.forEach(p => h += `<button class="tab-btn ${app.activeTab===p?'active':''}" onclick="app.setTab('${p}')">${p}</button>`);
+                c.innerHTML = h;
+            },
+            setTab: (t) => { app.activeTab = t; app.currentPage = 1; app.renderTabs(); app.filter(); },
+            
+            filter: () => {
+                const t = document.getElementById('search').value.toLowerCase().trim();
+                let f = app.activeTab === 'TODOS' ? app.data : app.data.filter(i => (i.proveedor||'General') === app.activeTab);
+                if(t) f = f.filter(i => (String(i.codigo||'')+String(i.descripcion||'')+String(i.marca||'')).toLowerCase().includes(t));
+                app.filteredList = f;
+                app.currentPage = 1; // Reset a pagina 1 al filtrar
+                app.renderInv();
+            },
+
+            renderInv: () => {
+                const tb = document.getElementById('inv-table-body'); 
+                tb.innerHTML = '';
+                
+                // Pagination Logic
+                const start = (app.currentPage - 1) * app.itemsPerPage;
+                const end = start + app.itemsPerPage;
+                const pageItems = app.filteredList.slice(start, end);
+
+                if(pageItems.length===0) tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#718096;">Sin resultados</td></tr>';
+                
+                pageItems.forEach(i => {
+                    let btn = `<button class="btn-green btn-icon" onclick="app.addToCart('${i.id}')">+</button>`;
+                    let editBtn = '';
+                    let costCell = '';
+                    if(app.userRole==='admin') {
+                        editBtn = `<button class="btn-grey btn-icon" onclick="app.edit('${i.id}')" style="margin-right:5px;">✎</button>`;
+                        costCell = `<td><span class="cost-field">$${parseFloat(i.costo||0).toFixed(0)}</span> <small style="color:#718096">(${i.margen||0}%)</small></td>`;
+                    }
+                    tb.innerHTML += `<tr>
+                        <td><span class="code-badge">${i.codigo||'-'}</span><div style="font-weight:600; color:var(--text); margin-top:4px;">${i.descripcion}</div></td>
+                        <td><span class="prov-badge">${i.proveedor||'Gral'}</span><br><small style="color:#718096">${i.marca||''}</small></td>
+                        ${costCell}
+                        <td style="text-align:right; font-weight:bold; color:var(--text);">$${parseFloat(i.precio).toFixed(0)}</td>
+                        <td class="td-actions" style="text-align:center; display:flex; justify-content:center;">${editBtn}${btn}</td>
+                    </tr>`;
+                });
+                document.getElementById('items-count').innerText = app.filteredList.length;
+                app.renderPagination();
+            },
+
+            // --- CART & RESTO ---
+            addToCart: (id) => {
+                const i = app.data.find(x => x.id === id);
+                const ex = app.cart.find(c => c.id === id);
+                if(ex) { ex.cant++; app.recalc(ex); }
+                else app.cart.push({ ...i, precioLista: parseFloat(i.precio), margen:0, precioFinal: parseFloat(i.precio), cant:1 });
+                app.renderCart(); app.toast("Agregado");
+            },
+            recalc: (i) => i.precioFinal = i.precioLista * (1 + (i.margen/100)),
+            updateMargin: (idx, v) => { app.cart[idx].margen = parseFloat(v)||0; app.recalc(app.cart[idx]); app.renderCart(); },
+            updateFinal: (idx, v) => { const item = app.cart[idx]; item.precioFinal = parseFloat(v)||0; item.margen = item.precioLista>0 ? ((item.precioFinal/item.precioLista)-1)*100 : 0; app.renderCart(); },
+            updateCant: (idx, v) => { app.cart[idx].cant = Math.max(1, parseInt(v)||1); app.renderCart(); },
+            renderCart: () => {
+                const c = document.getElementById('cart-container'); c.innerHTML = ''; let tot = 0;
+                if(app.cart.length===0) c.innerHTML = '<div style="text-align:center;padding:30px;color:#a0aec0">Carrito vacío</div>';
+                app.cart.forEach((i, idx) => {
+                    tot += i.cant * i.precioFinal;
+                    c.innerHTML += `<div class="cart-item">
+                        <div class="cart-row-top">
+                            <div style="display:flex; align-items:center; gap:8px; width:100%"><input type="number" value="${i.cant}" onchange="app.updateCant(${idx},this.value)" class="input-mini" style="width:40px; font-weight:bold;"><div style="flex:1;"><span class="code-badge" style="font-size:0.7rem">${i.codigo||'-'}</span><div style="font-size:0.9rem;">${i.descripcion}</div></div></div>
+                            <button class="btn-red btn-icon" onclick="app.cart.splice(${idx},1);app.renderCart()" style="width:28px; height:28px; font-size:10px;">✕</button>
+                        </div>
+                        <div class="cart-row-bottom">
+                            <div><span class="label-mini">Lista</span><div style="text-align:center; font-size:13px; color:#718096;">$${i.precioLista.toFixed(0)}</div></div>
+                            <div><span class="label-mini">%</span><input type="number" value="${i.margen.toFixed(1)}" onchange="app.updateMargin(${idx},this.value)" class="input-mini"></div>
+                            <div><span class="label-mini">Final</span><input type="number" value="${i.precioFinal.toFixed(0)}" onchange="app.updateFinal(${idx},this.value)" class="input-mini" style="font-weight:bold; background:#e6fffa; border-color:var(--primary);"></div>
+                        </div>
+                    </div>`;
+                });
+                document.getElementById('float-total').innerText = tot.toLocaleString('es-AR', {minimumFractionDigits:2});
+            },
+            clearCart: () => { if(confirm("¿Limpiar?")) { app.cart=[]; app.renderCart(); } },
+            
+            // ADMIN
+            calcPrice: (prefix) => {
+                const cost = parseFloat(document.getElementById(prefix+'-cost').value) || 0;
+                const margin = parseFloat(document.getElementById(prefix+'-margin').value) || 0;
+                document.getElementById(prefix+'-price').value = Math.round(cost * (1 + (margin/100)));
+            },
+            add: () => {
+                const cost = parseFloat(document.getElementById('n-cost').value) || 0;
+                const margin = parseFloat(document.getElementById('n-margin').value) || 0;
+                let price = parseFloat(document.getElementById('n-price').value) || 0;
+                if(price === 0 && cost > 0) price = cost * (1 + margin/100);
+                const item = { codigo: document.getElementById('n-code').value || '-', proveedor: document.getElementById('n-prov').value || 'General', descripcion: document.getElementById('n-desc').value, marca: document.getElementById('n-brand').value || '', costo: cost, margen: margin, precio: Math.round(price) };
+                if(!item.descripcion) return alert("Falta descripción");
+                ref.push(item); app.toast("Guardado");
+                ['n-code','n-desc','n-brand','n-price','n-cost'].forEach(id=>document.getElementById(id).value='');
+            },
+            edit: (id) => {
+                const i = app.data.find(x=>x.id===id);
+                document.getElementById('edit-id').value = id;
+                document.getElementById('e-code').value = i.codigo; document.getElementById('e-prov').value = i.proveedor || 'General';
+                document.getElementById('e-desc').value = i.descripcion; document.getElementById('e-brand').value = i.marca;
+                document.getElementById('e-cost').value = i.costo || 0; document.getElementById('e-margin').value = i.margen || 0;
+                document.getElementById('e-price').value = i.precio; document.getElementById('modalEdicion').style.display='flex';
+            },
+            saveEdit: () => {
+                const id = document.getElementById('edit-id').value;
+                ref.child(id).update({ codigo: document.getElementById('e-code').value, proveedor: document.getElementById('e-prov').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value) });
+                document.getElementById('modalEdicion').style.display='none'; app.toast("Actualizado");
+            },
+            delFromModal: () => { if(confirm("¿Eliminar?")) { ref.child(document.getElementById('edit-id').value).remove(); document.getElementById('modalEdicion').style.display='none'; app.toast("Eliminado"); } },
+            
+            // USERS & OTHER
+            openUsersModal: () => { document.getElementById('modalUsers').style.display = 'flex'; app.loadUsersList(); },
+            loadUsersList: () => {
+                usersRef.on('value', snap => {
+                    const list = document.getElementById('users-list'); list.innerHTML = '';
+                    const users = snap.val();
+                    if(users) {
+                        Object.keys(users).forEach(key => {
+                            const u = users[key];
+                            const badge = u.role === 'admin' ? 'bg-admin' : 'bg-seller';
+                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small></td><td><span class="role-badge ${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:30px;height:30px;font-size:0.8em;">🗑️</button></td></tr>`;
+                        });
+                    }
+                });
+            },
+            createUser: () => {
+                const name = document.getElementById('u-name').value;
+                const user = document.getElementById('u-user').value.toLowerCase().trim();
+                const pass = document.getElementById('u-pass').value;
+                const role = document.getElementById('u-role').value;
+                if(!name || !user || !pass) return alert("Faltan datos");
+                usersRef.once('value', snap => {
+                    let exists = false; const users = snap.val();
+                    if(users) Object.values(users).forEach(u => { if(u.user === user) exists = true; });
+                    if(exists) return alert("Usuario existe");
+                    usersRef.push({ nombre: name, user: user, pass: pass, role: role });
+                    app.toast("Usuario creado");
+                    ['u-name','u-user','u-pass'].forEach(id => document.getElementById(id).value = '');
+                });
+            },
+            deleteUser: (key) => { if(confirm("¿Eliminar usuario?")) usersRef.child(key).remove(); },
+            
+            openDeleteBulk: () => {
+                const providers = [...new Set(app.data.map(i => i.proveedor || 'General'))].sort();
+                const sel = document.getElementById('del-provider-select');
+                sel.innerHTML = '<option value="">Seleccionar Proveedor...</option>';
+                providers.forEach(p => sel.innerHTML += `<option value="${p}">${p}</option>`);
+                document.getElementById('modalDeleteProv').style.display = 'flex';
+            },
+            executeDeleteBulk: () => {
+                const prov = document.getElementById('del-provider-select').value;
+                if (!prov) return alert("Selecciona un proveedor");
+                const toDelete = app.data.filter(i => (i.proveedor || 'General') === prov);
+                if (toDelete.length === 0) return alert("No hay productos");
+                if (!confirm(`⚠️ ELIMINAR ${toDelete.length} productos de ${prov}?`)) return;
+                toDelete.forEach(item => ref.child(item.id).remove());
+                app.toast(`Eliminados ${toDelete.length}`);
+                document.getElementById('modalDeleteProv').style.display = 'none';
+            },
+            openBulkUpdate: () => {
+                const providers = [...new Set(app.data.map(i => i.proveedor || 'General'))].sort();
+                const sel = document.getElementById('bulk-provider');
+                sel.innerHTML = '<option value="">Seleccionar Proveedor...</option>';
+                providers.forEach(p => sel.innerHTML += `<option value="${p}">${p}</option>`);
+                document.getElementById('modalBulk').style.display = 'flex';
+            },
+            applyBulkUpdate: () => {
+                const prov = document.getElementById('bulk-provider').value;
+                const pct = parseFloat(document.getElementById('bulk-percent').value);
+                if(!prov || isNaN(pct)) return alert("Datos incompletos");
+                if(!confirm(`Aumentar COSTO de ${prov} en ${pct}%?`)) return;
+                const factor = 1 + (pct/100);
+                app.data.forEach(i => { if((i.proveedor||'General') === prov) { const newCost = (i.costo || 0) * factor; const newSale = newCost * (1 + (i.margen||0)/100); ref.child(i.id).update({ costo: Math.round(newCost), precio: Math.round(newSale) }); } });
+                app.toast("Actualizado"); document.getElementById('modalBulk').style.display = 'none';
+            },
+            uploadExcel: (input) => {
+                const f = input.files[0]; if(!f) return;
+                const r = new FileReader();
+                r.onload = e => {
+                    try {
+                        const w = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+                        const j = XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]]);
+                        if(j.length===0) return alert("Excel vacío");
+                        
+                        let updates=[], inserts=[];
+                        const existingMap = new Map();
+                        app.data.forEach(item => { existingMap.set(`${String(item.proveedor||'General').toLowerCase()}_${String(item.codigo||'-').toLowerCase()}`, item.id); });
+
+                        j.forEach(row => {
+                            const cod = String(row['codigo']||row['Codigo']||'-').trim();
+                            const prov = String(row['proveedor']||row['Proveedor']||'General').trim();
+                            const cost = parseFloat(row['costo']||row['Costo'])||0;
+                            const marg = parseFloat(row['margen']||row['Margen'])||0;
+                            let pric = parseFloat(row['precio']||row['Precio'])||0;
+                            if(pric===0 && cost>0) pric = cost * (1 + marg/100);
+
+                            const item = { codigo: cod, descripcion: String(row['descripcion']||row['Descripcion']||'S/N').trim(), marca: String(row['marca']||row['Marca']||'').trim(), proveedor: prov, costo: cost, margen: marg, precio: Math.round(pric) };
+                            const key = `${prov.toLowerCase()}_${cod.toLowerCase()}`;
+                            
+                            if(existingMap.has(key)) updates.push({id: existingMap.get(key), data: item});
+                            else inserts.push(item);
+                        });
+
+                        let doUpd = false;
+                        if(updates.length>0) doUpd = confirm(`Encontrados ${updates.length} duplicados.\nACEPTAR: Actualizar\nCANCELAR: Duplicar`);
+                        
+                        if(doUpd) updates.forEach(u => ref.child(u.id).update(u.data));
+                        else updates.forEach(u => ref.push(u.data));
+                        inserts.forEach(i => ref.push(i));
+                        
+                        app.toast("Carga finalizada");
+                    } catch(err) { alert("Error Excel: " + err.message); }
+                };
+                r.readAsArrayBuffer(f); input.value='';
+            },
+            shareWhatsApp: () => {
+                if(app.cart.length===0) return alert("Vacio");
+                let msg = `*PRESUPUESTO AUTOPARTES NET*\n👤 ${document.getElementById('cliente').value||'Cliente'}\n\n`;
+                app.cart.forEach(c => msg += `▪ [${c.codigo}] ${c.descripcion}\n   ${c.cant} x $${c.precioFinal.toFixed(0)} ➝ $${(c.cant*c.precioFinal).toFixed(0)}\n`);
+                msg += `\n*TOTAL: $${document.getElementById('float-total').innerText}*`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+            },
+            printPDF: () => {
+                if(app.cart.length===0) return alert("Vacio");
+                const { jsPDF } = window.jspdf; const doc = new jsPDF();
+                doc.setFontSize(18); doc.text("AUTOPARTES NET",10,15); doc.setFontSize(12); doc.text("Cliente: "+(document.getElementById('cliente').value||'Cliente'),10,25);
+                const body = app.cart.map(c=>[c.cant, `[${c.codigo}] ${c.descripcion}`, `$${c.precioFinal.toFixed(2)}`, `$${(c.cant*c.precioFinal).toFixed(2)}`]);
+                doc.autoTable({ head:[['Cant','Desc','Precio','Total']], body:body, startY:35, theme:'grid', headStyles:{fillColor:[49, 151, 149]} });
+                doc.text("TOTAL: $"+document.getElementById('float-total').innerText, 10, doc.lastAutoTable.finalY+10);
+                doc.save('presupuesto.pdf');
+            },
+            toast: (m) => { const t=document.getElementById('toast'); t.innerText=m; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
+        };
+    </script>
+</body>
+</html>
