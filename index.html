@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V22 Clientes</title>
+    <title>Autopartes Net - V22 Búsqueda Total</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -156,7 +156,7 @@
                 </div>
 
                 <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <input id="search" placeholder="🔍 Buscar repuesto..." onkeyup="app.filter()" style="margin:0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <input id="search" placeholder="🔍 Buscar por código, nombre, marca, precio..." onkeyup="app.filter()" style="margin:0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                     <button id="btn-config" class="btn-grey" onclick="document.getElementById('admin-panel').classList.toggle('hidden')" style="display:none;">⚙️</button>
                 </div>
 
@@ -173,6 +173,7 @@
                         </div>
                     </div>
                     <button class="btn-green" onclick="app.add()" style="width:100%; margin-top:15px;">Guardar Producto</button>
+                    
                     <div style="display:flex; gap:10px; margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
                         <label class="btn-blue" style="flex:1; cursor:pointer; font-size:0.85rem; text-align:center;">
                             📂 Excel <input type="file" onchange="app.uploadExcel(this)" style="display:none;">
@@ -295,6 +296,7 @@
     <div id="toast">Notificación</div>
 
     <script>
+        // 1. CONFIGURACIÓN FIREBASE (PEGA TUS CLAVES AQUÍ)
         const TELEFONO_EMPRESA = "5491169564080";
         
         const firebaseConfig = {
@@ -363,7 +365,7 @@
                     
                     const thead = document.querySelector('#table-head tr');
                     if (!thead.innerHTML.includes('Costo')) {
-                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[3]);
+                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thCosto.style.width = '10%'; thead.insertBefore(thCosto, thead.children[3]);
                     }
                     app.listenOrders();
                 } else if(app.userRole === 'vendedor') {
@@ -396,7 +398,7 @@
                 });
             },
 
-            // --- INVENTARIO ---
+            // --- INVENTARIO & TABS ---
             renderTabs: () => {
                 const providers = [...new Set(app.data.map(i => i.proveedor || 'General'))].sort();
                 const c = document.getElementById('tabs-container');
@@ -406,15 +408,31 @@
             },
             setTab: (t) => { app.activeTab = t; app.currentPage = 1; app.renderTabs(); app.filter(); },
             filter: () => {
-                const t = document.getElementById('search').value.toLowerCase().trim();
-                
-                // Filtro por TAB (Ignorar si es cliente, siempre es TODOS)
+                const inputVal = document.getElementById('search').value.toLowerCase().trim();
+                // Separar por espacios para búsqueda multi-palabra
+                const terms = inputVal.split(/\s+/);
+
+                // 1. Filtrar por TAB
                 let f = app.data;
                 if (app.userRole !== 'cliente' && app.activeTab !== 'TODOS') {
                     f = app.data.filter(i => (i.proveedor||'General') === app.activeTab);
                 }
 
-                if(t) f = f.filter(i => (String(i.codigo||'')+String(i.descripcion||'')+String(i.marca||'')).toLowerCase().includes(t));
+                // 2. Filtrar por CADA término de búsqueda en TODOS los campos
+                if (inputVal) {
+                    f = f.filter(item => {
+                        const searchStr = [
+                            item.codigo,
+                            item.descripcion,
+                            item.marca,
+                            item.proveedor,
+                            item.precio
+                        ].join(' ').toLowerCase();
+                        
+                        // Verifica que TODOS los términos estén presentes
+                        return terms.every(term => searchStr.includes(term));
+                    });
+                }
                 
                 app.filteredData = f;
                 app.currentPage = 1;
@@ -547,7 +565,7 @@
                             const u = users[key];
                             const badge = u.role === 'admin' ? 'btn-purple' : (u.role === 'cliente' ? 'btn-orange' : 'btn-blue');
                             let info = u.role === 'cliente' ? `<br><small style="color:green">Desc: ${u.descuento}%</small>` : '';
-                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
+                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span class="role-badge ${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
                         });
                     }
                 });
@@ -559,6 +577,7 @@
                 const role = document.getElementById('u-role').value;
                 const disc = parseInt(document.getElementById('u-disc').value) || 0;
                 if(!name || !user || !pass) return alert("Faltan datos");
+                
                 usersRef.push({ nombre: name, user: user, pass: pass, role: role, descuento: disc });
                 app.toast("Usuario Creado");
                 document.getElementById('u-name').value = ''; document.getElementById('u-user').value = ''; document.getElementById('u-pass').value = '';
