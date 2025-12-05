@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V17 Pedidos PDF</title>
+    <title>Autopartes Net - V17.1 Final</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -89,6 +89,10 @@
         .cost-field { color: var(--cost-color); font-size: 0.85em; font-weight: bold; background: #fff5f7; padding: 3px 6px; border-radius: 4px; }
         .users-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .users-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        .role-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.7em; color: white; text-transform: uppercase; }
+        .bg-admin { background: var(--role-admin); } .bg-seller { background: #4299e1; } .bg-client { background: var(--role-client); }
+        
+        /* PRECIOS CLIENTE - DESTACADOS */
         .price-old { text-decoration: line-through; color: #a0aec0; font-size: 0.85em; margin-right: 5px; }
         .price-new { color: var(--success); font-weight: 800; font-size: 1.1em; }
         .discount-tag { background: #c6f6d5; color: #22543d; font-size: 0.65em; padding: 2px 5px; border-radius: 4px; font-weight: bold; vertical-align: middle; margin-left: 5px; }
@@ -117,7 +121,7 @@
             </div>
             <div style="text-align:right; display:flex; gap:10px; align-items:center;">
                 
-                <!-- ALERTA DE PEDIDOS (ADMIN & VENDEDOR) -->
+                <!-- ALERTA DE PEDIDOS -->
                 <div class="notification-btn d-none" onclick="app.openOrdersModal()" id="btn-orders" title="Ver Pedidos">
                     <span style="font-size:1.5rem;">🔔</span>
                     <span id="badge-orders" class="badge-count">0</span>
@@ -128,7 +132,7 @@
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
                 
-                <!-- BOTÓN USUARIOS (ADMIN) -->
+                <!-- BOTÓN USUARIOS (ADMIN) - FORZADO VISIBLE -->
                 <button id="btn-usuarios" class="btn-purple admin-only d-none" onclick="app.openUsersModal()" title="Usuarios">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
@@ -139,6 +143,7 @@
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                     <h3 style="margin:0; color:var(--text);">📦 Catálogo</h3>
+                    <!-- AVISO DESCUENTO CLIENTE -->
                     <span id="client-discount-display" style="font-size:0.9rem; color:var(--success); font-weight:bold; display:none; background:#f0fdf4; padding:5px 10px; border-radius:20px; border:1px solid var(--success);"></span>
                 </div>
 
@@ -192,15 +197,15 @@
 
     <div class="floating-total">
         <div><span style="font-size:0.75rem; color:var(--text-muted);">TOTAL:</span> <strong style="color:var(--primary); font-size:1.3rem;">$<span id="float-total">0.00</span></strong></div>
-        <button class="btn-whatsapp" onclick="app.submitOrder()" style="padding:10px 20px; border-radius:20px;">Enviar 📲</button>
+        <button class="btn-whatsapp" onclick="app.shareWhatsApp()" style="padding:10px 20px; border-radius:20px;">Enviar 📲</button>
     </div>
 
-    <!-- MODAL GESTION CLIENTES -->
+    <!-- MODAL GESTION USUARIOS -->
     <div id="modalUsers" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-top:0; color:var(--primary);">👥 Clientes y Usuarios</h3>
+            <h3 style="margin-top:0; color:var(--primary);">👥 Gestión de Usuarios</h3>
             <div style="background:#f7fafc; padding:15px; border-radius:10px; margin-bottom:15px;">
-                <h4 style="margin:0 0 10px 0;">Nuevo</h4>
+                <h4 style="margin:0 0 10px 0;">Crear Nuevo</h4>
                 <input id="u-name" placeholder="Nombre (Ej: Taller X)">
                 <div class="form-grid"><input id="u-user" placeholder="Usuario"><input id="u-pass" placeholder="Contraseña"></div>
                 <div class="form-grid">
@@ -209,11 +214,11 @@
                         <option value="vendedor">Vendedor</option>
                         <option value="admin">Administrador</option>
                     </select>
-                    <input id="u-disc" type="number" placeholder="% Desc." value="0">
+                    <input id="u-disc" type="number" placeholder="% Desc. (Ej: 10)" value="0">
                 </div>
-                <button class="btn-green" onclick="app.createUser()" style="width:100%; margin-top:10px;">Crear</button>
+                <button class="btn-green" onclick="app.createUser()" style="width:100%; margin-top:10px;">Crear Usuario</button>
             </div>
-            <h4>Lista Actual</h4>
+            <h4>Lista de Usuarios</h4>
             <table class="users-table"><tbody id="users-list"></tbody></table>
             <button class="btn-grey" onclick="document.getElementById('modalUsers').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
         </div>
@@ -262,7 +267,7 @@
     <div id="toast">Notificación</div>
 
     <script>
-        // CONFIGURACIÓN FIREBASE
+        // CONFIGURACIÓN FIREBASE (REEMPLAZA CLAVES SI ES NECESARIO)
         const firebaseConfig = {
             apiKey: "AIzaSyBRKQErLOmU98F230oKBJTe7cc9zJjmQP0",
             authDomain: "repuestosdaytona-fd624.firebaseapp.com",
@@ -322,18 +327,18 @@
                 document.getElementById('user-display').innerText = userData.nombre || userData.user;
                 document.getElementById('role-display').innerText = app.userRole.toUpperCase();
 
-                if(app.userRole === 'admin' || app.userRole === 'vendedor') {
-                    // Mostrar herramientas para Staff
+                if(app.userRole === 'admin') {
+                    document.getElementById('btn-usuarios').classList.remove('d-none');
+                    document.getElementById('btn-config').classList.remove('d-none');
+                    document.getElementById('btn-orders').classList.remove('d-none');
+                    const thead = document.querySelector('#table-head tr');
+                    if (!thead.innerHTML.includes('Costo')) {
+                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[2]);
+                    }
+                    app.listenOrders();
+                } else if(app.userRole === 'vendedor') {
                     document.getElementById('btn-orders').classList.remove('d-none');
                     app.listenOrders();
-                    
-                    if(app.userRole === 'admin') {
-                        document.querySelectorAll('.admin-only').forEach(e => e.classList.remove('d-none'));
-                        const thead = document.querySelector('#table-head tr');
-                        if (!thead.innerHTML.includes('Costo')) {
-                            const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[2]);
-                        }
-                    }
                 } else if(app.userRole === 'cliente') {
                     document.getElementById('cliente').value = userData.nombre;
                     document.getElementById('cliente').disabled = true;
@@ -365,9 +370,7 @@
                     let btn = `<button class="btn-green btn-icon" onclick="app.addToCart('${i.id}')">+</button>`;
                     let editBtn = '', costCell = '', priceDisplay = '';
                     
-                    // PRECIO A MOSTRAR
                     let priceVal = parseFloat(i.precio);
-                    
                     if(app.userRole === 'cliente' && app.clientDiscount > 0) {
                         let discounted = priceVal * (1 - (app.clientDiscount/100));
                         priceDisplay = `<span class="price-old">$${Math.round(priceVal)}</span><br><span class="price-new">$${Math.round(discounted)}</span><span class="discount-tag">-${app.clientDiscount}%</span>`;
@@ -409,7 +412,6 @@
             },
             updateCant: (idx, v) => { app.cart[idx].cant = Math.max(1, parseInt(v)||1); app.renderCart(); },
             updateFinal: (idx, v) => { app.cart[idx].precioFinal = parseFloat(v)||0; app.renderCart(); },
-            
             renderCart: () => {
                 const c = document.getElementById('cart-container'); c.innerHTML = ''; let tot = 0;
                 if(app.cart.length===0) c.innerHTML = '<div style="text-align:center;padding:30px;color:#a0aec0">Vacío</div>';
@@ -446,22 +448,11 @@
                     let count = 0;
                     const list = document.getElementById('orders-list'); list.innerHTML = '';
                     if(data) {
-                        // Guardar en variable global para impresión
                         app.loadedOrders = Object.keys(data).map(k => ({id:k, ...data[k]})).reverse();
-                        
                         app.loadedOrders.forEach(o => {
                             if(o.estado === 'pendiente') count++;
                             const fecha = new Date(o.fecha).toLocaleString();
-                            list.innerHTML += `
-                                <div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}">
-                                    <div class="order-header"><span>${o.cliente}</span> <span>$${o.total}</span></div>
-                                    <div style="font-size:0.8em; color:#666; margin-bottom:5px;">${fecha}</div>
-                                    <div style="font-size:0.85em;">${o.items ? o.items.length : 0} items</div>
-                                    <div style="display:flex; gap:5px; margin-top:5px;">
-                                        ${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="flex:1; font-size:0.8em;">Visto</button>` : '<small style="color:green; flex:1; align-self:center;">Procesado</small>'}
-                                        <button class="btn-blue" onclick="app.printOrderPDF('${o.id}')" style="flex:1; font-size:0.8em;">📄 PDF</button>
-                                    </div>
-                                </div>`;
+                            list.innerHTML += `<div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}"><div class="order-header"><span>${o.cliente}</span> <span>$${o.total}</span></div><div style="font-size:0.8em; color:#666; margin-bottom:5px;">${fecha}</div><div style="font-size:0.85em;">${o.items ? o.items.length : 0} items</div><div style="display:flex; gap:5px; margin-top:5px;">${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="flex:1; font-size:0.8em;">Visto</button>` : '<small style="color:green; flex:1; align-self:center;">Procesado</small>'}<button class="btn-blue" onclick="app.printOrderPDF('${o.id}')" style="flex:1; font-size:0.8em;">📄 PDF</button></div></div>`;
                         });
                     }
                     const badge = document.getElementById('badge-orders');
@@ -470,41 +461,18 @@
                 });
             },
             markOrder: (id) => { ordersRef.child(id).update({estado: 'visto'}); },
-            openOrdersModal: () => { document.getElementById('modalOrders').style.display='flex'; },
-            
             printOrderPDF: (id) => {
                 const order = app.loadedOrders.find(o => o.id === id);
                 if(!order) return;
-                
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                const fecha = new Date(order.fecha).toLocaleString();
-                
+                const { jsPDF } = window.jspdf; const doc = new jsPDF();
                 doc.setFontSize(18); doc.text("AUTOPARTES NET - PEDIDO", 10, 15);
-                doc.setFontSize(11);
-                doc.text(`Cliente: ${order.cliente}`, 10, 25);
-                doc.text(`Fecha: ${fecha}`, 10, 32);
-                doc.text(`Estado: ${order.estado.toUpperCase()}`, 10, 39);
-
-                const body = (order.items || []).map(c => [
-                    c.cant, 
-                    `${c.codigo || ''} ${c.descripcion}`, 
-                    `$${c.precioFinal}`, 
-                    `$${c.cant*c.precioFinal}`
-                ]);
-                
-                doc.autoTable({
-                    head: [['Cant', 'Descripción', 'Unitario', 'Total']],
-                    body: body,
-                    startY: 45,
-                    theme: 'grid',
-                    headStyles: { fillColor: [49, 151, 149] }
-                });
-                
-                doc.setFontSize(14);
-                doc.text(`TOTAL PEDIDO: $${order.total}`, 10, doc.lastAutoTable.finalY + 15);
+                doc.setFontSize(11); doc.text(`Cliente: ${order.cliente}`, 10, 25); doc.text(`Fecha: ${new Date(order.fecha).toLocaleString()}`, 10, 32);
+                const body = (order.items || []).map(c => [c.cant, `${c.codigo||''} ${c.descripcion}`, `$${c.precioFinal}`, `$${c.cant*c.precioFinal}`]);
+                doc.autoTable({ head: [['Cant', 'Descripción', 'Unitario', 'Total']], body: body, startY: 45 });
+                doc.setFontSize(14); doc.text(`TOTAL PEDIDO: $${order.total}`, 10, doc.lastAutoTable.finalY + 15);
                 doc.save(`Pedido_${order.cliente}_${id}.pdf`);
             },
+            openOrdersModal: () => { document.getElementById('modalOrders').style.display='flex'; },
 
             // --- USUARIOS ---
             openUsersModal: () => { document.getElementById('modalUsers').style.display = 'flex'; app.loadUsersList(); },
@@ -527,11 +495,11 @@
                 const user = document.getElementById('u-user').value.trim().toLowerCase();
                 const pass = document.getElementById('u-pass').value;
                 const role = document.getElementById('u-role').value;
-                const disc = document.getElementById('u-disc').value || 0;
+                const disc = parseInt(document.getElementById('u-disc').value) || 0;
                 if(!name || !user || !pass) return alert("Faltan datos");
                 
-                usersRef.push({ nombre: name, user: user, pass: pass, role: role, descuento: parseFloat(disc) });
-                app.toast("Creado");
+                usersRef.push({ nombre: name, user: user, pass: pass, role: role, descuento: disc });
+                app.toast("Usuario Creado");
                 document.getElementById('u-name').value = ''; document.getElementById('u-user').value = ''; document.getElementById('u-pass').value = '';
             },
             deleteUser: (key) => { if(confirm("¿Eliminar?")) usersRef.child(key).remove(); },
