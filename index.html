@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V17.1 Final</title>
+    <title>Autopartes Net - V17 Final Admin Fix</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -50,8 +50,7 @@
         .btn-orange { background: var(--role-client); }
 
         /* UTILS */
-        .d-none { display: none !important; }
-        .admin-only { display: none !important; } 
+        .hidden { display: none !important; }
 
         /* LOGIN */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px; }
@@ -61,6 +60,7 @@
         .table-responsive { width: 100%; border-collapse: collapse; }
         .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
         .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        
         @media (max-width: 768px) {
             .table-responsive thead { display: none; } 
             .table-responsive tr { display: block; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 12px; padding: 15px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
@@ -82,17 +82,14 @@
         .form-grid input { flex: 1; min-width: 120px; }
         #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #2d3748; color: white; padding: 12px 24px; border-radius: 30px; display: none; z-index: 4000; font-weight:500; }
         
-        /* ORDERS & PRECIOS */
         .order-card { border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #fff; }
         .order-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px;}
         .code-badge { background: #e6fffa; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; padding: 3px 8px; border-radius: 6px; display: inline-block; border: 1px solid #b2f5ea; margin-right: 5px;}
         .cost-field { color: var(--cost-color); font-size: 0.85em; font-weight: bold; background: #fff5f7; padding: 3px 6px; border-radius: 4px; }
         .users-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .users-table td { padding: 10px; border-bottom: 1px solid #eee; }
-        .role-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.7em; color: white; text-transform: uppercase; }
-        .bg-admin { background: var(--role-admin); } .bg-seller { background: #4299e1; } .bg-client { background: var(--role-client); }
         
-        /* PRECIOS CLIENTE - DESTACADOS */
+        /* PRECIOS */
         .price-old { text-decoration: line-through; color: #a0aec0; font-size: 0.85em; margin-right: 5px; }
         .price-new { color: var(--success); font-weight: 800; font-size: 1.1em; }
         .discount-tag { background: #c6f6d5; color: #22543d; font-size: 0.65em; padding: 2px 5px; border-radius: 4px; font-weight: bold; vertical-align: middle; margin-left: 5px; }
@@ -113,7 +110,7 @@
     </div>
 
     <!-- APP -->
-    <div id="app-content" class="d-none">
+    <div id="app-content" class="hidden">
         <header class="header-app">
             <div>
                 <h1 style="font-size:1.4rem; color:var(--primary); margin:0;">AUTOPARTES NET</h1>
@@ -121,8 +118,8 @@
             </div>
             <div style="text-align:right; display:flex; gap:10px; align-items:center;">
                 
-                <!-- ALERTA DE PEDIDOS -->
-                <div class="notification-btn d-none" onclick="app.openOrdersModal()" id="btn-orders" title="Ver Pedidos">
+                <!-- NOTIFICACIONES -->
+                <div class="notification-btn" onclick="app.openOrdersModal()" id="btn-orders" style="display:none;">
                     <span style="font-size:1.5rem;">🔔</span>
                     <span id="badge-orders" class="badge-count">0</span>
                 </div>
@@ -132,8 +129,8 @@
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
                 
-                <!-- BOTÓN USUARIOS (ADMIN) - FORZADO VISIBLE -->
-                <button id="btn-usuarios" class="btn-purple admin-only d-none" onclick="app.openUsersModal()" title="Usuarios">👥</button>
+                <!-- BOTÓN USUARIOS -->
+                <button id="btn-usuarios" class="btn-purple" onclick="app.openUsersModal()" title="Usuarios" style="display:none;">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
         </header>
@@ -143,17 +140,16 @@
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                     <h3 style="margin:0; color:var(--text);">📦 Catálogo</h3>
-                    <!-- AVISO DESCUENTO CLIENTE -->
                     <span id="client-discount-display" style="font-size:0.9rem; color:var(--success); font-weight:bold; display:none; background:#f0fdf4; padding:5px 10px; border-radius:20px; border:1px solid var(--success);"></span>
                 </div>
 
                 <div style="display:flex; gap:10px; margin-bottom:20px;">
                     <input id="search" placeholder="🔍 Buscar repuesto..." onkeyup="app.filter()" style="margin:0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                    <button id="btn-config" class="btn-grey admin-only d-none" onclick="document.getElementById('admin-panel').classList.toggle('d-none')">⚙️</button>
+                    <button id="btn-config" class="btn-grey" onclick="document.getElementById('admin-panel').classList.toggle('hidden')" style="display:none;">⚙️</button>
                 </div>
 
                 <!-- PANEL ADMIN -->
-                <div id="admin-panel" class="d-none" style="background:#f7fafc; padding:20px; border-radius:12px; margin-bottom:25px; border:1px dashed var(--border);">
+                <div id="admin-panel" class="hidden" style="background:#f7fafc; padding:20px; border-radius:12px; margin-bottom:25px; border:1px dashed var(--border);">
                     <h4 style="margin:0 0 15px 0; color:var(--primary);">Producto</h4>
                     <div class="form-grid"><input id="n-code" placeholder="CÓDIGO"><input id="n-prov" placeholder="PROVEEDOR"></div>
                     <div class="form-grid"><input id="n-desc" placeholder="Descripción" style="flex:2;"><input id="n-brand" placeholder="Marca"></div>
@@ -177,7 +173,7 @@
                 </table>
             </div>
 
-            <!-- COTIZADOR / PEDIDO -->
+            <!-- COTIZADOR -->
             <div class="card" style="border-left: 5px solid var(--primary);">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h3 style="margin:0; color:var(--text);" id="cart-title">🛒 Carrito</h3>
@@ -197,15 +193,15 @@
 
     <div class="floating-total">
         <div><span style="font-size:0.75rem; color:var(--text-muted);">TOTAL:</span> <strong style="color:var(--primary); font-size:1.3rem;">$<span id="float-total">0.00</span></strong></div>
-        <button class="btn-whatsapp" onclick="app.shareWhatsApp()" style="padding:10px 20px; border-radius:20px;">Enviar 📲</button>
+        <button class="btn-whatsapp" onclick="app.submitOrder()" style="padding:10px 20px; border-radius:20px;">Enviar 📲</button>
     </div>
 
-    <!-- MODAL GESTION USUARIOS -->
+    <!-- MODAL GESTION CLIENTES -->
     <div id="modalUsers" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-top:0; color:var(--primary);">👥 Gestión de Usuarios</h3>
             <div style="background:#f7fafc; padding:15px; border-radius:10px; margin-bottom:15px;">
-                <h4 style="margin:0 0 10px 0;">Crear Nuevo</h4>
+                <h4 style="margin:0 0 10px 0;">Nuevo</h4>
                 <input id="u-name" placeholder="Nombre (Ej: Taller X)">
                 <div class="form-grid"><input id="u-user" placeholder="Usuario"><input id="u-pass" placeholder="Contraseña"></div>
                 <div class="form-grid">
@@ -216,15 +212,15 @@
                     </select>
                     <input id="u-disc" type="number" placeholder="% Desc. (Ej: 10)" value="0">
                 </div>
-                <button class="btn-green" onclick="app.createUser()" style="width:100%; margin-top:10px;">Crear Usuario</button>
+                <button class="btn-green" onclick="app.createUser()" style="width:100%; margin-top:10px;">Crear</button>
             </div>
-            <h4>Lista de Usuarios</h4>
+            <h4>Lista Actual</h4>
             <table class="users-table"><tbody id="users-list"></tbody></table>
             <button class="btn-grey" onclick="document.getElementById('modalUsers').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
         </div>
     </div>
 
-    <!-- MODAL PEDIDOS RECIBIDOS -->
+    <!-- MODAL PEDIDOS -->
     <div id="modalOrders" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-top:0; color:var(--primary);">🔔 Pedidos Recibidos</h3>
@@ -267,7 +263,6 @@
     <div id="toast">Notificación</div>
 
     <script>
-        // CONFIGURACIÓN FIREBASE (REEMPLAZA CLAVES SI ES NECESARIO)
         const firebaseConfig = {
             apiKey: "AIzaSyBRKQErLOmU98F230oKBJTe7cc9zJjmQP0",
             authDomain: "repuestosdaytona-fd624.firebaseapp.com",
@@ -323,21 +318,21 @@
                 app.clientDiscount = Number(userData.descuento) || 0; 
                 
                 document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-content').classList.remove('d-none');
+                document.getElementById('app-content').classList.remove('hidden');
                 document.getElementById('user-display').innerText = userData.nombre || userData.user;
                 document.getElementById('role-display').innerText = app.userRole.toUpperCase();
 
                 if(app.userRole === 'admin') {
-                    document.getElementById('btn-usuarios').classList.remove('d-none');
-                    document.getElementById('btn-config').classList.remove('d-none');
-                    document.getElementById('btn-orders').classList.remove('d-none');
+                    document.getElementById('btn-usuarios').style.display = 'inline-flex';
+                    document.getElementById('btn-config').style.display = 'inline-flex';
+                    document.getElementById('btn-orders').style.display = 'flex';
                     const thead = document.querySelector('#table-head tr');
                     if (!thead.innerHTML.includes('Costo')) {
                         const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[2]);
                     }
                     app.listenOrders();
                 } else if(app.userRole === 'vendedor') {
-                    document.getElementById('btn-orders').classList.remove('d-none');
+                    document.getElementById('btn-orders').style.display = 'flex';
                     app.listenOrders();
                 } else if(app.userRole === 'cliente') {
                     document.getElementById('cliente').value = userData.nombre;
