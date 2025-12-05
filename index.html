@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V21 Limpia</title>
+    <title>Autopartes Net - V22 Tabla</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -56,8 +56,8 @@
 
         /* TABLE & CART */
         .table-responsive { width: 100%; border-collapse: collapse; }
-        .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
-        .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+        .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 0.95rem; }
         
         @media (max-width: 768px) {
             .table-responsive thead { display: none; } 
@@ -86,6 +86,7 @@
         
         /* ESTILOS EXTRA */
         .code-badge { background: #e6fffa; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; padding: 3px 8px; border-radius: 6px; display: inline-block; border: 1px solid #b2f5ea; margin-right: 5px;}
+        .prov-badge { background: #fffaf0; color: #d69e2e; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; border:1px solid #fceeb5; }
         .cost-field { color: var(--cost-color); font-size: 0.85em; font-weight: bold; background: #fff5f7; padding: 3px 6px; border-radius: 4px; }
         .price-old { text-decoration: line-through; color: #a0aec0; font-size: 0.85em; margin-right: 5px; }
         .price-new { color: var(--success); font-weight: 800; font-size: 1.1em; }
@@ -106,7 +107,7 @@
     <div id="login-screen">
         <div class="card-login">
             <h2 style="color:var(--primary); margin:0 0 10px 0;">AUTOPARTES NET</h2>
-            <p style="color:var(--text-muted);">Portal de Gestión</p>
+            <p style="color:var(--text-muted);">Portal de Clientes & Gestión</p>
             <input type="text" id="user" placeholder="Usuario" autocomplete="off">
             <input type="password" id="pass" placeholder="Contraseña">
             <button id="btn-ingresar" class="btn-blue" onclick="app.login()" style="width: 100%; margin-top: 20px;">INGRESAR</button>
@@ -122,8 +123,7 @@
                 <div style="font-size:0.75rem; color:var(--text-muted); font-weight:500;">Sistema Online</div>
             </div>
             <div style="text-align:right; display:flex; gap:10px; align-items:center;">
-                
-                <!-- NOTIFICACIONES (ADMIN/VENDEDOR) -->
+                <!-- NOTIFICACIONES -->
                 <div class="notification-btn" onclick="app.openOrdersModal()" id="btn-orders" style="display:none;">
                     <span style="font-size:1.5rem;">🔔</span>
                     <span id="badge-orders" class="badge-count">0</span>
@@ -171,23 +171,33 @@
                         </div>
                     </div>
                     <button class="btn-green" onclick="app.add()" style="width:100%; margin-top:15px;">Guardar Producto</button>
+                    
                     <div style="display:flex; gap:10px; margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
-                        <label class="btn-blue" style="flex:1; cursor:pointer; font-size:0.85rem; text-align:center;">📂 Excel <input type="file" onchange="app.uploadExcel(this)" style="display:none;"></label>
+                        <label class="btn-blue" style="flex:1; cursor:pointer; font-size:0.85rem; text-align:center;">
+                            📂 Excel <input type="file" onchange="app.uploadExcel(this)" style="display:none;">
+                        </label>
                         <button class="btn-red" onclick="app.openBulkUpdate()" style="flex:1; font-size:0.85rem;">📈 Aumentos</button>
                         <button class="btn-red" onclick="app.openDeleteBulk()" style="flex:1; background:var(--danger); font-size:0.85rem;">🗑️ Eliminar</button>
                     </div>
                 </div>
 
                 <table class="table-responsive">
-                    <thead id="table-head"><tr><th>Producto</th><th>Marca</th><th style="text-align:right;">Precio</th><th style="text-align:center;">+</th></tr></thead>
+                    <thead id="table-head">
+                        <tr>
+                            <th style="width:40%;">Descripción / Código</th>
+                            <th style="width:20%;">Marca / Prov</th>
+                            <th style="text-align:right; width:15%;">Precio</th>
+                            <th style="text-align:center; width:10%;">+</th>
+                        </tr>
+                    </thead>
                     <tbody id="inv-table-body"><tr><td colspan="4" style="text-align:center; padding:30px;">Cargando...</td></tr></tbody>
                 </table>
                 
                 <!-- PAGINACION -->
                 <div class="pagination-container">
-                    <button class="btn-grey" onclick="app.prevPage()">Anterior</button>
+                    <button class="btn-grey" onclick="app.prevPage()">❮ Anterior</button>
                     <span id="page-info" style="align-self:center; font-weight:bold; color:var(--text-muted);">Pág 1</span>
-                    <button class="btn-grey" onclick="app.nextPage()">Siguiente</button>
+                    <button class="btn-grey" onclick="app.nextPage()">Siguiente ❯</button>
                 </div>
             </div>
 
@@ -284,7 +294,7 @@
     <div id="toast">Notificación</div>
 
     <script>
-        // CONFIGURACIÓN FIREBASE
+        // CONFIGURACIÓN FIREBASE (PEGA TUS CLAVES AQUÍ)
         const firebaseConfig = {
             apiKey: "AIzaSyBRKQErLOmU98F230oKBJTe7cc9zJjmQP0",
             authDomain: "repuestosdaytona-fd624.firebaseapp.com",
@@ -348,9 +358,10 @@
                     document.getElementById('btn-usuarios').style.display = 'inline-block';
                     document.getElementById('btn-config').style.display = 'inline-block';
                     document.getElementById('btn-orders').style.display = 'flex';
+                    
                     const thead = document.querySelector('#table-head tr');
                     if (!thead.innerHTML.includes('Costo')) {
-                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[3]);
+                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[3]); // Col 3 es Precio
                     }
                     app.listenOrders();
                 } else if(app.userRole === 'vendedor') {
@@ -384,6 +395,7 @@
                 c.innerHTML = h;
             },
             setTab: (t) => { app.activeTab = t; app.currentPage = 1; app.renderTabs(); app.filter(); },
+            
             filter: () => {
                 const t = document.getElementById('search').value.toLowerCase().trim();
                 let f = app.activeTab === 'TODOS' ? app.data : app.data.filter(i => (i.proveedor||'General') === app.activeTab);
@@ -394,6 +406,7 @@
             },
             prevPage: () => { if(app.currentPage > 1) { app.currentPage--; app.renderInv(); } },
             nextPage: () => { if(app.currentPage < Math.ceil(app.filteredData.length / app.itemsPerPage)) { app.currentPage++; app.renderInv(); } },
+
             renderInv: () => {
                 const tb = document.getElementById('inv-table-body'); tb.innerHTML = '';
                 const start = (app.currentPage - 1) * app.itemsPerPage;
@@ -422,8 +435,8 @@
                     }
                     
                     tb.innerHTML += `<tr>
-                        <td><span class="code-badge">${i.codigo||'-'}</span><div style="font-weight:600; color:var(--text); margin-top:4px;">${i.descripcion}</div><small>${i.marca||''}</small></td>
-                        <td><span class="prov-badge">${i.proveedor||'Gral'}</span></td>
+                        <td><span class="code-badge">${i.codigo||'-'}</span><div style="font-weight:600; color:var(--text); margin-top:4px;">${i.descripcion}</div></td>
+                        <td><b>${i.marca||''}</b><br><small class="prov-badge">${i.proveedor||'Gral'}</small></td>
                         ${costCell}
                         <td style="text-align:right; font-weight:bold; color:var(--text);">${priceDisplay}</td>
                         <td style="text-align:center;">${editBtn}${btn}</td>
@@ -468,6 +481,7 @@
             submitOrder: () => {
                 if(app.cart.length===0) return alert("Carrito vacío");
                 const cli = document.getElementById('cliente').value;
+                if(!cli) return alert("Falta nombre del cliente");
                 const total = document.getElementById('float-total').innerText;
                 const pedido = { fecha: new Date().toISOString(), cliente: cli, items: app.cart, total: total, estado: 'pendiente' };
                 ordersRef.push(pedido);
@@ -518,7 +532,7 @@
                             const u = users[key];
                             const badge = u.role === 'admin' ? 'btn-purple' : (u.role === 'cliente' ? 'btn-orange' : 'btn-blue');
                             let info = u.role === 'cliente' ? `<br><small style="color:green">Desc: ${u.descuento}%</small>` : '';
-                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
+                            list.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><div><b>${u.nombre}</b><br><small>${u.user}</small>${info}</div><div style="display:flex; align-items:center; gap:10px;"><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></div></div>`;
                         });
                     }
                 });
@@ -559,6 +573,19 @@
                 document.getElementById('modalEdicion').style.display='flex';
             },
             delFromModal: () => { if(confirm("¿Eliminar?")) { ref.child(document.getElementById('edit-id').value).remove(); document.getElementById('modalEdicion').style.display='none'; } },
+            uploadExcel: (input) => {
+                const f = input.files[0]; if(!f) return;
+                const r = new FileReader();
+                r.onload = e => {
+                    const w = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+                    const j = XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]]);
+                    if(confirm(`Subir ${j.length}?`)) {
+                        j.forEach(r => { const c = r['costo']||r['Costo']||0; const m = r['margen']||r['Margen']||0; let p = r['precio']||r['Precio']||0; if(p===0 && c>0) p = c * (1 + m/100); ref.push({ codigo: r['codigo']||r['Codigo']||'-', descripcion: r['descripcion']||r['Descripcion']||'S/N', marca: r['marca']||r['Marca']||'', proveedor: r['proveedor']||r['Proveedor']||'Gral', costo: c, margen: m, precio: Math.round(p) }); });
+                        app.toast("Subida OK");
+                    }
+                };
+                r.readAsArrayBuffer(f); input.value='';
+            },
             openDeleteBulk: () => {
                 const providers = [...new Set(app.data.map(i => i.proveedor || 'General'))].sort();
                 const sel = document.getElementById('del-provider-select');
@@ -592,19 +619,6 @@
                 app.data.forEach(i => { if((i.proveedor||'General') === prov) { const newCost = (i.costo || 0) * factor; const newSale = newCost * (1 + (i.margen||0)/100); ref.child(i.id).update({ costo: Math.round(newCost), precio: Math.round(newSale) }); } });
                 app.toast("Actualizado"); document.getElementById('modalBulk').style.display = 'none';
             },
-            uploadExcel: (input) => {
-                const f = input.files[0]; if(!f) return;
-                const r = new FileReader();
-                r.onload = e => {
-                    const w = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
-                    const j = XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]]);
-                    if(confirm(`Subir ${j.length}?`)) {
-                        j.forEach(r => { const c = r['costo']||r['Costo']||0; const m = r['margen']||r['Margen']||0; let p = r['precio']||r['Precio']||0; if(p===0 && c>0) p = c * (1 + m/100); ref.push({ codigo: r['codigo']||r['Codigo']||'-', descripcion: r['descripcion']||r['Descripcion']||'S/N', marca: r['marca']||r['Marca']||'', proveedor: r['proveedor']||r['Proveedor']||'Gral', costo: c, margen: m, precio: Math.round(p) }); });
-                        app.toast("Subida OK");
-                    }
-                };
-                r.readAsArrayBuffer(f); input.value='';
-            },
             shareWhatsApp: () => {
                 if(app.cart.length===0) return alert("Vacio");
                 const cli = document.getElementById('cliente').value || "Cliente";
@@ -628,4 +642,5 @@
     </script>
 </body>
 </html>
+
 
