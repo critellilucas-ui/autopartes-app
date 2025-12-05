@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V19 Estabilidad</title>
+    <title>Autopartes Net - V20 Full</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <!-- FIREBASE (Versión Estable) -->
+    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -32,31 +32,27 @@
         /* HEADER */
         .header-app { background: var(--surface); padding: 15px 20px; border-radius: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
 
-        /* NOTIFICACIONES */
-        .notification-btn { position: relative; cursor: pointer; margin-right: 15px; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #edf2f7; transition: 0.3s; }
-        .badge-count { position: absolute; top: -2px; right: -2px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7em; font-weight: bold; display: none; border: 2px solid white; }
+        /* TABS PROVEEDORES (RECUPERADO) */
+        .tabs-wrapper { overflow-x: auto; white-space: nowrap; padding-bottom: 10px; margin-bottom: 15px; -webkit-overflow-scrolling: touch; }
+        .tab-btn { display: inline-block; padding: 8px 20px; border-radius: 30px; background: white; border: 1px solid var(--border); color: var(--text-muted); font-weight: 600; cursor: pointer; margin-right: 8px; transition: 0.3s; }
+        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 2px 5px rgba(49,151,149,0.3); }
 
-        /* CARDS */
+        /* CARDS & UI */
         .card { background: var(--surface); padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border); }
-
-        /* INPUTS & BTNS */
-        input, select { width: 100%; padding: 12px 15px; margin: 5px 0; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; outline: none; background: #fcfcfc; transition: border-color 0.3s; }
+        input, select { width: 100%; padding: 12px 15px; margin: 5px 0; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; outline: none; background: #fcfcfc; }
         input:focus { border-color: var(--primary); background: white; }
         button { padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; display: inline-flex; justify-content: center; align-items: center; gap: 6px; color:white; transition: 0.2s; }
-        button:active { transform: scale(0.98); }
+        
         .btn-blue { background: var(--primary); } .btn-green { background: var(--success); } 
         .btn-red { background: var(--danger); } .btn-grey { background: #cbd5e0; color: var(--text); } 
         .btn-whatsapp { background: var(--whatsapp); } .btn-purple { background: var(--role-admin); }
         .btn-orange { background: var(--role-client); }
 
         /* UTILS */
-        .hidden { display: none !important; }
+        .d-none { display: none !important; }
+        .admin-only { display: none !important; } 
 
-        /* LOGIN */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .card-login { background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 360px; text-align: center; box-shadow: 0 10px 25px rgba(49, 151, 149, 0.15); }
-
-        /* TABLA & CART */
+        /* TABLE & CART */
         .table-responsive { width: 100%; border-collapse: collapse; }
         .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
         .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
@@ -65,17 +61,23 @@
             .table-responsive tr { display: block; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 12px; padding: 15px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
             .table-responsive td { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border: none; }
         }
-
         .cart-item { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 12px; background: #fafafa; }
         .input-mini { padding: 6px; text-align: center; font-size: 13px; margin: 0; border-radius:6px;}
-        .label-mini { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; display: block; text-align: center; margin-bottom:2px;}
+
+        /* IMAGENES */
+        .thumb-img { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; cursor: zoom-in; }
+        .thumb-placeholder { width: 45px; height: 45px; background: #edf2f7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #cbd5e0; }
+        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
+        .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
+        .preview-box { width: 100px; height: 100px; border: 2px dashed #cbd5e0; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 10px auto; overflow: hidden; }
+        .preview-box img { width: 100%; height: 100%; object-fit: cover; }
 
         /* MODALS */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 55, 72, 0.4); backdrop-filter: blur(3px); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 55, 72, 0.5); backdrop-filter: blur(3px); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .modal-img-container { text-align: center; }
-        .modal-img-container img { max-width: 100%; max-height: 80vh; border-radius: 8px; }
-
+        .modal-img-container { text-align: center; background: transparent; box-shadow: none; }
+        .modal-img-container img { max-width: 100%; max-height: 80vh; border-radius: 8px; box-shadow: 0 20px 25px rgba(0,0,0,0.2); }
+        
         .floating-total { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); border-top: 1px solid var(--border); padding: 15px 20px; justify-content: space-between; align-items: center; z-index: 100; box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05); }
         @media (max-width: 768px) { .floating-total { display: flex; } }
         
@@ -83,20 +85,15 @@
         .form-grid input { flex: 1; min-width: 120px; }
         #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #2d3748; color: white; padding: 12px 24px; border-radius: 30px; display: none; z-index: 4000; font-weight:500; }
         
-        /* ESTILOS DE PRECIOS Y BADGES */
-        .order-card { border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #fff; }
+        /* EXTRAS */
         .code-badge { background: #e6fffa; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; padding: 3px 8px; border-radius: 6px; display: inline-block; border: 1px solid #b2f5ea; margin-right: 5px;}
-        .cost-field { color: var(--cost-color); font-size: 0.85em; font-weight: bold; background: #fff5f7; padding: 3px 6px; border-radius: 4px; }
-        .users-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .users-table td { padding: 10px; border-bottom: 1px solid #eee; }
-        
         .price-old { text-decoration: line-through; color: #a0aec0; font-size: 0.85em; margin-right: 5px; }
         .price-new { color: var(--success); font-weight: 800; font-size: 1.1em; }
         .discount-tag { background: #c6f6d5; color: #22543d; font-size: 0.65em; padding: 2px 5px; border-radius: 4px; font-weight: bold; vertical-align: middle; margin-left: 5px; }
         
-        /* Thumbnails */
-        .thumb-img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; }
-        .thumb-placeholder { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 6px; color: #ccc; font-size: 1.2em; }
+        /* LOGIN SCREEN */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .card-login { background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 360px; text-align: center; box-shadow: 0 10px 25px rgba(49, 151, 149, 0.15); }
     </style>
 </head>
 <body>
@@ -105,7 +102,7 @@
     <div id="login-screen">
         <div class="card-login">
             <h2 style="color:var(--primary); margin:0 0 10px 0;">AUTOPARTES NET</h2>
-            <p style="color:var(--text-muted);">Acceso Seguro</p>
+            <p style="color:var(--text-muted);">Portal de Gestión</p>
             <input type="text" id="user" placeholder="Usuario" autocomplete="off">
             <input type="password" id="pass" placeholder="Contraseña">
             <button id="btn-ingresar" class="btn-blue" onclick="app.login()" style="width: 100%; margin-top: 20px;">INGRESAR</button>
@@ -114,26 +111,20 @@
     </div>
 
     <!-- APP -->
-    <div id="app-content" class="hidden">
+    <div id="app-content" class="d-none">
         <header class="header-app">
             <div>
                 <h1 style="font-size:1.4rem; color:var(--primary); margin:0;">AUTOPARTES NET</h1>
                 <div style="font-size:0.75rem; color:var(--text-muted); font-weight:500;">Sistema Online</div>
             </div>
             <div style="text-align:right; display:flex; gap:10px; align-items:center;">
-                <!-- NOTIFICACIONES -->
-                <div class="notification-btn" onclick="app.openOrdersModal()" id="btn-orders" style="display:none;">
-                    <span style="font-size:1.5rem;">🔔</span>
-                    <span id="badge-orders" class="badge-count">0</span>
-                </div>
-
+                
                 <div style="text-align:right;">
                     <span id="user-display" style="font-weight:600; font-size:0.9rem; color:var(--primary-dark); display:block;">Usuario</span>
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
                 
-                <!-- BOTONES ADMIN (ESTILOS INLINE PARA FORZAR VISIBILIDAD) -->
-                <button id="btn-usuarios" class="btn-purple" onclick="app.openUsersModal()" title="Usuarios" style="display:none;">👥</button>
+                <button id="btn-usuarios" class="btn-purple admin-only d-none" onclick="app.openUsersModal()" title="Usuarios">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
         </header>
@@ -146,16 +137,22 @@
                     <span id="client-discount-display" style="font-size:0.9rem; color:var(--success); font-weight:bold; display:none; background:#f0fdf4; padding:5px 10px; border-radius:20px; border:1px solid var(--success);"></span>
                 </div>
 
-                <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <input id="search" placeholder="🔍 Buscar repuesto..." onkeyup="app.filter()" style="margin:0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                    <button id="btn-config" class="btn-grey" onclick="document.getElementById('admin-panel').classList.toggle('hidden')" style="display:none;">⚙️</button>
+                <!-- TABS PROVEEDOR -->
+                <div class="tabs-wrapper" id="tabs-container">
+                    <button class="tab-btn active">TODOS</button>
                 </div>
 
-                <!-- PANEL ADMIN -->
-                <div id="admin-panel" class="hidden" style="background:#f7fafc; padding:20px; border-radius:12px; margin-bottom:25px; border:1px dashed var(--border);">
-                    <h4 style="margin:0 0 15px 0; color:var(--primary);">Agregar Producto</h4>
+                <div style="display:flex; gap:10px; margin-bottom:20px;">
+                    <input id="search" placeholder="🔍 Buscar repuesto..." onkeyup="app.filter()" style="margin:0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <button id="btn-config" class="btn-grey admin-only d-none" onclick="document.getElementById('admin-panel').classList.toggle('d-none')">⚙️</button>
+                </div>
+
+                <!-- PANEL ADMIN (AGREGAR) -->
+                <div id="admin-panel" class="d-none" style="background:#f7fafc; padding:20px; border-radius:12px; margin-bottom:25px; border:1px dashed var(--border);">
+                    <h4 style="margin:0 0 15px 0; color:var(--primary);">Nuevo Producto</h4>
                     <div class="form-grid"><input id="n-code" placeholder="CÓDIGO"><input id="n-prov" placeholder="PROVEEDOR"></div>
                     <div class="form-grid"><input id="n-desc" placeholder="Descripción" style="flex:2;"><input id="n-brand" placeholder="Marca"></div>
+                    
                     <div style="background:white; padding:15px; border-radius:10px; border:1px solid var(--border); margin-top:10px;">
                         <div class="form-grid">
                             <div><label style="font-size:0.7em;">COSTO</label><input id="n-cost" type="number" oninput="app.calcPrice('n')"></div>
@@ -163,14 +160,17 @@
                             <div><label style="font-size:0.7em;">LISTA</label><input id="n-price" type="number" style="background:#f0fdf4; border-color:var(--success); font-weight:bold;"></div>
                         </div>
                     </div>
-                    
-                    <div style="margin-top:15px;">
-                        <button class="btn-grey" onclick="document.getElementById('n-file-input').click()" style="width:100%; margin-bottom:5px;">📷 Subir Foto</button>
-                        <input type="file" id="n-file-input" accept="image/*" style="display:none;" onchange="app.handleFileSelect(this, 'n-preview')">
-                        <small id="n-preview" style="color:green; display:none;">Imagen cargada</small>
+
+                    <!-- SUBIDA DE FOTO -->
+                    <div style="margin-top:15px; text-align:center;">
+                        <div id="n-preview-box" class="preview-box" style="display:none;"><img id="n-img-preview" src=""></div>
+                        <div class="upload-btn-wrapper">
+                            <button class="btn-grey" style="width:100%;">📷 ELEGIR FOTO</button>
+                            <input type="file" id="n-file-input" accept="image/*" onchange="app.previewImage(this, 'n-img-preview', 'n-preview-box')">
+                        </div>
                     </div>
 
-                    <button class="btn-green" onclick="app.add()" style="width:100%; margin-top:15px;">Guardar</button>
+                    <button class="btn-green" onclick="app.add()" style="width:100%; margin-top:15px;">Guardar Producto</button>
                     
                     <div style="display:flex; gap:10px; margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
                         <label class="btn-blue" style="flex:1; cursor:pointer; font-size:0.85rem; text-align:center;">
@@ -181,19 +181,19 @@
                 </div>
 
                 <table class="table-responsive">
-                    <thead id="table-head"><tr><th style="width:50px;">Foto</th><th>Producto</th><th>Marca</th><th style="text-align:right;">Precio</th><th style="text-align:center;">+</th></tr></thead>
+                    <thead id="table-head"><tr><th style="width:60px;">Foto</th><th>Producto</th><th>Marca</th><th style="text-align:right;">Precio</th><th style="text-align:center;">+</th></tr></thead>
                     <tbody id="inv-table-body"><tr><td colspan="5" style="text-align:center; padding:30px;">Cargando...</td></tr></tbody>
                 </table>
                 
                 <!-- PAGINACION -->
                 <div class="pagination-container" style="display:flex; justify-content:center; gap:15px; margin-top:20px; padding-top:10px; border-top:1px solid #eee;">
-                    <button class="btn-grey" onclick="app.prevPage()">Anterior</button>
+                    <button class="btn-grey" onclick="app.prevPage()">❮ Anterior</button>
                     <span id="page-info" style="align-self:center; font-weight:bold; color:var(--text-muted);">Pág 1</span>
-                    <button class="btn-grey" onclick="app.nextPage()">Siguiente</button>
+                    <button class="btn-grey" onclick="app.nextPage()">Siguiente ❯</button>
                 </div>
             </div>
 
-            <!-- COTIZADOR -->
+            <!-- COTIZADOR / PEDIDO -->
             <div class="card" style="border-left: 5px solid var(--primary);">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h3 style="margin:0; color:var(--text);" id="cart-title">🛒 Carrito</h3>
@@ -217,6 +217,13 @@
     </div>
 
     <!-- MODALES -->
+    <div id="modalPhoto" class="modal-overlay" onclick="this.style.display='none'">
+        <div class="modal-content modal-img-container" onclick="event.stopPropagation()" style="background:transparent; box-shadow:none;">
+            <img id="img-full" src="" style="border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+            <button class="btn-grey" onclick="document.getElementById('modalPhoto').style.display='none'" style="margin-top:10px; width:100%; background:white;">Cerrar</button>
+        </div>
+    </div>
+
     <div id="modalUsers" class="modal-overlay">
         <div class="modal-content">
             <h3>👥 Gestión de Usuarios</h3>
@@ -225,32 +232,13 @@
                 <input id="u-name" placeholder="Nombre">
                 <div class="form-grid"><input id="u-user" placeholder="Usuario"><input id="u-pass" placeholder="Contraseña"></div>
                 <div class="form-grid">
-                    <select id="u-role">
-                        <option value="cliente">Cliente</option>
-                        <option value="vendedor">Vendedor</option>
-                        <option value="admin">Administrador</option>
-                    </select>
+                    <select id="u-role"><option value="cliente">Cliente</option><option value="vendedor">Vendedor</option><option value="admin">Admin</option></select>
                     <input id="u-disc" type="number" placeholder="% Desc.">
                 </div>
-                <button class="btn-green" onclick="app.createUser()" style="width:100%; margin-top:10px;">Crear Usuario</button>
+                <button class="btn-green" onclick="app.createUser()" style="width:100%; margin-top:10px;">Crear</button>
             </div>
-            <table class="users-table"><tbody id="users-list"></tbody></table>
+            <div id="users-list"></div>
             <button class="btn-grey" onclick="document.getElementById('modalUsers').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
-        </div>
-    </div>
-
-    <div id="modalPhoto" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal-content modal-img-container" onclick="event.stopPropagation()">
-            <img id="img-full" src="" style="max-width:100%;">
-            <button class="btn-grey" onclick="document.getElementById('modalPhoto').style.display='none'" style="margin-top:10px; width:100%;">Cerrar</button>
-        </div>
-    </div>
-
-    <div id="modalOrders" class="modal-overlay">
-        <div class="modal-content">
-            <h3>🔔 Pedidos</h3>
-            <div id="orders-list"></div>
-            <button class="btn-grey" onclick="document.getElementById('modalOrders').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
         </div>
     </div>
 
@@ -258,7 +246,8 @@
         <div class="modal-content">
             <h3>✏️ Editar</h3>
             <input type="hidden" id="edit-id">
-            <input id="e-code" placeholder="Código"> <input id="e-desc" placeholder="Descripción">
+            <input id="e-code" placeholder="Código"> <input id="e-prov" placeholder="Proveedor">
+            <input id="e-desc" placeholder="Descripción">
             <div style="background:#f7fafc; padding:10px; border-radius:8px; margin-top:10px;">
                 <div class="form-grid">
                     <div><label style="font-size:0.7em;">COSTO</label><input id="e-cost" type="number" oninput="app.calcPrice('e')"></div>
@@ -267,10 +256,13 @@
                 <div><label style="font-size:0.7em;">LISTA</label><input id="e-price" type="number" style="background:white; font-weight:bold;"></div>
             </div>
             
-            <div style="margin-top:15px;">
-                <button class="btn-grey" onclick="document.getElementById('e-file-input').click()" style="width:100%; margin-bottom:5px;">📷 Cambiar Foto</button>
-                <input type="file" id="e-file-input" accept="image/*" style="display:none;" onchange="app.handleFileSelect(this, 'e-preview')">
-                <small id="e-preview" style="color:green; display:none;">Imagen seleccionada</small>
+            <!-- FOTO EN EDICION -->
+            <div style="margin-top:15px; text-align:center;">
+                <div id="e-preview-box" class="preview-box" style="display:none;"><img id="e-img-preview" src=""></div>
+                <div class="upload-btn-wrapper">
+                    <button class="btn-grey" style="width:100%;">📷 Cambiar Foto</button>
+                    <input type="file" id="e-file-input" accept="image/*" onchange="app.previewImage(this, 'e-img-preview', 'e-preview-box')">
+                </div>
             </div>
 
             <div style="display:flex; gap:10px; margin-top:20px;">
@@ -294,7 +286,9 @@
     <div id="toast">Notificación</div>
 
     <script>
-        // CONFIGURACIÓN FIREBASE (PEGA TUS CLAVES AQUÍ)
+        // ------------------------------------------------
+        // 1. TUS CLAVES DE FIREBASE
+        // ------------------------------------------------
         const firebaseConfig = {
             apiKey: "AIzaSyBRKQErLOmU98F230oKBJTe7cc9zJjmQP0",
             authDomain: "repuestosdaytona-fd624.firebaseapp.com",
@@ -316,10 +310,10 @@
         } catch (error) { alert("Error Firebase: " + error.message); }
 
         const app = {
-            data: [], cart: [], user: null, userRole: null, clientDiscount: 0, loadedOrders: [],
-            // Paginación
-            currentPage: 1, itemsPerPage: 20, filteredData: [],
+            data: [], cart: [], user: null, userRole: null, clientDiscount: 0, 
+            currentPage: 1, itemsPerPage: 20, filteredData: [], activeTab: 'TODOS', loadedOrders: [],
 
+            // --- LOGIN ---
             login: () => {
                 const u = document.getElementById('user').value.toLowerCase().trim();
                 const p = document.getElementById('pass').value;
@@ -351,24 +345,16 @@
                 app.clientDiscount = Number(userData.descuento) || 0; 
                 
                 document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-content').classList.remove('hidden');
+                document.getElementById('app-content').classList.remove('d-none');
                 document.getElementById('user-display').innerText = userData.nombre || userData.user;
                 document.getElementById('role-display').innerText = app.userRole.toUpperCase();
 
                 if(app.userRole === 'admin') {
-                    // Forzar visibilidad directa
-                    document.getElementById('btn-usuarios').style.display = 'inline-block';
-                    document.getElementById('btn-config').style.display = 'inline-block';
-                    document.getElementById('btn-orders').style.display = 'flex';
-                    
+                    document.querySelectorAll('.admin-only').forEach(e => e.classList.remove('d-none'));
                     const thead = document.querySelector('#table-head tr');
                     if (!thead.innerHTML.includes('Costo')) {
                         const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[3]);
                     }
-                    app.listenOrders();
-                } else if(app.userRole === 'vendedor') {
-                    document.getElementById('btn-orders').style.display = 'flex';
-                    app.listenOrders();
                 } else if(app.userRole === 'cliente') {
                     document.getElementById('cliente').value = userData.nombre;
                     document.getElementById('cliente').disabled = true;
@@ -383,14 +369,20 @@
                 ref.on('value', snap => {
                     const val = snap.val();
                     app.data = val ? Object.keys(val).map(k => ({ id: k, ...val[k] })) : [];
+                    app.renderTabs();
                     app.filter();
                 });
             },
 
             // --- FOTOS ---
-            handleFileSelect: (input, labelId) => {
+            previewImage: (input, imgId, boxId) => {
                 if(input.files && input.files[0]) {
-                    document.getElementById(labelId).style.display = 'block';
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        document.getElementById(imgId).src = e.target.result;
+                        document.getElementById(boxId).style.display = 'flex';
+                    };
+                    reader.readAsDataURL(input.files[0]);
                 }
             },
             compressImage: (file) => {
@@ -402,7 +394,7 @@
                         img.src = event.target.result;
                         img.onload = () => {
                             const canvas = document.createElement('canvas');
-                            const MAX_WIDTH = 600;
+                            const MAX_WIDTH = 500; // Maximo ancho 500px
                             const scaleSize = MAX_WIDTH / img.width;
                             canvas.width = MAX_WIDTH;
                             canvas.height = img.height * scaleSize;
@@ -418,10 +410,24 @@
                 document.getElementById('modalPhoto').style.display = 'flex';
             },
 
-            // --- INVENTARIO PAGINADO ---
+            // --- INVENTARIO & TABS ---
+            renderTabs: () => {
+                const providers = [...new Set(app.data.map(i => i.proveedor || 'General'))].sort();
+                const c = document.getElementById('tabs-container');
+                let h = `<button class="tab-btn ${app.activeTab==='TODOS'?'active':''}" onclick="app.setTab('TODOS')">TODOS</button>`;
+                providers.forEach(p => h += `<button class="tab-btn ${app.activeTab===p?'active':''}" onclick="app.setTab('${p}')">${p}</button>`);
+                c.innerHTML = h;
+            },
+            setTab: (t) => { app.activeTab = t; app.currentPage = 1; app.renderTabs(); app.filter(); },
+
             filter: () => {
                 const t = document.getElementById('search').value.toLowerCase().trim();
-                app.filteredData = app.data.filter(i => (String(i.codigo||'')+String(i.descripcion||'')+String(i.marca||'')).toLowerCase().includes(t));
+                
+                // Filtrar por TAB y luego por TEXTO
+                let f = app.activeTab === 'TODOS' ? app.data : app.data.filter(i => (i.proveedor||'General') === app.activeTab);
+                if(t) f = f.filter(i => (String(i.codigo||'')+String(i.descripcion||'')+String(i.marca||'')).toLowerCase().includes(t));
+                
+                app.filteredData = f;
                 app.currentPage = 1;
                 app.renderInv();
             },
@@ -431,7 +437,6 @@
             renderInv: () => {
                 const tb = document.getElementById('inv-table-body'); tb.innerHTML = '';
                 
-                // Pagination Logic
                 const start = (app.currentPage - 1) * app.itemsPerPage;
                 const end = start + app.itemsPerPage;
                 const pageData = app.filteredData.slice(start, end);
@@ -444,8 +449,10 @@
                     let btn = `<button class="btn-green btn-icon" onclick="app.addToCart('${i.id}')" style="width:36px;height:36px;">+</button>`;
                     let editBtn = '', costCell = '', priceDisplay = '';
                     
+                    // Imagen
                     let imgHtml = i.imagen ? `<img src="${i.imagen}" class="thumb-img" onclick="app.openPhoto('${i.imagen}')">` : `<div class="thumb-placeholder">📷</div>`;
 
+                    // Precio Cliente
                     let priceVal = parseFloat(i.precio);
                     if(app.userRole === 'cliente' && app.clientDiscount > 0) {
                         let discounted = priceVal * (1 - (app.clientDiscount/100));
@@ -473,18 +480,14 @@
             addToCart: (id) => {
                 const i = app.data.find(x => x.id === id);
                 const ex = app.cart.find(c => c.id === id);
-                
                 let price = parseFloat(i.precio);
                 let discount = 0;
-                
                 if(app.userRole === 'cliente' && app.clientDiscount > 0) {
                     discount = app.clientDiscount; 
                     price = Math.round(price * (1 - (app.clientDiscount/100)));
                 }
-
                 if(ex) { ex.cant++; }
                 else app.cart.push({ ...i, precioLista: parseFloat(i.precio), margen: discount, precioFinal: price, cant:1 });
-                
                 app.renderCart(); app.toast("Agregado");
             },
             updateCant: (idx, v) => { app.cart[idx].cant = Math.max(1, parseInt(v)||1); app.renderCart(); },
@@ -500,56 +503,62 @@
                     } else if (app.userRole === 'cliente' && app.clientDiscount > 0) {
                         controls = `<div style="font-size:0.75em; color:var(--success); text-align:right; font-weight:bold;">Desc. aplicado: ${app.clientDiscount}%</div>`;
                     }
-
                     c.innerHTML += `<div class="cart-item"><div class="cart-row-top"><div style="display:flex; align-items:center; gap:8px; width:100%"><input type="number" value="${i.cant}" onchange="app.updateCant(${idx},this.value)" class="input-mini" style="width:40px; font-weight:bold;"><div style="flex:1;"><span class="code-badge" style="font-size:0.7rem">${i.codigo||'-'}</span><div style="font-size:0.9rem;">${i.descripcion}</div></div></div><div style="text-align:right; font-weight:bold;">$${i.cant*i.precioFinal}</div><button class="btn-red btn-icon" onclick="app.cart.splice(${idx},1);app.renderCart()" style="width:28px; height:28px; font-size:10px; margin-left:5px;">✕</button></div>${controls}</div>`;
                 });
                 document.getElementById('float-total').innerText = tot.toLocaleString('es-AR');
             },
             clearCart: () => { if(confirm("¿Limpiar?")) { app.cart=[]; app.renderCart(); } },
 
-            // --- PEDIDOS ---
-            submitOrder: () => {
-                if(app.cart.length===0) return alert("Carrito vacío");
-                const cli = document.getElementById('cliente').value;
-                if(!cli) return alert("Falta nombre del cliente");
-                const total = document.getElementById('float-total').innerText;
-                const pedido = { fecha: new Date().toISOString(), cliente: cli, items: app.cart, total: total, estado: 'pendiente' };
-                ordersRef.push(pedido);
-                app.toast("Pedido Enviado");
-                if(app.userRole === 'cliente') app.shareWhatsApp();
-                app.cart = []; app.renderCart();
+            // --- ADMIN CRUD ---
+            calcPrice: (p) => {
+                const cost = parseFloat(document.getElementById(p+'-cost').value)||0;
+                const marg = parseFloat(document.getElementById(p+'-margin').value)||0;
+                document.getElementById(p+'-price').value = Math.round(cost * (1 + marg/100));
             },
-            listenOrders: () => {
-                ordersRef.on('value', snap => {
-                    const data = snap.val();
-                    let count = 0;
-                    const list = document.getElementById('orders-list'); list.innerHTML = '';
-                    if(data) {
-                        app.loadedOrders = Object.keys(data).map(k => ({id:k, ...data[k]})).reverse();
-                        app.loadedOrders.forEach(o => {
-                            if(o.estado === 'pendiente') count++;
-                            const fecha = new Date(o.fecha).toLocaleString();
-                            list.innerHTML += `<div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}"><div class="order-header"><span>${o.cliente}</span> <span>$${o.total}</span></div><div style="font-size:0.8em; color:#666; margin-bottom:5px;">${fecha}</div><div style="font-size:0.85em;">${o.items ? o.items.length : 0} items</div><div style="display:flex; gap:5px; margin-top:5px;">${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="flex:1; font-size:0.8em;">Visto</button>` : '<small style="color:green; flex:1; align-self:center;">Procesado</small>'}<button class="btn-blue" onclick="app.printOrderPDF('${o.id}')" style="flex:1; font-size:0.8em;">📄 PDF</button></div></div>`;
-                        });
-                    }
-                    const badge = document.getElementById('badge-orders');
-                    badge.innerText = count;
-                    badge.style.display = count > 0 ? 'block' : 'none';
-                });
+            add: async () => {
+                const fileInput = document.getElementById('n-file-input');
+                let imgBase64 = null;
+                if(fileInput.files[0]) {
+                    app.toast("Subiendo foto...");
+                    imgBase64 = await app.compressImage(fileInput.files[0]);
+                }
+                const item = { 
+                    codigo: document.getElementById('n-code').value || '-', proveedor: document.getElementById('n-prov').value || 'Gral', descripcion: document.getElementById('n-desc').value, marca: document.getElementById('n-brand').value || '',
+                    costo: parseFloat(document.getElementById('n-cost').value)||0, margen: parseFloat(document.getElementById('n-margin').value)||0, precio: parseFloat(document.getElementById('n-price').value)||0,
+                    imagen: imgBase64
+                };
+                if(!item.descripcion) return alert("Falta descripción");
+                ref.push(item); app.toast("Guardado");
+                ['n-code','n-desc','n-brand','n-price','n-cost'].forEach(id=>document.getElementById(id).value='');
+                document.getElementById('n-preview-box').style.display='none';
             },
-            markOrder: (id) => { ordersRef.child(id).update({estado: 'visto'}); },
-            printOrderPDF: (id) => {
-                const order = app.loadedOrders.find(o => o.id === id);
-                if(!order) return;
-                const { jsPDF } = window.jspdf; const doc = new jsPDF();
-                doc.setFontSize(18); doc.text("AUTOPARTES NET - PEDIDO", 10, 15);
-                doc.setFontSize(11); doc.text(`Cliente: ${order.cliente}`, 10, 25); doc.text(`Fecha: ${new Date(order.fecha).toLocaleString()}`, 10, 32);
-                const body = (order.items || []).map(c => [c.cant, `${c.codigo||''} ${c.descripcion}`, `$${c.precioFinal}`, `$${c.cant*c.precioFinal}`]);
-                doc.autoTable({ head: [['Cant', 'Descripción', 'Unitario', 'Total']], body: body, startY: 45 });
-                doc.setFontSize(14); doc.text(`TOTAL PEDIDO: $${order.total}`, 10, doc.lastAutoTable.finalY + 15);
-                doc.save(`Pedido_${order.cliente}_${id}.pdf`);
+            saveEdit: async () => {
+                const id = document.getElementById('edit-id').value;
+                const fileInput = document.getElementById('e-file-input');
+                let updates = { 
+                    codigo: document.getElementById('e-code').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, proveedor: document.getElementById('e-prov').value,
+                    costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value) 
+                };
+                if(fileInput.files[0]) {
+                    app.toast("Subiendo foto...");
+                    updates.imagen = await app.compressImage(fileInput.files[0]);
+                }
+                ref.child(id).update(updates);
+                document.getElementById('modalEdicion').style.display='none'; app.toast("Actualizado");
             },
-            openOrdersModal: () => { document.getElementById('modalOrders').style.display='flex'; },
+            edit: (id) => {
+                const i = app.data.find(x=>x.id===id);
+                document.getElementById('edit-id').value = id; document.getElementById('e-code').value = i.codigo; document.getElementById('e-desc').value = i.descripcion; document.getElementById('e-brand').value = i.marca; document.getElementById('e-prov').value = i.proveedor || 'General';
+                document.getElementById('e-cost').value = i.costo||0; document.getElementById('e-margin').value = i.margen||0; document.getElementById('e-price').value = i.precio;
+                if(i.imagen) {
+                    document.getElementById('e-img-preview').src = i.imagen;
+                    document.getElementById('e-preview-box').style.display = 'flex';
+                } else {
+                    document.getElementById('e-preview-box').style.display = 'none';
+                }
+                document.getElementById('modalEdicion').style.display='flex';
+            },
+            delFromModal: () => { if(confirm("¿Eliminar?")) { ref.child(document.getElementById('edit-id').value).remove(); document.getElementById('modalEdicion').style.display='none'; } },
 
             // --- USUARIOS ---
             openUsersModal: () => { document.getElementById('modalUsers').style.display = 'flex'; app.loadUsersList(); },
@@ -562,7 +571,7 @@
                             const u = users[key];
                             const badge = u.role === 'admin' ? 'btn-purple' : (u.role === 'cliente' ? 'btn-orange' : 'btn-blue');
                             let info = u.role === 'cliente' ? `<br><small style="color:green">Desc: ${u.descuento}%</small>` : '';
-                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
+                            list.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><div><b>${u.nombre}</b><br><small>${u.user}</small>${info}</div><div style="display:flex; align-items:center; gap:10px;"><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></div></div>`;
                         });
                     }
                 });
@@ -574,59 +583,13 @@
                 const role = document.getElementById('u-role').value;
                 const disc = parseInt(document.getElementById('u-disc').value) || 0;
                 if(!name || !user || !pass) return alert("Faltan datos");
-                
                 usersRef.push({ nombre: name, user: user, pass: pass, role: role, descuento: disc });
                 app.toast("Usuario Creado");
                 document.getElementById('u-name').value = ''; document.getElementById('u-user').value = ''; document.getElementById('u-pass').value = '';
             },
             deleteUser: (key) => { if(confirm("¿Eliminar?")) usersRef.child(key).remove(); },
 
-            // --- ADMIN (CRUD) ---
-            calcPrice: (p) => {
-                const cost = parseFloat(document.getElementById(p+'-cost').value)||0;
-                const marg = parseFloat(document.getElementById(p+'-margin').value)||0;
-                document.getElementById(p+'-price').value = Math.round(cost * (1 + marg/100));
-            },
-            add: async () => {
-                const fileInput = document.getElementById('n-file-input');
-                let imgBase64 = null;
-                if(fileInput.files[0]) {
-                    app.toast("Procesando imagen...");
-                    imgBase64 = await app.compressImage(fileInput.files[0]);
-                }
-
-                const item = { 
-                    codigo: document.getElementById('n-code').value || '-', proveedor: document.getElementById('n-prov').value || 'Gral', descripcion: document.getElementById('n-desc').value, marca: document.getElementById('n-brand').value || '',
-                    costo: parseFloat(document.getElementById('n-cost').value)||0, margen: parseFloat(document.getElementById('n-margin').value)||0, precio: parseFloat(document.getElementById('n-price').value)||0,
-                    imagen: imgBase64
-                };
-                if(!item.descripcion) return alert("Falta descripción");
-                ref.push(item); app.toast("Guardado");
-                ['n-code','n-desc','n-brand','n-price','n-cost'].forEach(id=>document.getElementById(id).value='');
-                document.getElementById('n-preview').style.display = 'none';
-            },
-            saveEdit: async () => {
-                const id = document.getElementById('edit-id').value;
-                const fileInput = document.getElementById('e-file-input');
-                let updates = { 
-                    codigo: document.getElementById('e-code').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, 
-                    costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value) 
-                };
-                if(fileInput.files[0]) {
-                    app.toast("Procesando imagen...");
-                    updates.imagen = await app.compressImage(fileInput.files[0]);
-                }
-                ref.child(id).update(updates);
-                document.getElementById('modalEdicion').style.display='none'; app.toast("Actualizado");
-            },
-            edit: (id) => {
-                const i = app.data.find(x=>x.id===id);
-                document.getElementById('edit-id').value = id; document.getElementById('e-code').value = i.codigo; document.getElementById('e-desc').value = i.descripcion; document.getElementById('e-brand').value = i.marca;
-                document.getElementById('e-cost').value = i.costo||0; document.getElementById('e-margin').value = i.margen||0; document.getElementById('e-price').value = i.precio;
-                document.getElementById('e-preview').innerText = i.imagen ? "Tiene imagen actual" : "";
-                document.getElementById('modalEdicion').style.display='flex';
-            },
-            delFromModal: () => { if(confirm("¿Eliminar?")) { ref.child(document.getElementById('edit-id').value).remove(); document.getElementById('modalEdicion').style.display='none'; } },
+            // OTROS
             uploadExcel: (input) => {
                 const f = input.files[0]; if(!f) return;
                 const r = new FileReader();
@@ -656,13 +619,15 @@
                 app.data.forEach(i => { if((i.proveedor||'General') === prov) { const newCost = (i.costo || 0) * factor; const newSale = newCost * (1 + (i.margen||0)/100); ref.child(i.id).update({ costo: Math.round(newCost), precio: Math.round(newSale) }); } });
                 app.toast("Actualizado"); document.getElementById('modalBulk').style.display = 'none';
             },
-            shareWhatsApp: () => {
-                if(app.cart.length===0) return alert("Vacio");
-                const cli = document.getElementById('cliente').value || "Cliente";
-                let msg = `*PEDIDO AUTOPARTES NET*\n👤 ${cli}\n\n`;
-                app.cart.forEach(c => msg += `▪ [${c.codigo}] ${c.descripcion}\n   ${c.cant} x $${c.precioFinal}\n`);
-                msg += `\n*TOTAL: $${document.getElementById('float-total').innerText}*`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+            submitOrder: () => {
+                if(app.cart.length===0) return alert("Carrito vacío");
+                const cli = document.getElementById('cliente').value;
+                const total = document.getElementById('float-total').innerText;
+                const pedido = { fecha: new Date().toISOString(), cliente: cli, items: app.cart, total: total, estado: 'pendiente' };
+                ordersRef.push(pedido);
+                app.toast("Pedido Enviado");
+                if(app.userRole === 'cliente') app.shareWhatsApp();
+                app.cart = []; app.renderCart();
             },
             printPDF: () => {
                 if(app.cart.length===0) return alert("Vacio");
@@ -679,4 +644,5 @@
     </script>
 </body>
 </html>
+
 
