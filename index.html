@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V21.1</title>
+    <title>Autopartes Net - V22 Clientes</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -136,7 +136,7 @@
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
                 
-                <!-- BOTONES ADMIN -->
+                <!-- BOTONES ADMIN (ESTILOS INLINE PARA FORZAR VISIBILIDAD) -->
                 <button id="btn-usuarios" class="btn-purple" onclick="app.openUsersModal()" title="Usuarios" style="display:none;">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
@@ -183,7 +183,14 @@
                 </div>
 
                 <table class="table-responsive">
-                    <thead id="table-head"><tr><th>Producto</th><th>Marca</th><th style="text-align:right;">Precio</th><th style="text-align:center;">+</th></tr></thead>
+                    <thead id="table-head">
+                        <tr>
+                            <th style="width:40%;">Descripción / Código</th>
+                            <th style="width:20%;">Marca / Prov</th>
+                            <th style="text-align:right; width:15%;">Precio</th>
+                            <th style="text-align:center; width:10%;">+</th>
+                        </tr>
+                    </thead>
                     <tbody id="inv-table-body"><tr><td colspan="4" style="text-align:center; padding:30px;">Cargando...</td></tr></tbody>
                 </table>
                 
@@ -288,7 +295,6 @@
     <div id="toast">Notificación</div>
 
     <script>
-        // 1. CONFIGURACIÓN FIREBASE
         const TELEFONO_EMPRESA = "5491169564080";
         
         const firebaseConfig = {
@@ -366,6 +372,10 @@
                 } else if(app.userRole === 'cliente') {
                     document.getElementById('cliente').value = userData.nombre;
                     document.getElementById('cliente').disabled = true;
+                    
+                    // OCULTAR TABS PARA CLIENTES
+                    document.getElementById('tabs-container').style.display = 'none';
+                    
                     if(app.clientDiscount > 0) {
                         document.getElementById('client-discount-display').style.display = 'block';
                         document.getElementById('client-discount-display').innerText = `Tu Descuento: ${app.clientDiscount}%`;
@@ -377,12 +387,16 @@
                 ref.on('value', snap => {
                     const val = snap.val();
                     app.data = val ? Object.keys(val).map(k => ({ id: k, ...val[k] })) : [];
-                    app.renderTabs();
+                    
+                    // Si es cliente, no renderizamos tabs, solo inventario
+                    if(app.userRole !== 'cliente') {
+                        app.renderTabs();
+                    }
                     app.filter();
                 });
             },
 
-            // --- INVENTARIO & TABS ---
+            // --- INVENTARIO ---
             renderTabs: () => {
                 const providers = [...new Set(app.data.map(i => i.proveedor || 'General'))].sort();
                 const c = document.getElementById('tabs-container');
@@ -393,15 +407,21 @@
             setTab: (t) => { app.activeTab = t; app.currentPage = 1; app.renderTabs(); app.filter(); },
             filter: () => {
                 const t = document.getElementById('search').value.toLowerCase().trim();
-                let f = app.activeTab === 'TODOS' ? app.data : app.data.filter(i => (i.proveedor||'General') === app.activeTab);
+                
+                // Filtro por TAB (Ignorar si es cliente, siempre es TODOS)
+                let f = app.data;
+                if (app.userRole !== 'cliente' && app.activeTab !== 'TODOS') {
+                    f = app.data.filter(i => (i.proveedor||'General') === app.activeTab);
+                }
+
                 if(t) f = f.filter(i => (String(i.codigo||'')+String(i.descripcion||'')+String(i.marca||'')).toLowerCase().includes(t));
+                
                 app.filteredData = f;
                 app.currentPage = 1;
                 app.renderInv();
             },
             prevPage: () => { if(app.currentPage > 1) { app.currentPage--; app.renderInv(); } },
             nextPage: () => { if(app.currentPage < Math.ceil(app.filteredData.length / app.itemsPerPage)) { app.currentPage++; app.renderInv(); } },
-
             renderInv: () => {
                 const tb = document.getElementById('inv-table-body'); tb.innerHTML = '';
                 const start = (app.currentPage - 1) * app.itemsPerPage;
@@ -527,7 +547,7 @@
                             const u = users[key];
                             const badge = u.role === 'admin' ? 'btn-purple' : (u.role === 'cliente' ? 'btn-orange' : 'btn-blue');
                             let info = u.role === 'cliente' ? `<br><small style="color:green">Desc: ${u.descuento}%</small>` : '';
-                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span class="role-badge ${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
+                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
                         });
                     }
                 });
@@ -619,7 +639,6 @@
                 if(app.cart.length===0) return alert("Vacio");
                 let targetNumber = TELEFONO_EMPRESA;
                 if (app.userRole === 'admin') targetNumber = ""; 
-                
                 let msg = `*PEDIDO AUTOPARTES NET*\n👤 ${document.getElementById('cliente').value||'Cliente'}\n\n`;
                 app.cart.forEach(c => msg += `▪ [${c.codigo}] ${c.descripcion}\n   ${c.cant} x $${c.precioFinal}\n`);
                 msg += `\n*TOTAL: $${document.getElementById('float-total').innerText}*`;
@@ -640,4 +659,3 @@
     </script>
 </body>
 </html>
-
