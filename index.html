@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V22 Tabla</title>
+    <title>Autopartes Net - V21.1</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -56,8 +56,8 @@
 
         /* TABLE & CART */
         .table-responsive { width: 100%; border-collapse: collapse; }
-        .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
-        .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 0.95rem; }
+        .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+        .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
         
         @media (max-width: 768px) {
             .table-responsive thead { display: none; } 
@@ -95,6 +95,8 @@
         .users-table td { padding: 10px; border-bottom: 1px solid #eee; }
         .order-card { border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #fff; }
         .pagination-container { display: flex; justify-content: center; gap: 10px; margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--border); }
+        .role-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.7em; color: white; text-transform: uppercase; }
+        .bg-admin { background: var(--role-admin); } .bg-seller { background: #4299e1; } .bg-client { background: var(--role-client); }
 
         /* LOGIN SCREEN */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px; }
@@ -107,7 +109,7 @@
     <div id="login-screen">
         <div class="card-login">
             <h2 style="color:var(--primary); margin:0 0 10px 0;">AUTOPARTES NET</h2>
-            <p style="color:var(--text-muted);">Portal de Clientes & Gestión</p>
+            <p style="color:var(--text-muted);">Portal de Gestión</p>
             <input type="text" id="user" placeholder="Usuario" autocomplete="off">
             <input type="password" id="pass" placeholder="Contraseña">
             <button id="btn-ingresar" class="btn-blue" onclick="app.login()" style="width: 100%; margin-top: 20px;">INGRESAR</button>
@@ -134,7 +136,7 @@
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
                 
-                <!-- BOTONES ADMIN (ESTILOS INLINE PARA FORZAR VISIBILIDAD) -->
+                <!-- BOTONES ADMIN -->
                 <button id="btn-usuarios" class="btn-purple" onclick="app.openUsersModal()" title="Usuarios" style="display:none;">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
@@ -171,7 +173,6 @@
                         </div>
                     </div>
                     <button class="btn-green" onclick="app.add()" style="width:100%; margin-top:15px;">Guardar Producto</button>
-                    
                     <div style="display:flex; gap:10px; margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
                         <label class="btn-blue" style="flex:1; cursor:pointer; font-size:0.85rem; text-align:center;">
                             📂 Excel <input type="file" onchange="app.uploadExcel(this)" style="display:none;">
@@ -182,14 +183,7 @@
                 </div>
 
                 <table class="table-responsive">
-                    <thead id="table-head">
-                        <tr>
-                            <th style="width:40%;">Descripción / Código</th>
-                            <th style="width:20%;">Marca / Prov</th>
-                            <th style="text-align:right; width:15%;">Precio</th>
-                            <th style="text-align:center; width:10%;">+</th>
-                        </tr>
-                    </thead>
+                    <thead id="table-head"><tr><th>Producto</th><th>Marca</th><th style="text-align:right;">Precio</th><th style="text-align:center;">+</th></tr></thead>
                     <tbody id="inv-table-body"><tr><td colspan="4" style="text-align:center; padding:30px;">Cargando...</td></tr></tbody>
                 </table>
                 
@@ -294,7 +288,9 @@
     <div id="toast">Notificación</div>
 
     <script>
-        // CONFIGURACIÓN FIREBASE (PEGA TUS CLAVES AQUÍ)
+        // 1. CONFIGURACIÓN FIREBASE
+        const TELEFONO_EMPRESA = "5491169564080";
+        
         const firebaseConfig = {
             apiKey: "AIzaSyBRKQErLOmU98F230oKBJTe7cc9zJjmQP0",
             authDomain: "repuestosdaytona-fd624.firebaseapp.com",
@@ -361,7 +357,7 @@
                     
                     const thead = document.querySelector('#table-head tr');
                     if (!thead.innerHTML.includes('Costo')) {
-                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[3]); // Col 3 es Precio
+                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[3]);
                     }
                     app.listenOrders();
                 } else if(app.userRole === 'vendedor') {
@@ -386,7 +382,7 @@
                 });
             },
 
-            // --- INVENTARIO ---
+            // --- INVENTARIO & TABS ---
             renderTabs: () => {
                 const providers = [...new Set(app.data.map(i => i.proveedor || 'General'))].sort();
                 const c = document.getElementById('tabs-container');
@@ -395,7 +391,6 @@
                 c.innerHTML = h;
             },
             setTab: (t) => { app.activeTab = t; app.currentPage = 1; app.renderTabs(); app.filter(); },
-            
             filter: () => {
                 const t = document.getElementById('search').value.toLowerCase().trim();
                 let f = app.activeTab === 'TODOS' ? app.data : app.data.filter(i => (i.proveedor||'General') === app.activeTab);
@@ -436,7 +431,7 @@
                     
                     tb.innerHTML += `<tr>
                         <td><span class="code-badge">${i.codigo||'-'}</span><div style="font-weight:600; color:var(--text); margin-top:4px;">${i.descripcion}</div></td>
-                        <td><b>${i.marca||''}</b><br><small class="prov-badge">${i.proveedor||'Gral'}</small></td>
+                        <td><span class="prov-badge">${i.proveedor||'Gral'}</span><br><small style="color:#718096">${i.marca||''}</small></td>
                         ${costCell}
                         <td style="text-align:right; font-weight:bold; color:var(--text);">${priceDisplay}</td>
                         <td style="text-align:center;">${editBtn}${btn}</td>
@@ -532,7 +527,7 @@
                             const u = users[key];
                             const badge = u.role === 'admin' ? 'btn-purple' : (u.role === 'cliente' ? 'btn-orange' : 'btn-blue');
                             let info = u.role === 'cliente' ? `<br><small style="color:green">Desc: ${u.descuento}%</small>` : '';
-                            list.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><div><b>${u.nombre}</b><br><small>${u.user}</small>${info}</div><div style="display:flex; align-items:center; gap:10px;"><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></div></div>`;
+                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span class="role-badge ${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
                         });
                     }
                 });
@@ -569,7 +564,8 @@
             },
             edit: (id) => {
                 const i = app.data.find(x=>x.id===id);
-                document.getElementById('edit-id').value = id; document.getElementById('e-code').value = i.codigo; document.getElementById('e-prov').value = i.proveedor || 'General'; document.getElementById('e-desc').value = i.descripcion; document.getElementById('e-brand').value = i.marca; document.getElementById('e-cost').value = i.costo||0; document.getElementById('e-margin').value = i.margen||0; document.getElementById('e-price').value = i.precio;
+                document.getElementById('edit-id').value = id; document.getElementById('e-code').value = i.codigo; document.getElementById('e-prov').value = i.proveedor || 'General'; document.getElementById('e-desc').value = i.descripcion; document.getElementById('e-brand').value = i.marca;
+                document.getElementById('e-cost').value = i.costo||0; document.getElementById('e-margin').value = i.margen||0; document.getElementById('e-price').value = i.precio;
                 document.getElementById('modalEdicion').style.display='flex';
             },
             delFromModal: () => { if(confirm("¿Eliminar?")) { ref.child(document.getElementById('edit-id').value).remove(); document.getElementById('modalEdicion').style.display='none'; } },
@@ -621,11 +617,13 @@
             },
             shareWhatsApp: () => {
                 if(app.cart.length===0) return alert("Vacio");
-                const cli = document.getElementById('cliente').value || "Cliente";
-                let msg = `*PEDIDO AUTOPARTES NET*\n👤 ${cli}\n\n`;
+                let targetNumber = TELEFONO_EMPRESA;
+                if (app.userRole === 'admin') targetNumber = ""; 
+                
+                let msg = `*PEDIDO AUTOPARTES NET*\n👤 ${document.getElementById('cliente').value||'Cliente'}\n\n`;
                 app.cart.forEach(c => msg += `▪ [${c.codigo}] ${c.descripcion}\n   ${c.cant} x $${c.precioFinal}\n`);
                 msg += `\n*TOTAL: $${document.getElementById('float-total').innerText}*`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+                window.open(`https://wa.me/${targetNumber}?text=${encodeURIComponent(msg)}`, '_blank');
             },
             printPDF: () => {
                 if(app.cart.length===0) return alert("Vacio");
@@ -642,5 +640,4 @@
     </script>
 </body>
 </html>
-
 
