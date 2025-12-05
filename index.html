@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V18 Multimedia</title>
+    <title>Autopartes Net - V19 Estabilidad</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <!-- FIREBASE -->
+    <!-- FIREBASE (Versión Estable) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -41,7 +41,7 @@
 
         /* INPUTS & BTNS */
         input, select { width: 100%; padding: 12px 15px; margin: 5px 0; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; outline: none; background: #fcfcfc; transition: border-color 0.3s; }
-        input:focus, select:focus { border-color: var(--primary); background: white; }
+        input:focus { border-color: var(--primary); background: white; }
         button { padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; display: inline-flex; justify-content: center; align-items: center; gap: 6px; color:white; transition: 0.2s; }
         button:active { transform: scale(0.98); }
         .btn-blue { background: var(--primary); } .btn-green { background: var(--success); } 
@@ -50,23 +50,16 @@
         .btn-orange { background: var(--role-client); }
 
         /* UTILS */
-        .d-none { display: none !important; }
-        .admin-only { display: none !important; } 
+        .hidden { display: none !important; }
 
         /* LOGIN */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px; }
         .card-login { background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 360px; text-align: center; box-shadow: 0 10px 25px rgba(49, 151, 149, 0.15); }
 
-        /* TABLA & PAGINACION */
+        /* TABLA & CART */
         .table-responsive { width: 100%; border-collapse: collapse; }
         .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
         .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-        
-        .pagination-container { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--border); }
-        .page-btn { background: white; border: 1px solid var(--border); color: var(--text); padding: 8px 15px; border-radius: 8px; cursor: pointer; }
-        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .page-info { font-size: 0.9em; color: var(--text-muted); font-weight: 500; }
-
         @media (max-width: 768px) {
             .table-responsive thead { display: none; } 
             .table-responsive tr { display: block; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 12px; padding: 15px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
@@ -81,7 +74,7 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 55, 72, 0.4); backdrop-filter: blur(3px); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .modal-img-container { text-align: center; }
-        .modal-img-container img { max-width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .modal-img-container img { max-width: 100%; max-height: 80vh; border-radius: 8px; }
 
         .floating-total { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); border-top: 1px solid var(--border); padding: 15px 20px; justify-content: space-between; align-items: center; z-index: 100; box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05); }
         @media (max-width: 768px) { .floating-total { display: flex; } }
@@ -90,16 +83,20 @@
         .form-grid input { flex: 1; min-width: 120px; }
         #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #2d3748; color: white; padding: 12px 24px; border-radius: 30px; display: none; z-index: 4000; font-weight:500; }
         
+        /* ESTILOS DE PRECIOS Y BADGES */
         .order-card { border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #fff; }
         .code-badge { background: #e6fffa; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; padding: 3px 8px; border-radius: 6px; display: inline-block; border: 1px solid #b2f5ea; margin-right: 5px;}
         .cost-field { color: var(--cost-color); font-size: 0.85em; font-weight: bold; background: #fff5f7; padding: 3px 6px; border-radius: 4px; }
+        .users-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .users-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        
         .price-old { text-decoration: line-through; color: #a0aec0; font-size: 0.85em; margin-right: 5px; }
         .price-new { color: var(--success); font-weight: 800; font-size: 1.1em; }
         .discount-tag { background: #c6f6d5; color: #22543d; font-size: 0.65em; padding: 2px 5px; border-radius: 4px; font-weight: bold; vertical-align: middle; margin-left: 5px; }
         
-        /* Thumbnail Foto */
-        .thumb-img { width: 35px; height: 35px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid #ddd; }
-        .thumb-placeholder { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 6px; color: #ccc; font-size: 0.8em; }
+        /* Thumbnails */
+        .thumb-img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; }
+        .thumb-placeholder { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 6px; color: #ccc; font-size: 1.2em; }
     </style>
 </head>
 <body>
@@ -108,7 +105,7 @@
     <div id="login-screen">
         <div class="card-login">
             <h2 style="color:var(--primary); margin:0 0 10px 0;">AUTOPARTES NET</h2>
-            <p style="color:var(--text-muted);">Portal de Clientes & Gestión</p>
+            <p style="color:var(--text-muted);">Acceso Seguro</p>
             <input type="text" id="user" placeholder="Usuario" autocomplete="off">
             <input type="password" id="pass" placeholder="Contraseña">
             <button id="btn-ingresar" class="btn-blue" onclick="app.login()" style="width: 100%; margin-top: 20px;">INGRESAR</button>
@@ -117,15 +114,15 @@
     </div>
 
     <!-- APP -->
-    <div id="app-content" class="d-none">
+    <div id="app-content" class="hidden">
         <header class="header-app">
             <div>
                 <h1 style="font-size:1.4rem; color:var(--primary); margin:0;">AUTOPARTES NET</h1>
                 <div style="font-size:0.75rem; color:var(--text-muted); font-weight:500;">Sistema Online</div>
             </div>
             <div style="text-align:right; display:flex; gap:10px; align-items:center;">
-                <!-- ALERTA DE PEDIDOS -->
-                <div class="notification-btn d-none" onclick="app.openOrdersModal()" id="btn-orders" title="Ver Pedidos">
+                <!-- NOTIFICACIONES -->
+                <div class="notification-btn" onclick="app.openOrdersModal()" id="btn-orders" style="display:none;">
                     <span style="font-size:1.5rem;">🔔</span>
                     <span id="badge-orders" class="badge-count">0</span>
                 </div>
@@ -135,7 +132,8 @@
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
                 
-                <button id="btn-usuarios" class="btn-purple admin-only d-none" onclick="app.openUsersModal()" title="Usuarios">👥</button>
+                <!-- BOTONES ADMIN (ESTILOS INLINE PARA FORZAR VISIBILIDAD) -->
+                <button id="btn-usuarios" class="btn-purple" onclick="app.openUsersModal()" title="Usuarios" style="display:none;">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
         </header>
@@ -150,11 +148,11 @@
 
                 <div style="display:flex; gap:10px; margin-bottom:20px;">
                     <input id="search" placeholder="🔍 Buscar repuesto..." onkeyup="app.filter()" style="margin:0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                    <button id="btn-config" class="btn-grey admin-only d-none" onclick="document.getElementById('admin-panel').classList.toggle('d-none')">⚙️</button>
+                    <button id="btn-config" class="btn-grey" onclick="document.getElementById('admin-panel').classList.toggle('hidden')" style="display:none;">⚙️</button>
                 </div>
 
-                <!-- PANEL ADMIN (CON FOTO) -->
-                <div id="admin-panel" class="d-none" style="background:#f7fafc; padding:20px; border-radius:12px; margin-bottom:25px; border:1px dashed var(--border);">
+                <!-- PANEL ADMIN -->
+                <div id="admin-panel" class="hidden" style="background:#f7fafc; padding:20px; border-radius:12px; margin-bottom:25px; border:1px dashed var(--border);">
                     <h4 style="margin:0 0 15px 0; color:var(--primary);">Agregar Producto</h4>
                     <div class="form-grid"><input id="n-code" placeholder="CÓDIGO"><input id="n-prov" placeholder="PROVEEDOR"></div>
                     <div class="form-grid"><input id="n-desc" placeholder="Descripción" style="flex:2;"><input id="n-brand" placeholder="Marca"></div>
@@ -167,34 +165,35 @@
                     </div>
                     
                     <div style="margin-top:15px;">
-                        <label class="btn-blue" style="cursor:pointer; display:inline-block; font-size:0.9em;">
-                            📷 Seleccionar Foto
-                            <input type="file" id="n-img-file" accept="image/*" style="display:none;" onchange="app.previewImage(this, 'n-preview')">
-                        </label>
-                        <span id="n-preview" style="margin-left:10px; font-size:0.8em; color:green;"></span>
+                        <button class="btn-grey" onclick="document.getElementById('n-file-input').click()" style="width:100%; margin-bottom:5px;">📷 Subir Foto</button>
+                        <input type="file" id="n-file-input" accept="image/*" style="display:none;" onchange="app.handleFileSelect(this, 'n-preview')">
+                        <small id="n-preview" style="color:green; display:none;">Imagen cargada</small>
                     </div>
 
                     <button class="btn-green" onclick="app.add()" style="width:100%; margin-top:15px;">Guardar</button>
+                    
                     <div style="display:flex; gap:10px; margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
-                        <label class="btn-blue" style="flex:1; cursor:pointer; font-size:0.85rem; text-align:center;">📂 Excel <input type="file" onchange="app.uploadExcel(this)" style="display:none;"></label>
+                        <label class="btn-blue" style="flex:1; cursor:pointer; font-size:0.85rem; text-align:center;">
+                            📂 Excel <input type="file" onchange="app.uploadExcel(this)" style="display:none;">
+                        </label>
                         <button class="btn-red" onclick="app.openBulkUpdate()" style="flex:1; font-size:0.85rem;">📈 Aumentos</button>
                     </div>
                 </div>
 
                 <table class="table-responsive">
-                    <thead id="table-head"><tr><th>Foto</th><th>Producto</th><th>Marca</th><th style="text-align:right;">Precio</th><th style="text-align:center;">+</th></tr></thead>
+                    <thead id="table-head"><tr><th style="width:50px;">Foto</th><th>Producto</th><th>Marca</th><th style="text-align:right;">Precio</th><th style="text-align:center;">+</th></tr></thead>
                     <tbody id="inv-table-body"><tr><td colspan="5" style="text-align:center; padding:30px;">Cargando...</td></tr></tbody>
                 </table>
                 
                 <!-- PAGINACION -->
-                <div class="pagination-container">
-                    <button class="page-btn" onclick="app.prevPage()">❮ Anterior</button>
-                    <span id="page-info" class="page-info">Pág 1</span>
-                    <button class="page-btn" onclick="app.nextPage()">Siguiente ❯</button>
+                <div class="pagination-container" style="display:flex; justify-content:center; gap:15px; margin-top:20px; padding-top:10px; border-top:1px solid #eee;">
+                    <button class="btn-grey" onclick="app.prevPage()">Anterior</button>
+                    <span id="page-info" style="align-self:center; font-weight:bold; color:var(--text-muted);">Pág 1</span>
+                    <button class="btn-grey" onclick="app.nextPage()">Siguiente</button>
                 </div>
             </div>
 
-            <!-- COTIZADOR / PEDIDO -->
+            <!-- COTIZADOR -->
             <div class="card" style="border-left: 5px solid var(--primary);">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h3 style="margin:0; color:var(--text);" id="cart-title">🛒 Carrito</h3>
@@ -217,36 +216,39 @@
         <button class="btn-whatsapp" onclick="app.submitOrder()" style="padding:10px 20px; border-radius:20px;">Enviar 📲</button>
     </div>
 
-    <!-- MODAL FOTO -->
-    <div id="modalPhoto" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal-content modal-img-container" onclick="event.stopPropagation()">
-            <img id="img-full" src="" alt="Foto Producto">
-            <button class="btn-grey" onclick="document.getElementById('modalPhoto').style.display='none'" style="margin-top:15px; width:100%;">Cerrar</button>
-        </div>
-    </div>
-
-    <!-- MODALES DE GESTION (USUARIOS, PEDIDOS, EDITAR) -->
+    <!-- MODALES -->
     <div id="modalUsers" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-top:0; color:var(--primary);">👥 Gestión de Usuarios</h3>
+            <h3>👥 Gestión de Usuarios</h3>
             <div style="background:#f7fafc; padding:15px; border-radius:10px; margin-bottom:15px;">
-                <h4 style="margin:0 0 10px 0;">Nuevo</h4>
+                <h4 style="margin:0 0 10px 0;">Crear Nuevo</h4>
                 <input id="u-name" placeholder="Nombre">
                 <div class="form-grid"><input id="u-user" placeholder="Usuario"><input id="u-pass" placeholder="Contraseña"></div>
                 <div class="form-grid">
-                    <select id="u-role"><option value="cliente">Cliente</option><option value="vendedor">Vendedor</option><option value="admin">Admin</option></select>
+                    <select id="u-role">
+                        <option value="cliente">Cliente</option>
+                        <option value="vendedor">Vendedor</option>
+                        <option value="admin">Administrador</option>
+                    </select>
                     <input id="u-disc" type="number" placeholder="% Desc.">
                 </div>
-                <button class="btn-green" onclick="app.createUser()" style="width:100%; margin-top:10px;">Crear</button>
+                <button class="btn-green" onclick="app.createUser()" style="width:100%; margin-top:10px;">Crear Usuario</button>
             </div>
-            <div id="users-list"></div>
+            <table class="users-table"><tbody id="users-list"></tbody></table>
             <button class="btn-grey" onclick="document.getElementById('modalUsers').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="modalPhoto" class="modal-overlay" onclick="this.style.display='none'">
+        <div class="modal-content modal-img-container" onclick="event.stopPropagation()">
+            <img id="img-full" src="" style="max-width:100%;">
+            <button class="btn-grey" onclick="document.getElementById('modalPhoto').style.display='none'" style="margin-top:10px; width:100%;">Cerrar</button>
         </div>
     </div>
 
     <div id="modalOrders" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-top:0; color:var(--primary);">🔔 Pedidos</h3>
+            <h3>🔔 Pedidos</h3>
             <div id="orders-list"></div>
             <button class="btn-grey" onclick="document.getElementById('modalOrders').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
         </div>
@@ -266,11 +268,9 @@
             </div>
             
             <div style="margin-top:15px;">
-                <label class="btn-blue" style="cursor:pointer; display:inline-block; font-size:0.9em; width:100%; text-align:center;">
-                    📷 Cambiar Foto
-                    <input type="file" id="e-img-file" accept="image/*" style="display:none;" onchange="app.previewImage(this, 'e-preview')">
-                </label>
-                <div id="e-preview" style="text-align:center; margin-top:5px; font-size:0.8em; color:green;"></div>
+                <button class="btn-grey" onclick="document.getElementById('e-file-input').click()" style="width:100%; margin-bottom:5px;">📷 Cambiar Foto</button>
+                <input type="file" id="e-file-input" accept="image/*" style="display:none;" onchange="app.handleFileSelect(this, 'e-preview')">
+                <small id="e-preview" style="color:green; display:none;">Imagen seleccionada</small>
             </div>
 
             <div style="display:flex; gap:10px; margin-top:20px;">
@@ -294,6 +294,7 @@
     <div id="toast">Notificación</div>
 
     <script>
+        // CONFIGURACIÓN FIREBASE (PEGA TUS CLAVES AQUÍ)
         const firebaseConfig = {
             apiKey: "AIzaSyBRKQErLOmU98F230oKBJTe7cc9zJjmQP0",
             authDomain: "repuestosdaytona-fd624.firebaseapp.com",
@@ -316,10 +317,9 @@
 
         const app = {
             data: [], cart: [], user: null, userRole: null, clientDiscount: 0, loadedOrders: [],
-            // PAGINACIÓN
+            // Paginación
             currentPage: 1, itemsPerPage: 20, filteredData: [],
 
-            // --- LOGIN ---
             login: () => {
                 const u = document.getElementById('user').value.toLowerCase().trim();
                 const p = document.getElementById('pass').value;
@@ -351,16 +351,23 @@
                 app.clientDiscount = Number(userData.descuento) || 0; 
                 
                 document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-content').classList.remove('d-none');
+                document.getElementById('app-content').classList.remove('hidden');
                 document.getElementById('user-display').innerText = userData.nombre || userData.user;
                 document.getElementById('role-display').innerText = app.userRole.toUpperCase();
 
                 if(app.userRole === 'admin') {
-                    document.querySelectorAll('.admin-only').forEach(e => e.classList.remove('d-none'));
+                    // Forzar visibilidad directa
+                    document.getElementById('btn-usuarios').style.display = 'inline-block';
+                    document.getElementById('btn-config').style.display = 'inline-block';
+                    document.getElementById('btn-orders').style.display = 'flex';
+                    
                     const thead = document.querySelector('#table-head tr');
                     if (!thead.innerHTML.includes('Costo')) {
-                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[3]); // Despues de marca
+                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[3]);
                     }
+                    app.listenOrders();
+                } else if(app.userRole === 'vendedor') {
+                    document.getElementById('btn-orders').style.display = 'flex';
                     app.listenOrders();
                 } else if(app.userRole === 'cliente') {
                     document.getElementById('cliente').value = userData.nombre;
@@ -380,13 +387,12 @@
                 });
             },
 
-            // --- IMAGENES ---
-            previewImage: (input, labelId) => {
+            // --- FOTOS ---
+            handleFileSelect: (input, labelId) => {
                 if(input.files && input.files[0]) {
-                    document.getElementById(labelId).innerText = "Imagen seleccionada";
+                    document.getElementById(labelId).style.display = 'block';
                 }
             },
-            
             compressImage: (file) => {
                 return new Promise((resolve) => {
                     const reader = new FileReader();
@@ -396,58 +402,48 @@
                         img.src = event.target.result;
                         img.onload = () => {
                             const canvas = document.createElement('canvas');
-                            const MAX_WIDTH = 600; // Limitar ancho
+                            const MAX_WIDTH = 600;
                             const scaleSize = MAX_WIDTH / img.width;
                             canvas.width = MAX_WIDTH;
                             canvas.height = img.height * scaleSize;
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            resolve(canvas.toDataURL('image/jpeg', 0.6)); // Compresión 0.6
+                            resolve(canvas.toDataURL('image/jpeg', 0.6));
                         }
                     }
                 });
             },
-
             openPhoto: (b64) => {
                 document.getElementById('img-full').src = b64;
                 document.getElementById('modalPhoto').style.display = 'flex';
             },
 
-            // --- INVENTARIO & PAGINACION ---
+            // --- INVENTARIO PAGINADO ---
             filter: () => {
                 const t = document.getElementById('search').value.toLowerCase().trim();
                 app.filteredData = app.data.filter(i => (String(i.codigo||'')+String(i.descripcion||'')+String(i.marca||'')).toLowerCase().includes(t));
                 app.currentPage = 1;
                 app.renderInv();
             },
-            
             prevPage: () => { if(app.currentPage > 1) { app.currentPage--; app.renderInv(); } },
-            nextPage: () => { 
-                if(app.currentPage < Math.ceil(app.filteredData.length / app.itemsPerPage)) { 
-                    app.currentPage++; app.renderInv(); 
-                } 
-            },
+            nextPage: () => { if(app.currentPage < Math.ceil(app.filteredData.length / app.itemsPerPage)) { app.currentPage++; app.renderInv(); } },
 
             renderInv: () => {
                 const tb = document.getElementById('inv-table-body'); tb.innerHTML = '';
                 
-                // Paginación lógica
+                // Pagination Logic
                 const start = (app.currentPage - 1) * app.itemsPerPage;
                 const end = start + app.itemsPerPage;
                 const pageData = app.filteredData.slice(start, end);
                 const totalPages = Math.ceil(app.filteredData.length / app.itemsPerPage) || 1;
                 document.getElementById('page-info').innerText = `Pág ${app.currentPage} de ${totalPages}`;
 
-                if(pageData.length===0) {
-                    tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#718096;">Sin resultados</td></tr>';
-                    return;
-                }
+                if(pageData.length===0) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#718096;">Sin resultados</td></tr>'; return; }
 
                 pageData.forEach(i => {
                     let btn = `<button class="btn-green btn-icon" onclick="app.addToCart('${i.id}')" style="width:36px;height:36px;">+</button>`;
                     let editBtn = '', costCell = '', priceDisplay = '';
                     
-                    // Imagen
                     let imgHtml = i.imagen ? `<img src="${i.imagen}" class="thumb-img" onclick="app.openPhoto('${i.imagen}')">` : `<div class="thumb-placeholder">📷</div>`;
 
                     let priceVal = parseFloat(i.precio);
@@ -477,14 +473,18 @@
             addToCart: (id) => {
                 const i = app.data.find(x => x.id === id);
                 const ex = app.cart.find(c => c.id === id);
+                
                 let price = parseFloat(i.precio);
                 let discount = 0;
+                
                 if(app.userRole === 'cliente' && app.clientDiscount > 0) {
                     discount = app.clientDiscount; 
                     price = Math.round(price * (1 - (app.clientDiscount/100)));
                 }
+
                 if(ex) { ex.cant++; }
                 else app.cart.push({ ...i, precioLista: parseFloat(i.precio), margen: discount, precioFinal: price, cant:1 });
+                
                 app.renderCart(); app.toast("Agregado");
             },
             updateCant: (idx, v) => { app.cart[idx].cant = Math.max(1, parseInt(v)||1); app.renderCart(); },
@@ -500,6 +500,7 @@
                     } else if (app.userRole === 'cliente' && app.clientDiscount > 0) {
                         controls = `<div style="font-size:0.75em; color:var(--success); text-align:right; font-weight:bold;">Desc. aplicado: ${app.clientDiscount}%</div>`;
                     }
+
                     c.innerHTML += `<div class="cart-item"><div class="cart-row-top"><div style="display:flex; align-items:center; gap:8px; width:100%"><input type="number" value="${i.cant}" onchange="app.updateCant(${idx},this.value)" class="input-mini" style="width:40px; font-weight:bold;"><div style="flex:1;"><span class="code-badge" style="font-size:0.7rem">${i.codigo||'-'}</span><div style="font-size:0.9rem;">${i.descripcion}</div></div></div><div style="text-align:right; font-weight:bold;">$${i.cant*i.precioFinal}</div><button class="btn-red btn-icon" onclick="app.cart.splice(${idx},1);app.renderCart()" style="width:28px; height:28px; font-size:10px; margin-left:5px;">✕</button></div>${controls}</div>`;
                 });
                 document.getElementById('float-total').innerText = tot.toLocaleString('es-AR');
@@ -561,7 +562,7 @@
                             const u = users[key];
                             const badge = u.role === 'admin' ? 'btn-purple' : (u.role === 'cliente' ? 'btn-orange' : 'btn-blue');
                             let info = u.role === 'cliente' ? `<br><small style="color:green">Desc: ${u.descuento}%</small>` : '';
-                            list.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><div><b>${u.nombre}</b><br><small>${u.user}</small>${info}</div><div style="display:flex; align-items:center; gap:10px;"><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></div></div>`;
+                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
                         });
                     }
                 });
@@ -587,10 +588,10 @@
                 document.getElementById(p+'-price').value = Math.round(cost * (1 + marg/100));
             },
             add: async () => {
-                const fileInput = document.getElementById('n-img-file');
+                const fileInput = document.getElementById('n-file-input');
                 let imgBase64 = null;
                 if(fileInput.files[0]) {
-                    app.toast("Comprimiendo imagen...");
+                    app.toast("Procesando imagen...");
                     imgBase64 = await app.compressImage(fileInput.files[0]);
                 }
 
@@ -602,34 +603,30 @@
                 if(!item.descripcion) return alert("Falta descripción");
                 ref.push(item); app.toast("Guardado");
                 ['n-code','n-desc','n-brand','n-price','n-cost'].forEach(id=>document.getElementById(id).value='');
-                document.getElementById('n-preview').innerText = "";
+                document.getElementById('n-preview').style.display = 'none';
             },
             saveEdit: async () => {
                 const id = document.getElementById('edit-id').value;
-                const fileInput = document.getElementById('e-img-file');
+                const fileInput = document.getElementById('e-file-input');
                 let updates = { 
-                    codigo: document.getElementById('e-code').value, descripcion: document.getElementById('e-desc').value, 
+                    codigo: document.getElementById('e-code').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, 
                     costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value) 
                 };
-                
                 if(fileInput.files[0]) {
-                    app.toast("Comprimiendo imagen...");
+                    app.toast("Procesando imagen...");
                     updates.imagen = await app.compressImage(fileInput.files[0]);
                 }
-
                 ref.child(id).update(updates);
                 document.getElementById('modalEdicion').style.display='none'; app.toast("Actualizado");
             },
             edit: (id) => {
                 const i = app.data.find(x=>x.id===id);
-                document.getElementById('edit-id').value = id; document.getElementById('e-code').value = i.codigo; document.getElementById('e-desc').value = i.descripcion; 
+                document.getElementById('edit-id').value = id; document.getElementById('e-code').value = i.codigo; document.getElementById('e-desc').value = i.descripcion; document.getElementById('e-brand').value = i.marca;
                 document.getElementById('e-cost').value = i.costo||0; document.getElementById('e-margin').value = i.margen||0; document.getElementById('e-price').value = i.precio;
-                document.getElementById('e-preview').innerText = i.imagen ? "Tiene imagen actual" : "Sin imagen";
+                document.getElementById('e-preview').innerText = i.imagen ? "Tiene imagen actual" : "";
                 document.getElementById('modalEdicion').style.display='flex';
             },
             delFromModal: () => { if(confirm("¿Eliminar?")) { ref.child(document.getElementById('edit-id').value).remove(); document.getElementById('modalEdicion').style.display='none'; } },
-            
-            // BULK & EXCEL
             uploadExcel: (input) => {
                 const f = input.files[0]; if(!f) return;
                 const r = new FileReader();
@@ -659,8 +656,6 @@
                 app.data.forEach(i => { if((i.proveedor||'General') === prov) { const newCost = (i.costo || 0) * factor; const newSale = newCost * (1 + (i.margen||0)/100); ref.child(i.id).update({ costo: Math.round(newCost), precio: Math.round(newSale) }); } });
                 app.toast("Actualizado"); document.getElementById('modalBulk').style.display = 'none';
             },
-            
-            // UTILS
             shareWhatsApp: () => {
                 if(app.cart.length===0) return alert("Vacio");
                 const cli = document.getElementById('cliente').value || "Cliente";
