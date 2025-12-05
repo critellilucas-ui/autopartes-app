@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - Paginado</title>
+    <title>Autopartes Net - V16 Final</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -22,79 +22,76 @@
             --primary: #319795; --primary-dark: #285e61; --bg: #f0fdfa; --surface: #ffffff;
             --text: #2d3748; --text-muted: #718096; --border: #e2e8f0;
             --danger: #e53e3e; --success: #38a169; --whatsapp: #48bb78; --cost-color: #d53f8c;
-            --role-admin: #805ad5; --role-seller: #3182ce;
+            --role-admin: #805ad5; --role-client: #ed8936;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; padding-bottom: 90px; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; padding-bottom: 100px; }
         .container { max-width: 1200px; margin: 0 auto; }
 
-        /* HEADER & CARDS */
+        /* HEADER */
         .header-app { background: var(--surface); padding: 15px 20px; border-radius: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+
+        /* CARDS */
         .card { background: var(--surface); padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border); }
 
         /* INPUTS & BTNS */
         input, select { width: 100%; padding: 12px 15px; margin: 5px 0; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; outline: none; background: #fcfcfc; transition: border-color 0.3s; }
-        input:focus, select:focus { border-color: var(--primary); background: white; }
-        
+        input:focus { border-color: var(--primary); background: white; }
         button { padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; display: inline-flex; justify-content: center; align-items: center; gap: 6px; color:white; transition: 0.2s; }
         button:active { transform: scale(0.98); }
-        
         .btn-blue { background: var(--primary); } .btn-green { background: var(--success); } 
         .btn-red { background: var(--danger); } .btn-grey { background: #cbd5e0; color: var(--text); } 
         .btn-whatsapp { background: var(--whatsapp); } .btn-purple { background: var(--role-admin); }
+        .btn-orange { background: var(--role-client); }
+
+        /* UTILS */
         .d-none { display: none !important; }
-
-        /* PAGINACIÓN (NUEVO) */
-        .pagination-container { display: flex; justify-content: center; gap: 5px; margin-top: 20px; flex-wrap: wrap; }
-        .page-btn { background: white; border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.9em; min-width: 35px; }
-        .page-btn:hover { background: #f7fafc; }
-        .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        /* TABS & BADGES */
-        .tabs-wrapper { overflow-x: auto; white-space: nowrap; padding-bottom: 10px; margin-bottom: 15px; }
-        .tab-btn { display: inline-block; padding: 8px 20px; border-radius: 30px; background: white; border: 1px solid var(--border); color: var(--text-muted); font-weight: 500; cursor: pointer; margin-right: 8px; transition: all 0.3s ease; }
-        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        
-        .code-badge { background: #e6fffa; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; padding: 3px 8px; border-radius: 6px; display: inline-block; border: 1px solid #b2f5ea; margin-right: 5px;}
-        .prov-badge { background: #fffaf0; color: #d69e2e; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; border:1px solid #fceeb5; }
-        .role-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; color: white; text-transform: uppercase; }
-        .bg-admin { background-color: var(--role-admin); } .bg-seller { background-color: var(--role-seller); }
+        .admin-only { display: none !important; } 
 
         /* LOGIN */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px; }
         .card-login { background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 360px; text-align: center; box-shadow: 0 10px 25px rgba(49, 151, 149, 0.15); }
 
-        /* CART & TABLES */
+        /* TABLA & CART */
+        .table-responsive { width: 100%; border-collapse: collapse; }
+        .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+        .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        
+        @media (max-width: 768px) {
+            .table-responsive thead { display: none; } 
+            .table-responsive tr { display: block; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 12px; padding: 15px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+            .table-responsive td { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border: none; }
+        }
+
         .cart-item { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 12px; background: #fafafa; }
-        .cart-row-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom:8px; }
-        .cart-row-bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; background: white; padding: 8px; border-radius: 8px; border:1px solid var(--border); }
         .input-mini { padding: 6px; text-align: center; font-size: 13px; margin: 0; border-radius:6px;}
         .label-mini { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; display: block; text-align: center; margin-bottom:2px;}
 
-        .table-responsive { width: 100%; border-collapse: collapse; }
-        .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-        @media (max-width: 768px) {
-            .table-responsive thead { display: none; } 
-            .table-responsive tr { display: block; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 12px; padding: 15px; position: relative; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-            .table-responsive td { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border: none; }
-            .td-actions { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); justify-content: flex-end; gap: 10px; }
-        }
-
-        /* MODALS & UTILS */
+        /* MODALS */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 55, 72, 0.4); backdrop-filter: blur(3px); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .cost-field { color: var(--cost-color); font-size: 0.85em; font-weight: bold; background: #fff5f7; padding: 3px 6px; border-radius: 4px; }
-        .form-grid { display: flex; gap: 10px; flex-wrap: wrap; }
-        .form-grid input { flex: 1; min-width: 120px; }
+        .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
         .floating-total { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); border-top: 1px solid var(--border); padding: 15px 20px; justify-content: space-between; align-items: center; z-index: 100; box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05); }
         @media (max-width: 768px) { .floating-total { display: flex; } }
-        #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #2d3748; color: white; padding: 12px 24px; border-radius: 30px; display: none; z-index: 4000; font-weight:500; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .users-table { width: 100%; margin-top: 10px; border-collapse: collapse;}
+        
+        .form-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+        .form-grid input { flex: 1; min-width: 120px; }
+        #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #2d3748; color: white; padding: 12px 24px; border-radius: 30px; display: none; z-index: 4000; font-weight:500; }
+        
+        /* ESTILOS ESPECIFICOS PRECIOS Y NOTIFICACIONES */
+        .notification-btn { position: relative; cursor: pointer; margin-right: 15px; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #edf2f7; transition: 0.3s; }
+        .badge-count { position: absolute; top: -2px; right: -2px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7em; font-weight: bold; display: none; border: 2px solid white; }
+        .order-card { border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #fff; }
+        .code-badge { background: #e6fffa; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; padding: 3px 8px; border-radius: 6px; display: inline-block; border: 1px solid #b2f5ea; margin-right: 5px;}
+        .cost-field { color: var(--cost-color); font-size: 0.85em; font-weight: bold; background: #fff5f7; padding: 3px 6px; border-radius: 4px; }
+        .users-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .users-table td { padding: 10px; border-bottom: 1px solid #eee; }
-        .admin-only { display: none !important; }
+        
+        /* PRECIOS CLIENTE - DESTACADOS */
+        .price-original { text-decoration: line-through; color: #a0aec0; font-size: 0.8em; margin-right: 5px; }
+        .price-client { color: var(--success); font-weight: 800; font-size: 1.1em; }
+        .discount-tag { background: #c6f6d5; color: #22543d; font-size: 0.65em; padding: 2px 5px; border-radius: 4px; font-weight: bold; vertical-align: middle; margin-left: 5px; }
     </style>
 </head>
 <body>
@@ -103,11 +100,11 @@
     <div id="login-screen">
         <div class="card-login">
             <h2 style="color:var(--primary); margin:0 0 10px 0;">AUTOPARTES NET</h2>
-            <p style="color:var(--text-muted); margin-bottom:20px;">Sistema Seguro</p>
+            <p style="color:var(--text-muted);">Portal de Clientes & Gestión</p>
             <input type="text" id="user" placeholder="Usuario" autocomplete="off">
             <input type="password" id="pass" placeholder="Contraseña">
             <button id="btn-ingresar" class="btn-blue" onclick="app.login()" style="width: 100%; margin-top: 20px;">INGRESAR</button>
-            <div id="login-msg" style="margin-top:20px; font-size:0.8em; color:#a0aec0;">Conectando...</div>
+            <div id="login-msg" style="margin-top:20px; font-size:0.8em; color:#a0aec0;"></div>
         </div>
     </div>
 
@@ -116,14 +113,23 @@
         <header class="header-app">
             <div>
                 <h1 style="font-size:1.4rem; color:var(--primary); margin:0;">AUTOPARTES NET</h1>
-                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:500;">Sistema de Gestión Online</div>
+                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:500;">Sistema Online</div>
             </div>
             <div style="text-align:right; display:flex; gap:10px; align-items:center;">
+                
+                <!-- NOTIFICACIONES (ADMIN) -->
+                <div class="notification-btn admin-only d-none" onclick="app.openOrdersModal()" id="btn-orders" title="Pedidos">
+                    <span style="font-size:1.5rem;">🔔</span>
+                    <span id="badge-orders" class="badge-count">0</span>
+                </div>
+
                 <div style="text-align:right;">
                     <span id="user-display" style="font-weight:600; font-size:0.9rem; color:var(--primary-dark); display:block;">Usuario</span>
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
-                <button id="btn-usuarios" class="btn-purple d-none" onclick="app.openUsersModal()" title="Gestionar Usuarios">👥</button>
+                
+                <!-- BOTÓN USUARIOS (ADMIN) - FORZADO VISIBLE -->
+                <button id="btn-usuarios" class="btn-purple admin-only d-none" onclick="app.openUsersModal()" title="Usuarios">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
         </header>
@@ -132,58 +138,54 @@
             <!-- INVENTARIO -->
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h3 style="margin:0; color:var(--text);">📦 Inventario</h3>
-                    <span style="font-size:0.8rem; color:var(--text-muted);"><span id="items-count">0</span> productos</span>
+                    <h3 style="margin:0; color:var(--text);">📦 Catálogo</h3>
+                    <!-- AVISO DESCUENTO CLIENTE -->
+                    <span id="client-discount-display" style="font-size:0.9rem; color:var(--success); font-weight:bold; display:none; background:#f0fdf4; padding:5px 15px; border-radius:20px; border:1px solid var(--success);"></span>
                 </div>
-
-                <div class="tabs-wrapper" id="tabs-container"><button class="tab-btn active">TODOS</button></div>
 
                 <div style="display:flex; gap:10px; margin-bottom:20px;">
                     <input id="search" placeholder="🔍 Buscar repuesto..." onkeyup="app.filter()" style="margin:0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                    <button id="btn-config" class="btn-grey d-none" onclick="document.getElementById('admin-panel').classList.toggle('d-none')">⚙️</button>
+                    <button id="btn-config" class="btn-grey admin-only d-none" onclick="document.getElementById('admin-panel').classList.toggle('d-none')">⚙️</button>
                 </div>
 
+                <!-- PANEL ADMIN -->
                 <div id="admin-panel" class="d-none" style="background:#f7fafc; padding:20px; border-radius:12px; margin-bottom:25px; border:1px dashed var(--border);">
-                    <h4 style="margin:0 0 15px 0; color:var(--primary);">Agregar Producto</h4>
+                    <h4 style="margin:0 0 15px 0; color:var(--primary);">Producto</h4>
                     <div class="form-grid"><input id="n-code" placeholder="CÓDIGO"><input id="n-prov" placeholder="PROVEEDOR"></div>
                     <div class="form-grid"><input id="n-desc" placeholder="Descripción" style="flex:2;"><input id="n-brand" placeholder="Marca"></div>
                     <div style="background:white; padding:15px; border-radius:10px; border:1px solid var(--border); margin-top:10px;">
                         <div class="form-grid">
                             <div><label style="font-size:0.7em;">COSTO</label><input id="n-cost" type="number" oninput="app.calcPrice('n')"></div>
                             <div><label style="font-size:0.7em;">MARGEN %</label><input id="n-margin" type="number" value="40" oninput="app.calcPrice('n')"></div>
-                            <div><label style="font-size:0.7em;">VENTA</label><input id="n-price" type="number" style="background:#f0fdf4; border-color:var(--success); font-weight:bold;"></div>
+                            <div><label style="font-size:0.7em;">LISTA</label><input id="n-price" type="number" style="background:#f0fdf4; border-color:var(--success); font-weight:bold;"></div>
                         </div>
                     </div>
-                    <button class="btn-green" onclick="app.add()" style="width:100%; margin-top:15px;">Guardar Producto</button>
-                    <div style="display:flex; gap:10px; margin-top:15px; border-top:1px solid var(--border); padding-top:15px; flex-wrap:wrap;">
-                        <label class="btn-blue" style="flex:1; cursor:pointer; font-size:0.85rem; min-width:120px;">📂 Excel <input type="file" onchange="app.uploadExcel(this)" style="display:none;"></label>
-                        <button class="btn-red" onclick="app.openBulkUpdate()" style="flex:1; font-size:0.85rem; min-width:120px;">📈 Aumentos</button>
-                        <button class="btn-red" onclick="app.openDeleteBulk()" style="flex:1; background:var(--danger); font-size:0.85rem; min-width:120px;">🗑️ Eliminar x Prov</button>
+                    <button class="btn-green" onclick="app.add()" style="width:100%; margin-top:15px;">Guardar</button>
+                    <div style="display:flex; gap:10px; margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
+                        <label class="btn-blue" style="flex:1; cursor:pointer; font-size:0.85rem; text-align:center;">📂 Excel <input type="file" onchange="app.uploadExcel(this)" style="display:none;"></label>
+                        <button class="btn-red" onclick="app.openBulkUpdate()" style="flex:1; font-size:0.85rem;">📈 Aumentos</button>
                     </div>
                 </div>
 
                 <table class="table-responsive">
-                    <thead id="table-head"><tr><th>Producto</th><th>Marca</th><th style="text-align:right;">Precio Venta</th><th style="text-align:center;">Acción</th></tr></thead>
-                    <tbody id="inv-table-body"><tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">Cargando...</td></tr></tbody>
+                    <thead id="table-head"><tr><th>Producto</th><th>Marca</th><th style="text-align:right;">Precio</th><th style="text-align:center;">+</th></tr></thead>
+                    <tbody id="inv-table-body"><tr><td colspan="4" style="text-align:center; padding:30px;">Cargando...</td></tr></tbody>
                 </table>
-                
-                <!-- PAGINACIÓN -->
-                <div id="pagination" class="pagination-container"></div>
             </div>
 
-            <!-- COTIZADOR -->
+            <!-- COTIZADOR / PEDIDO -->
             <div class="card" style="border-left: 5px solid var(--primary);">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h3 style="margin:0; color:var(--text);">🛒 Cotizador</h3>
+                    <h3 style="margin:0; color:var(--text);" id="cart-title">🛒 Carrito</h3>
                     <button class="btn-red" onclick="app.clearCart()" style="font-size:0.8rem; padding:6px 12px;">Limpiar</button>
                 </div>
-                <input id="cliente" placeholder="Nombre del Cliente" style="font-weight:600; margin-top:15px;">
+                <input id="cliente" placeholder="Nombre Cliente" style="font-weight:600; margin-top:15px;">
                 <div id="cart-container" style="max-height:300px; overflow-y:auto; margin-top:15px;">
-                    <div style="text-align:center; padding:30px; color:var(--text-muted);">Agrega productos</div>
+                    <div style="text-align:center; padding:30px; color:var(--text-muted);">Carrito vacío</div>
                 </div>
                 <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button class="btn-blue" onclick="app.printPDF()" style="flex:1">PDF</button>
-                    <button class="btn-whatsapp" onclick="app.shareWhatsApp()" style="flex:1">WhatsApp</button>
+                    <button class="btn-green" onclick="app.submitOrder()" style="flex:2; font-weight:800; background:var(--success);" id="btn-submit-order">✅ ENVIAR PEDIDO</button>
+                    <button class="btn-blue" onclick="app.printPDF()" style="flex:1;">PDF</button>
                 </div>
             </div>
         </div>
@@ -191,38 +193,53 @@
 
     <div class="floating-total">
         <div><span style="font-size:0.75rem; color:var(--text-muted);">TOTAL:</span> <strong style="color:var(--primary); font-size:1.3rem;">$<span id="float-total">0.00</span></strong></div>
-        <button class="btn-whatsapp" onclick="app.shareWhatsApp()" style="padding:10px 20px; border-radius:20px;">Enviar 📲</button>
+        <button class="btn-whatsapp" onclick="app.submitOrder()" style="padding:10px 20px; border-radius:20px;">Enviar 📲</button>
     </div>
 
-    <!-- MODALES VARIOS -->
+    <!-- MODAL GESTION CLIENTES -->
     <div id="modalUsers" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-top:0; color:var(--primary);">👥 Gestión de Usuarios</h3>
             <div style="background:#f7fafc; padding:15px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0;">Crear Nuevo</h4>
-                <input id="u-name" placeholder="Nombre (Ej: Juan Perez)">
+                <input id="u-name" placeholder="Nombre (Ej: Taller X)">
                 <div class="form-grid"><input id="u-user" placeholder="Usuario"><input id="u-pass" placeholder="Contraseña"></div>
-                <select id="u-role"><option value="vendedor">Vendedor</option><option value="admin">Administrador</option></select>
-                <button class="btn-green" onclick="app.createUser()" style="width:100%; margin-top:10px;">Crear Usuario</button>
+                <div class="form-grid">
+                    <select id="u-role">
+                        <option value="cliente">Cliente (Con descuento)</option>
+                        <option value="vendedor">Vendedor</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                    <input id="u-disc" type="number" placeholder="% Desc. (Ej: 10)" value="0">
+                </div>
+                <button class="btn-green" onclick="app.createUser()" style="width:100%; margin-top:10px;">Crear</button>
             </div>
-            <h4>Usuarios Existentes</h4>
+            <h4>Lista Actual</h4>
             <table class="users-table"><tbody id="users-list"></tbody></table>
             <button class="btn-grey" onclick="document.getElementById('modalUsers').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
         </div>
     </div>
 
+    <!-- OTROS MODALES -->
+    <div id="modalOrders" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:var(--primary);">🔔 Pedidos Recibidos</h3>
+            <div id="orders-list"></div>
+            <button class="btn-grey" onclick="document.getElementById('modalOrders').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
+        </div>
+    </div>
+
     <div id="modalEdicion" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-top:0; color:var(--primary);">✏️ Editar</h3>
+            <h3>✏️ Editar</h3>
             <input type="hidden" id="edit-id">
-            <input id="e-code" placeholder="Código"> <input id="e-prov" placeholder="Proveedor">
-            <input id="e-desc" placeholder="Descripción"> <input id="e-brand" placeholder="Marca">
+            <input id="e-code" placeholder="Código"> <input id="e-desc" placeholder="Descripción">
             <div style="background:#f7fafc; padding:10px; border-radius:8px; margin-top:10px;">
                 <div class="form-grid">
                     <div><label style="font-size:0.7em;">COSTO</label><input id="e-cost" type="number" oninput="app.calcPrice('e')"></div>
                     <div><label style="font-size:0.7em;">MARGEN %</label><input id="e-margin" type="number" oninput="app.calcPrice('e')"></div>
                 </div>
-                <div><label style="font-size:0.7em;">VENTA</label><input id="e-price" type="number" style="background:white; font-weight:bold;"></div>
+                <div><label style="font-size:0.7em;">LISTA</label><input id="e-price" type="number" style="background:white; font-weight:bold;"></div>
             </div>
             <div style="display:flex; gap:10px; margin-top:20px;">
                 <button class="btn-green" onclick="app.saveEdit()" style="flex:1">Guardar</button>
@@ -234,21 +251,11 @@
 
     <div id="modalBulk" class="modal-overlay">
         <div class="modal-content" style="text-align:center;">
-            <h3 style="color:var(--primary);">📈 Actualizar Costos</h3>
-            <select id="bulk-provider" style="width:100%; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid var(--border);"></select>
-            <input type="number" id="bulk-percent" placeholder="Porcentaje % (ej: 10)">
+            <h3>📈 Actualizar Costos</h3>
+            <select id="bulk-provider" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid var(--border);"></select>
+            <input type="number" id="bulk-percent" placeholder="% (ej: 10)">
             <button class="btn-green" onclick="app.applyBulkUpdate()" style="width:100%; margin-top:15px;">Aplicar</button>
             <button class="btn-grey" onclick="document.getElementById('modalBulk').style.display='none'" style="width:100%; margin-top:10px;">Cancelar</button>
-        </div>
-    </div>
-
-    <div id="modalDeleteProv" class="modal-overlay">
-        <div class="modal-content" style="text-align:center;">
-            <h3 style="color:var(--danger);">🗑️ Eliminar por Proveedor</h3>
-            <p style="font-size:0.9em; color:#666;">Selecciona el proveedor para <b>ELIMINAR TODOS</b> sus productos.</p>
-            <select id="del-provider-select" style="width:100%; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid var(--danger);"></select>
-            <button class="btn-red" onclick="app.executeDeleteBulk()" style="width:100%; margin-top:10px;">Eliminar Todo</button>
-            <button class="btn-grey" onclick="document.getElementById('modalDeleteProv').style.display='none'" style="width:100%; margin-top:10px;">Cancelar</button>
         </div>
     </div>
 
@@ -266,17 +273,17 @@
             measurementId: "G-2XCR93C92T"
         };
 
-        let db, ref, usersRef;
+        let db, ref, usersRef, ordersRef;
         try {
             if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             db = firebase.database();
             ref = db.ref('inventario');
             usersRef = db.ref('usuarios');
+            ordersRef = db.ref('pedidos');
         } catch (error) { alert("Error Firebase: " + error.message); }
 
         const app = {
-            data: [], cart: [], user: null, userRole: null, activeTab: 'TODOS',
-            currentPage: 1, itemsPerPage: 20, filteredList: [],
+            data: [], cart: [], user: null, userRole: null, clientDiscount: 0,
 
             // --- LOGIN ---
             login: () => {
@@ -290,9 +297,10 @@
                     const users = snapshot.val();
                     if (!users) {
                         if (u === 'admin' && p === '1234') {
-                            const newAdmin = { user: 'admin', pass: '1234', role: 'admin', nombre: 'Admin Default' };
+                            const newAdmin = { user: 'admin', pass: '1234', role: 'admin', nombre: 'Admin Default', descuento: 0 };
                             usersRef.push(newAdmin); app.setSession(newAdmin); return;
-                        } else { alert("Base vacía. Ingrese con admin/1234"); btn.innerText = "INGRESAR"; return; }
+                        }
+                        alert("Sistema vacío. Ingrese con admin/1234"); btn.innerText = "INGRESAR"; return;
                     }
                     let found = false;
                     Object.keys(users).forEach(key => {
@@ -306,189 +314,154 @@
             setSession: (userData) => {
                 app.user = userData.user;
                 app.userRole = userData.role;
+                app.clientDiscount = Number(userData.descuento) || 0; // Garantizar número
+                
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app-content').classList.remove('d-none');
                 document.getElementById('user-display').innerText = userData.nombre || userData.user;
-                document.getElementById('role-display').innerText = userData.role.toUpperCase();
+                document.getElementById('role-display').innerText = app.userRole.toUpperCase();
 
                 if(app.userRole === 'admin') {
-                    document.getElementById('btn-usuarios').classList.remove('d-none');
-                    document.getElementById('btn-config').classList.remove('d-none');
+                    // Forzar mostrar botones
+                    document.querySelectorAll('.admin-only').forEach(e => {
+                        e.classList.remove('d-none');
+                        e.classList.remove('admin-only'); // Quitar la clase de restricción
+                    });
+                    
                     const thead = document.querySelector('#table-head tr');
-                    if (thead && !thead.innerHTML.includes('Costo')) {
-                        const thCosto = document.createElement('th');
-                        thCosto.innerText = "Costo";
-                        thead.insertBefore(thCosto, thead.children[2]);
+                    if (!thead.innerHTML.includes('Costo')) {
+                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[2]);
                     }
+                    app.listenOrders();
+                } else if(app.userRole === 'cliente') {
+                    document.getElementById('cliente').value = userData.nombre;
+                    document.getElementById('cliente').disabled = true;
+                    if(app.clientDiscount > 0) {
+                        document.getElementById('client-discount-display').style.display = 'block';
+                        document.getElementById('client-discount-display').innerText = `Tu Descuento: ${app.clientDiscount}%`;
+                    }
+                    document.getElementById('cart-title').innerText = "🛒 Mi Pedido";
+                    document.getElementById('btn-submit-order').innerText = "ENVIAR A DAYTONA";
                 }
-                app.startListeners();
-            },
 
-            startListeners: () => {
                 ref.on('value', snap => {
                     const val = snap.val();
                     app.data = val ? Object.keys(val).map(k => ({ id: k, ...val[k] })) : [];
-                    app.renderTabs(); app.filter();
+                    app.filter();
                 });
             },
 
-            // --- PAGINACIÓN ---
-            changePage: (page) => {
-                if (page < 1 || page > Math.ceil(app.filteredList.length / app.itemsPerPage)) return;
-                app.currentPage = page;
-                app.renderInv();
-            },
-
-            renderPagination: () => {
-                const totalPages = Math.ceil(app.filteredList.length / app.itemsPerPage);
-                const container = document.getElementById('pagination');
-                container.innerHTML = '';
-
-                if (totalPages <= 1) return;
-
-                // Prev Button
-                container.innerHTML += `<button class="page-btn" onclick="app.changePage(${app.currentPage - 1})" ${app.currentPage === 1 ? 'disabled' : ''}>❮</button>`;
-
-                // Start
-                if (app.currentPage > 3) {
-                    container.innerHTML += `<button class="page-btn" onclick="app.changePage(1)">1</button>`;
-                    if (app.currentPage > 4) container.innerHTML += `<span style="padding:5px">...</span>`;
-                }
-
-                // Window around current
-                const start = Math.max(1, app.currentPage - 2);
-                const end = Math.min(totalPages, app.currentPage + 2);
-
-                for (let i = start; i <= end; i++) {
-                    const active = i === app.currentPage ? 'active' : '';
-                    container.innerHTML += `<button class="page-btn ${active}" onclick="app.changePage(${i})">${i}</button>`;
-                }
-
-                // End
-                if (app.currentPage < totalPages - 2) {
-                    if (app.currentPage < totalPages - 3) container.innerHTML += `<span style="padding:5px">...</span>`;
-                    container.innerHTML += `<button class="page-btn" onclick="app.changePage(${totalPages})">${totalPages}</button>`;
-                }
-
-                // Next Button
-                container.innerHTML += `<button class="page-btn" onclick="app.changePage(${app.currentPage + 1})" ${app.currentPage === totalPages ? 'disabled' : ''}>❯</button>`;
-            },
-
-            // --- RENDER & LOGIC ---
-            renderTabs: () => {
-                const providers = [...new Set(app.data.map(i => i.proveedor || 'General'))].sort();
-                const c = document.getElementById('tabs-container');
-                let h = `<button class="tab-btn ${app.activeTab==='TODOS'?'active':''}" onclick="app.setTab('TODOS')">TODOS</button>`;
-                providers.forEach(p => h += `<button class="tab-btn ${app.activeTab===p?'active':''}" onclick="app.setTab('${p}')">${p}</button>`);
-                c.innerHTML = h;
-            },
-            setTab: (t) => { app.activeTab = t; app.currentPage = 1; app.renderTabs(); app.filter(); },
-            
+            // --- INVENTARIO ---
             filter: () => {
                 const t = document.getElementById('search').value.toLowerCase().trim();
-                let f = app.activeTab === 'TODOS' ? app.data : app.data.filter(i => (i.proveedor||'General') === app.activeTab);
-                if(t) f = f.filter(i => (String(i.codigo||'')+String(i.descripcion||'')+String(i.marca||'')).toLowerCase().includes(t));
-                app.filteredList = f;
-                app.currentPage = 1; // Reset a pagina 1 al filtrar
-                app.renderInv();
+                let f = app.data.filter(i => (String(i.codigo||'')+String(i.descripcion||'')+String(i.marca||'')).toLowerCase().includes(t));
+                app.renderInv(f);
             },
-
-            renderInv: () => {
-                const tb = document.getElementById('inv-table-body'); 
-                tb.innerHTML = '';
-                
-                // Pagination Logic
-                const start = (app.currentPage - 1) * app.itemsPerPage;
-                const end = start + app.itemsPerPage;
-                const pageItems = app.filteredList.slice(start, end);
-
-                if(pageItems.length===0) tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#718096;">Sin resultados</td></tr>';
-                
-                pageItems.forEach(i => {
+            renderInv: (list) => {
+                const tb = document.getElementById('inv-table-body'); tb.innerHTML = '';
+                if(list.length===0) tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#718096;">Sin resultados</td></tr>';
+                list.slice(0, 50).forEach(i => {
                     let btn = `<button class="btn-green btn-icon" onclick="app.addToCart('${i.id}')">+</button>`;
-                    let editBtn = '';
-                    let costCell = '';
+                    let editBtn = '', costCell = '', priceDisplay = '';
+                    
+                    // CÁLCULO PRECIO CLIENTE
+                    let priceVal = parseFloat(i.precio);
+                    let finalPrice = priceVal;
+
+                    if(app.userRole === 'cliente' && app.clientDiscount > 0) {
+                        finalPrice = Math.round(priceVal * (1 - (app.clientDiscount/100)));
+                        priceDisplay = `<span class="price-original">$${Math.round(priceVal)}</span><br><span class="price-client">$${finalPrice}</span><span class="discount-tag">-${app.clientDiscount}%</span>`;
+                    } else {
+                        priceDisplay = `<span style="font-weight:bold;">$${Math.round(priceVal)}</span>`;
+                    }
+
                     if(app.userRole==='admin') {
                         editBtn = `<button class="btn-grey btn-icon" onclick="app.edit('${i.id}')" style="margin-right:5px;">✎</button>`;
                         costCell = `<td><span class="cost-field">$${parseFloat(i.costo||0).toFixed(0)}</span> <small style="color:#718096">(${i.margen||0}%)</small></td>`;
                     }
+                    
                     tb.innerHTML += `<tr>
-                        <td><span class="code-badge">${i.codigo||'-'}</span><div style="font-weight:600; color:var(--text); margin-top:4px;">${i.descripcion}</div></td>
-                        <td><span class="prov-badge">${i.proveedor||'Gral'}</span><br><small style="color:#718096">${i.marca||''}</small></td>
+                        <td><span class="code-badge">${i.codigo||'-'}</span><div style="font-weight:600; color:var(--text); margin-top:4px;">${i.descripcion}</div><small>${i.marca||''}</small></td>
                         ${costCell}
-                        <td style="text-align:right; font-weight:bold; color:var(--text);">$${parseFloat(i.precio).toFixed(0)}</td>
-                        <td class="td-actions" style="text-align:center; display:flex; justify-content:center;">${editBtn}${btn}</td>
+                        <td style="text-align:right; font-weight:bold; color:var(--text);">${priceDisplay}</td>
+                        <td style="text-align:center;">${editBtn}${btn}</td>
                     </tr>`;
                 });
-                document.getElementById('items-count').innerText = app.filteredList.length;
-                app.renderPagination();
             },
 
-            // --- CART & RESTO ---
+            // --- CARRITO ---
             addToCart: (id) => {
                 const i = app.data.find(x => x.id === id);
                 const ex = app.cart.find(c => c.id === id);
-                if(ex) { ex.cant++; app.recalc(ex); }
-                else app.cart.push({ ...i, precioLista: parseFloat(i.precio), margen:0, precioFinal: parseFloat(i.precio), cant:1 });
+                
+                let price = parseFloat(i.precio);
+                let discount = 0;
+                
+                // CALCULO DESCUENTO CARRITO
+                if(app.userRole === 'cliente' && app.clientDiscount > 0) {
+                    discount = app.clientDiscount; // Guardar porcentaje positivo
+                    price = Math.round(price * (1 - (app.clientDiscount/100)));
+                }
+
+                if(ex) { ex.cant++; }
+                else app.cart.push({ ...i, precioLista: parseFloat(i.precio), margen: discount, precioFinal: price, cant:1 });
+                
                 app.renderCart(); app.toast("Agregado");
             },
-            recalc: (i) => i.precioFinal = i.precioLista * (1 + (i.margen/100)),
-            updateMargin: (idx, v) => { app.cart[idx].margen = parseFloat(v)||0; app.recalc(app.cart[idx]); app.renderCart(); },
-            updateFinal: (idx, v) => { const item = app.cart[idx]; item.precioFinal = parseFloat(v)||0; item.margen = item.precioLista>0 ? ((item.precioFinal/item.precioLista)-1)*100 : 0; app.renderCart(); },
             updateCant: (idx, v) => { app.cart[idx].cant = Math.max(1, parseInt(v)||1); app.renderCart(); },
+            updateFinal: (idx, v) => { app.cart[idx].precioFinal = parseFloat(v)||0; app.renderCart(); },
             renderCart: () => {
                 const c = document.getElementById('cart-container'); c.innerHTML = ''; let tot = 0;
-                if(app.cart.length===0) c.innerHTML = '<div style="text-align:center;padding:30px;color:#a0aec0">Carrito vacío</div>';
+                if(app.cart.length===0) c.innerHTML = '<div style="text-align:center;padding:30px;color:#a0aec0">Vacío</div>';
                 app.cart.forEach((i, idx) => {
                     tot += i.cant * i.precioFinal;
-                    c.innerHTML += `<div class="cart-item">
-                        <div class="cart-row-top">
-                            <div style="display:flex; align-items:center; gap:8px; width:100%"><input type="number" value="${i.cant}" onchange="app.updateCant(${idx},this.value)" class="input-mini" style="width:40px; font-weight:bold;"><div style="flex:1;"><span class="code-badge" style="font-size:0.7rem">${i.codigo||'-'}</span><div style="font-size:0.9rem;">${i.descripcion}</div></div></div>
-                            <button class="btn-red btn-icon" onclick="app.cart.splice(${idx},1);app.renderCart()" style="width:28px; height:28px; font-size:10px;">✕</button>
-                        </div>
-                        <div class="cart-row-bottom">
-                            <div><span class="label-mini">Lista</span><div style="text-align:center; font-size:13px; color:#718096;">$${i.precioLista.toFixed(0)}</div></div>
-                            <div><span class="label-mini">%</span><input type="number" value="${i.margen.toFixed(1)}" onchange="app.updateMargin(${idx},this.value)" class="input-mini"></div>
-                            <div><span class="label-mini">Final</span><input type="number" value="${i.precioFinal.toFixed(0)}" onchange="app.updateFinal(${idx},this.value)" class="input-mini" style="font-weight:bold; background:#e6fffa; border-color:var(--primary);"></div>
-                        </div>
-                    </div>`;
+                    let controls = '';
+                    if(app.userRole === 'admin') {
+                        controls = `<div class="cart-row-bottom"><div><span class="label-mini">Lista</span><div style="text-align:center; font-size:13px;">$${i.precioLista}</div></div><div><span class="label-mini">Final</span><input type="number" value="${i.precioFinal}" onchange="app.updateFinal(${idx},this.value)" class="input-mini" style="font-weight:bold;"></div></div>`;
+                    } else if (app.userRole === 'cliente' && i.margen > 0) {
+                        controls = `<div style="font-size:0.75em; color:var(--success); text-align:right; font-weight:bold;">Desc. aplicado: ${i.margen}%</div>`;
+                    }
+
+                    c.innerHTML += `<div class="cart-item"><div class="cart-row-top"><div style="display:flex; align-items:center; gap:8px; width:100%"><input type="number" value="${i.cant}" onchange="app.updateCant(${idx},this.value)" class="input-mini" style="width:40px; font-weight:bold;"><div style="flex:1;"><span class="code-badge" style="font-size:0.7rem">${i.codigo||'-'}</span><div style="font-size:0.9rem;">${i.descripcion}</div></div></div><div style="text-align:right; font-weight:bold;">$${i.cant*i.precioFinal}</div><button class="btn-red btn-icon" onclick="app.cart.splice(${idx},1);app.renderCart()" style="width:28px; height:28px; font-size:10px; margin-left:5px;">✕</button></div>${controls}</div>`;
                 });
-                document.getElementById('float-total').innerText = tot.toLocaleString('es-AR', {minimumFractionDigits:2});
+                document.getElementById('float-total').innerText = tot.toLocaleString('es-AR');
             },
             clearCart: () => { if(confirm("¿Limpiar?")) { app.cart=[]; app.renderCart(); } },
-            
-            // ADMIN
-            calcPrice: (prefix) => {
-                const cost = parseFloat(document.getElementById(prefix+'-cost').value) || 0;
-                const margin = parseFloat(document.getElementById(prefix+'-margin').value) || 0;
-                document.getElementById(prefix+'-price').value = Math.round(cost * (1 + (margin/100)));
+
+            // --- PEDIDOS ---
+            submitOrder: () => {
+                if(app.cart.length===0) return alert("Carrito vacío");
+                const cli = document.getElementById('cliente').value;
+                if(!cli) return alert("Falta nombre del cliente");
+                const total = document.getElementById('float-total').innerText;
+                const pedido = { fecha: new Date().toISOString(), cliente: cli, items: app.cart, total: total, estado: 'pendiente' };
+                ordersRef.push(pedido);
+                app.toast("Pedido Enviado");
+                if(app.userRole === 'cliente') app.shareWhatsApp();
+                app.cart = []; app.renderCart();
             },
-            add: () => {
-                const cost = parseFloat(document.getElementById('n-cost').value) || 0;
-                const margin = parseFloat(document.getElementById('n-margin').value) || 0;
-                let price = parseFloat(document.getElementById('n-price').value) || 0;
-                if(price === 0 && cost > 0) price = cost * (1 + margin/100);
-                const item = { codigo: document.getElementById('n-code').value || '-', proveedor: document.getElementById('n-prov').value || 'General', descripcion: document.getElementById('n-desc').value, marca: document.getElementById('n-brand').value || '', costo: cost, margen: margin, precio: Math.round(price) };
-                if(!item.descripcion) return alert("Falta descripción");
-                ref.push(item); app.toast("Guardado");
-                ['n-code','n-desc','n-brand','n-price','n-cost'].forEach(id=>document.getElementById(id).value='');
+            listenOrders: () => {
+                ordersRef.on('value', snap => {
+                    const data = snap.val();
+                    let count = 0;
+                    const list = document.getElementById('orders-list'); list.innerHTML = '';
+                    if(data) {
+                        const orders = Object.keys(data).map(k => ({id:k, ...data[k]})).reverse();
+                        orders.forEach(o => {
+                            if(o.estado === 'pendiente') count++;
+                            const fecha = new Date(o.fecha).toLocaleString();
+                            list.innerHTML += `<div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}"><div class="order-header"><span>${o.cliente}</span> <span>$${o.total}</span></div><div style="font-size:0.8em; color:#666; margin-bottom:5px;">${fecha}</div><div style="font-size:0.85em;">${o.items.length} items</div>${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="width:100%; margin-top:5px; font-size:0.8em;">Marcar Visto</button>` : '<small style="color:green">Visto</small>'}</div>`;
+                        });
+                    }
+                    const badge = document.getElementById('badge-orders');
+                    badge.innerText = count;
+                    badge.style.display = count > 0 ? 'block' : 'none';
+                });
             },
-            edit: (id) => {
-                const i = app.data.find(x=>x.id===id);
-                document.getElementById('edit-id').value = id;
-                document.getElementById('e-code').value = i.codigo; document.getElementById('e-prov').value = i.proveedor || 'General';
-                document.getElementById('e-desc').value = i.descripcion; document.getElementById('e-brand').value = i.marca;
-                document.getElementById('e-cost').value = i.costo || 0; document.getElementById('e-margin').value = i.margen || 0;
-                document.getElementById('e-price').value = i.precio; document.getElementById('modalEdicion').style.display='flex';
-            },
-            saveEdit: () => {
-                const id = document.getElementById('edit-id').value;
-                ref.child(id).update({ codigo: document.getElementById('e-code').value, proveedor: document.getElementById('e-prov').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value) });
-                document.getElementById('modalEdicion').style.display='none'; app.toast("Actualizado");
-            },
-            delFromModal: () => { if(confirm("¿Eliminar?")) { ref.child(document.getElementById('edit-id').value).remove(); document.getElementById('modalEdicion').style.display='none'; app.toast("Eliminado"); } },
-            
-            // USERS & OTHER
+            markOrder: (id) => { ordersRef.child(id).update({estado: 'visto'}); },
+            openOrdersModal: () => { document.getElementById('modalOrders').style.display='flex'; },
+
+            // --- USUARIOS ---
             openUsersModal: () => { document.getElementById('modalUsers').style.display = 'flex'; app.loadUsersList(); },
             loadUsersList: () => {
                 usersRef.on('value', snap => {
@@ -497,45 +470,65 @@
                     if(users) {
                         Object.keys(users).forEach(key => {
                             const u = users[key];
-                            const badge = u.role === 'admin' ? 'bg-admin' : 'bg-seller';
-                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small></td><td><span class="role-badge ${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:30px;height:30px;font-size:0.8em;">🗑️</button></td></tr>`;
+                            const badge = u.role === 'admin' ? 'btn-purple' : (u.role === 'cliente' ? 'btn-orange' : 'btn-blue');
+                            let info = u.role === 'cliente' ? `<br><small style="color:green">Desc: ${u.descuento}%</small>` : '';
+                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
                         });
                     }
                 });
             },
             createUser: () => {
                 const name = document.getElementById('u-name').value;
-                const user = document.getElementById('u-user').value.toLowerCase().trim();
+                const user = document.getElementById('u-user').value.trim().toLowerCase();
                 const pass = document.getElementById('u-pass').value;
                 const role = document.getElementById('u-role').value;
+                // Parseo estricto del descuento
+                let disc = parseInt(document.getElementById('u-disc').value) || 0;
+                
                 if(!name || !user || !pass) return alert("Faltan datos");
-                usersRef.once('value', snap => {
-                    let exists = false; const users = snap.val();
-                    if(users) Object.values(users).forEach(u => { if(u.user === user) exists = true; });
-                    if(exists) return alert("Usuario existe");
-                    usersRef.push({ nombre: name, user: user, pass: pass, role: role });
-                    app.toast("Usuario creado");
-                    ['u-name','u-user','u-pass'].forEach(id => document.getElementById(id).value = '');
-                });
+                
+                usersRef.push({ nombre: name, user: user, pass: pass, role: role, descuento: disc });
+                app.toast("Usuario Creado");
+                document.getElementById('u-name').value = ''; document.getElementById('u-user').value = ''; document.getElementById('u-pass').value = '';
             },
-            deleteUser: (key) => { if(confirm("¿Eliminar usuario?")) usersRef.child(key).remove(); },
-            
-            openDeleteBulk: () => {
-                const providers = [...new Set(app.data.map(i => i.proveedor || 'General'))].sort();
-                const sel = document.getElementById('del-provider-select');
-                sel.innerHTML = '<option value="">Seleccionar Proveedor...</option>';
-                providers.forEach(p => sel.innerHTML += `<option value="${p}">${p}</option>`);
-                document.getElementById('modalDeleteProv').style.display = 'flex';
+            deleteUser: (key) => { if(confirm("¿Eliminar?")) usersRef.child(key).remove(); },
+
+            // --- ADMIN ---
+            calcPrice: (p) => {
+                const cost = parseFloat(document.getElementById(p+'-cost').value)||0;
+                const marg = parseFloat(document.getElementById(p+'-margin').value)||0;
+                document.getElementById(p+'-price').value = Math.round(cost * (1 + marg/100));
             },
-            executeDeleteBulk: () => {
-                const prov = document.getElementById('del-provider-select').value;
-                if (!prov) return alert("Selecciona un proveedor");
-                const toDelete = app.data.filter(i => (i.proveedor || 'General') === prov);
-                if (toDelete.length === 0) return alert("No hay productos");
-                if (!confirm(`⚠️ ELIMINAR ${toDelete.length} productos de ${prov}?`)) return;
-                toDelete.forEach(item => ref.child(item.id).remove());
-                app.toast(`Eliminados ${toDelete.length}`);
-                document.getElementById('modalDeleteProv').style.display = 'none';
+            add: () => {
+                const item = { codigo: document.getElementById('n-code').value || '-', proveedor: document.getElementById('n-prov').value || 'Gral', descripcion: document.getElementById('n-desc').value, marca: document.getElementById('n-brand').value || '', costo: parseFloat(document.getElementById('n-cost').value)||0, margen: parseFloat(document.getElementById('n-margin').value)||0, precio: parseFloat(document.getElementById('n-price').value)||0 };
+                if(!item.descripcion) return alert("Falta descripción");
+                ref.push(item); app.toast("Guardado");
+                ['n-code','n-desc','n-brand','n-price','n-cost'].forEach(id=>document.getElementById(id).value='');
+            },
+            saveEdit: () => {
+                const id = document.getElementById('edit-id').value;
+                ref.child(id).update({ codigo: document.getElementById('e-code').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value) });
+                document.getElementById('modalEdicion').style.display='none'; app.toast("Actualizado");
+            },
+            edit: (id) => {
+                const i = app.data.find(x=>x.id===id);
+                document.getElementById('edit-id').value = id; document.getElementById('e-code').value = i.codigo; document.getElementById('e-desc').value = i.descripcion; document.getElementById('e-brand').value = i.marca;
+                document.getElementById('e-cost').value = i.costo||0; document.getElementById('e-margin').value = i.margen||0; document.getElementById('e-price').value = i.precio;
+                document.getElementById('modalEdicion').style.display='flex';
+            },
+            delFromModal: () => { if(confirm("¿Eliminar?")) { ref.child(document.getElementById('edit-id').value).remove(); document.getElementById('modalEdicion').style.display='none'; } },
+            uploadExcel: (input) => {
+                const f = input.files[0]; if(!f) return;
+                const r = new FileReader();
+                r.onload = e => {
+                    const w = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+                    const j = XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]]);
+                    if(confirm(`Subir ${j.length}?`)) {
+                        j.forEach(r => { const c = r['costo']||r['Costo']||0; const m = r['margen']||r['Margen']||0; let p = r['precio']||r['Precio']||0; if(p===0 && c>0) p = c * (1 + m/100); ref.push({ codigo: r['codigo']||r['Codigo']||'-', descripcion: r['descripcion']||r['Descripcion']||'S/N', marca: r['marca']||r['Marca']||'', proveedor: r['proveedor']||r['Proveedor']||'Gral', costo: c, margen: m, precio: Math.round(p) }); });
+                        app.toast("Subida OK");
+                    }
+                };
+                r.readAsArrayBuffer(f); input.value='';
             },
             openBulkUpdate: () => {
                 const providers = [...new Set(app.data.map(i => i.proveedor || 'General'))].sort();
@@ -553,65 +546,27 @@
                 app.data.forEach(i => { if((i.proveedor||'General') === prov) { const newCost = (i.costo || 0) * factor; const newSale = newCost * (1 + (i.margen||0)/100); ref.child(i.id).update({ costo: Math.round(newCost), precio: Math.round(newSale) }); } });
                 app.toast("Actualizado"); document.getElementById('modalBulk').style.display = 'none';
             },
-            uploadExcel: (input) => {
-                const f = input.files[0]; if(!f) return;
-                const r = new FileReader();
-                r.onload = e => {
-                    try {
-                        const w = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
-                        const j = XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]]);
-                        if(j.length===0) return alert("Excel vacío");
-                        
-                        let updates=[], inserts=[];
-                        const existingMap = new Map();
-                        app.data.forEach(item => { existingMap.set(`${String(item.proveedor||'General').toLowerCase()}_${String(item.codigo||'-').toLowerCase()}`, item.id); });
-
-                        j.forEach(row => {
-                            const cod = String(row['codigo']||row['Codigo']||'-').trim();
-                            const prov = String(row['proveedor']||row['Proveedor']||'General').trim();
-                            const cost = parseFloat(row['costo']||row['Costo'])||0;
-                            const marg = parseFloat(row['margen']||row['Margen'])||0;
-                            let pric = parseFloat(row['precio']||row['Precio'])||0;
-                            if(pric===0 && cost>0) pric = cost * (1 + marg/100);
-
-                            const item = { codigo: cod, descripcion: String(row['descripcion']||row['Descripcion']||'S/N').trim(), marca: String(row['marca']||row['Marca']||'').trim(), proveedor: prov, costo: cost, margen: marg, precio: Math.round(pric) };
-                            const key = `${prov.toLowerCase()}_${cod.toLowerCase()}`;
-                            
-                            if(existingMap.has(key)) updates.push({id: existingMap.get(key), data: item});
-                            else inserts.push(item);
-                        });
-
-                        let doUpd = false;
-                        if(updates.length>0) doUpd = confirm(`Encontrados ${updates.length} duplicados.\nACEPTAR: Actualizar\nCANCELAR: Duplicar`);
-                        
-                        if(doUpd) updates.forEach(u => ref.child(u.id).update(u.data));
-                        else updates.forEach(u => ref.push(u.data));
-                        inserts.forEach(i => ref.push(i));
-                        
-                        app.toast("Carga finalizada");
-                    } catch(err) { alert("Error Excel: " + err.message); }
-                };
-                r.readAsArrayBuffer(f); input.value='';
-            },
             shareWhatsApp: () => {
                 if(app.cart.length===0) return alert("Vacio");
-                let msg = `*PRESUPUESTO AUTOPARTES NET*\n👤 ${document.getElementById('cliente').value||'Cliente'}\n\n`;
-                app.cart.forEach(c => msg += `▪ [${c.codigo}] ${c.descripcion}\n   ${c.cant} x $${c.precioFinal.toFixed(0)} ➝ $${(c.cant*c.precioFinal).toFixed(0)}\n`);
+                const cli = document.getElementById('cliente').value || "Cliente";
+                let msg = `*PEDIDO AUTOPARTES NET*\n👤 ${cli}\n\n`;
+                app.cart.forEach(c => msg += `▪ [${c.codigo}] ${c.descripcion}\n   ${c.cant} x $${c.precioFinal}\n`);
                 msg += `\n*TOTAL: $${document.getElementById('float-total').innerText}*`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
             },
             printPDF: () => {
                 if(app.cart.length===0) return alert("Vacio");
                 const { jsPDF } = window.jspdf; const doc = new jsPDF();
-                doc.setFontSize(18); doc.text("AUTOPARTES NET",10,15); doc.setFontSize(12); doc.text("Cliente: "+(document.getElementById('cliente').value||'Cliente'),10,25);
-                const body = app.cart.map(c=>[c.cant, `[${c.codigo}] ${c.descripcion}`, `$${c.precioFinal.toFixed(2)}`, `$${(c.cant*c.precioFinal).toFixed(2)}`]);
-                doc.autoTable({ head:[['Cant','Desc','Precio','Total']], body:body, startY:35, theme:'grid', headStyles:{fillColor:[49, 151, 149]} });
+                const cli = document.getElementById('cliente').value || "Cliente";
+                doc.text("AUTOPARTES NET",10,15); doc.text("Cliente: "+cli,10,25);
+                const body = app.cart.map(c=>[c.cant, `[${c.codigo}] ${c.descripcion}`, `$${c.precioFinal}`, `$${c.cant*c.precioFinal}`]);
+                doc.autoTable({ head:[['Cant','Desc','Precio','Total']], body:body, startY:35 });
                 doc.text("TOTAL: $"+document.getElementById('float-total').innerText, 10, doc.lastAutoTable.finalY+10);
-                doc.save('presupuesto.pdf');
+                doc.save('pedido.pdf');
             },
             toast: (m) => { const t=document.getElementById('toast'); t.innerText=m; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
         };
     </script>
 </body>
-
 </html>
+
