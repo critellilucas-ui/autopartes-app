@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V26 Galería</title>
+    <title>Autopartes Net - V27 Fotos Full</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -71,7 +71,7 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 55, 72, 0.5); backdrop-filter: blur(3px); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; }
         
-        /* GALERÍA */
+        /* GALERÍA VISUALIZACION */
         .modal-img-container { text-align: center; background: transparent; box-shadow: none; pointer-events: none; }
         .gallery-wrapper { pointer-events: auto; background: white; padding: 10px; border-radius: 10px; display: inline-block; max-width: 100%; position: relative; }
         .gallery-img { max-width: 100%; max-height: 70vh; border-radius: 8px; object-fit: contain; }
@@ -81,6 +81,12 @@
         .thumb-img { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; }
         .thumb-placeholder { width: 45px; height: 45px; background: #edf2f7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #cbd5e0; }
         
+        /* GESTION DE FOTOS EN EDICION */
+        .edit-gallery { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; justify-content: center; }
+        .edit-thumb-wrapper { position: relative; width: 60px; height: 60px; }
+        .edit-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e0; }
+        .delete-img-btn { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
         /* UPLOAD */
         .upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; margin-top: 10px; }
         .upload-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
@@ -149,7 +155,7 @@
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
                 
-                <!-- BOTONES ADMIN (FORCE DISPLAY) -->
+                <!-- BOTONES ADMIN -->
                 <button id="btn-usuarios" class="btn-purple" onclick="app.openUsersModal()" title="Usuarios" style="display:none;">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
@@ -306,10 +312,13 @@
             </div>
             
             <div class="upload-wrapper" style="text-align:center;">
-                <button class="btn-grey" style="width:100%;">📷 Cambiar/Agregar Fotos</button>
+                <button class="btn-grey" style="width:100%;">📷 Agregar/Cambiar Fotos</button>
                 <input type="file" id="e-file" accept="image/*" multiple onchange="app.handleFileSelect(this, 'e-label')">
             </div>
             <span id="e-label" class="preview-text"></span>
+            
+            <!-- GALERIA DE EDICION -->
+            <div id="e-gallery-container" class="edit-gallery"></div>
 
             <div style="display:flex; gap:10px; margin-top:20px;">
                 <button class="btn-green" onclick="app.saveEdit()" style="flex:1">Guardar</button>
@@ -366,9 +375,8 @@
         const app = {
             data: [], cart: [], user: null, userRole: null, clientDiscount: 0, loadedOrders: [],
             currentPage: 1, itemsPerPage: 20, filteredData: [], activeTab: 'TODOS',
-            currentGallery: [], galleryIndex: 0,
+            currentGallery: [], galleryIndex: 0, currentEditImages: [],
 
-            // --- LOGIN ---
             login: () => {
                 const u = document.getElementById('user').value.toLowerCase().trim();
                 const p = document.getElementById('pass').value;
@@ -437,13 +445,12 @@
                 });
             },
 
-            // --- FOTOS MULTIPLES ---
+            // --- FOTOS & GALERIA ---
             handleFileSelect: (input, labelId) => {
                 if(input.files && input.files.length > 0) {
-                    document.getElementById(labelId).innerText = `${input.files.length} imágenes seleccionadas`;
+                    document.getElementById(labelId).innerText = `${input.files.length} imágenes listas`;
                 }
             },
-            
             compressImage: (file) => {
                 return new Promise((resolve) => {
                     const reader = new FileReader();
@@ -464,22 +471,15 @@
                     }
                 });
             },
-
-            // GALERÍA
             openGallery: (item) => {
-                // Recuperar array de imagenes o imagen única antigua
                 app.currentGallery = item.imagenes || (item.imagen ? [item.imagen] : []);
-                
                 if(app.currentGallery.length === 0) return;
-
                 app.galleryIndex = 0;
                 app.updateGalleryView();
                 document.getElementById('modalPhoto').style.display = 'flex';
             },
-
             updateGalleryView: () => {
                 document.getElementById('gallery-main').src = app.currentGallery[app.galleryIndex];
-                
                 if(app.currentGallery.length > 1) {
                     document.getElementById('gallery-controls').style.display = 'flex';
                     document.getElementById('gallery-counter').innerText = `${app.galleryIndex + 1} / ${app.currentGallery.length}`;
@@ -487,18 +487,24 @@
                     document.getElementById('gallery-controls').style.display = 'none';
                 }
             },
-
-            nextImage: () => {
-                if(app.galleryIndex < app.currentGallery.length - 1) {
-                    app.galleryIndex++;
-                    app.updateGalleryView();
-                }
+            nextImage: () => { if(app.galleryIndex < app.currentGallery.length - 1) { app.galleryIndex++; app.updateGalleryView(); } },
+            prevImage: () => { if(app.galleryIndex > 0) { app.galleryIndex--; app.updateGalleryView(); } },
+            
+            // --- GESTION FOTOS EN EDIT ---
+            renderEditGallery: () => {
+                const container = document.getElementById('e-gallery-container');
+                container.innerHTML = '';
+                app.currentEditImages.forEach((img, idx) => {
+                    container.innerHTML += `
+                        <div class="edit-thumb-wrapper">
+                            <img src="${img}" class="edit-thumb">
+                            <div class="delete-img-btn" onclick="app.removeImage(${idx})">✕</div>
+                        </div>`;
+                });
             },
-            prevImage: () => {
-                if(app.galleryIndex > 0) {
-                    app.galleryIndex--;
-                    app.updateGalleryView();
-                }
+            removeImage: (idx) => {
+                app.currentEditImages.splice(idx, 1);
+                app.renderEditGallery();
             },
 
             // --- INVENTARIO & TABS ---
@@ -534,7 +540,7 @@
                     let btn = `<button class="btn-green btn-icon" onclick="app.addToCart('${i.id}')" style="width:36px;height:36px;">+</button>`;
                     let editBtn = '', costCell = '', priceDisplay = '';
                     
-                    // Lógica para mostrar la primera imagen disponible
+                    // Imagen Cover
                     let imgCover = i.imagenes ? i.imagenes[0] : (i.imagen ? i.imagen : '');
                     let imgHtml = imgCover ? 
                         `<img src="${imgCover}" class="thumb-img" onclick="app.openGallery(app.data.find(x=>x.id=='${i.id}'))">` : 
@@ -679,23 +685,18 @@
             add: async () => {
                 const files = document.getElementById('n-file').files;
                 let imagesList = [];
-                
                 if(files.length > 0) {
-                    app.toast(`Comprimiendo ${files.length} imágenes...`);
+                    app.toast("Comprimiendo...");
                     for(let i=0; i<files.length; i++) {
-                        // Limitar a 3 imagenes para no saturar
                         if(i >= 3) break;
-                        const b64 = await app.compressImage(files[i]);
-                        imagesList.push(b64);
+                        imagesList.push(await app.compressImage(files[i]));
                     }
                 }
-
                 const item = { 
                     codigo: document.getElementById('n-code').value || '-', proveedor: document.getElementById('n-prov').value || 'Gral', descripcion: document.getElementById('n-desc').value, marca: document.getElementById('n-brand').value || '',
                     costo: parseFloat(document.getElementById('n-cost').value)||0, margen: parseFloat(document.getElementById('n-margin').value)||0, precio: parseFloat(document.getElementById('n-price').value)||0,
-                    imagenes: imagesList // Nuevo campo Array
+                    imagenes: imagesList
                 };
-
                 if(!item.descripcion) return alert("Falta descripción");
                 ref.push(item); app.toast("Guardado");
                 ['n-code','n-desc','n-brand','n-price','n-cost'].forEach(id=>document.getElementById(id).value='');
@@ -704,22 +705,18 @@
             saveEdit: async () => {
                 const id = document.getElementById('edit-id').value;
                 const files = document.getElementById('e-file').files;
-                
                 let updates = { 
                     codigo: document.getElementById('e-code').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, proveedor: document.getElementById('e-prov').value,
-                    costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value) 
+                    costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value),
+                    imagenes: app.currentEditImages
                 };
-
+                
+                // Add new photos if selected
                 if(files.length > 0) {
-                    app.toast("Actualizando imágenes...");
-                    let imagesList = [];
-                    for(let i=0; i<files.length; i++) {
-                        if(i >= 3) break;
-                        imagesList.push(await app.compressImage(files[i]));
-                    }
-                    updates.imagenes = imagesList;
-                    // También actualizar campo antiguo para compatibilidad
-                    updates.imagen = null; 
+                     app.toast("Procesando fotos...");
+                     for(let i=0; i<files.length; i++) {
+                        updates.imagenes.push(await app.compressImage(files[i]));
+                     }
                 }
 
                 ref.child(id).update(updates);
@@ -730,11 +727,10 @@
                 document.getElementById('edit-id').value = id; document.getElementById('e-code').value = i.codigo; document.getElementById('e-desc').value = i.descripcion; document.getElementById('e-brand').value = i.marca; document.getElementById('e-prov').value = i.proveedor || 'General';
                 document.getElementById('e-cost').value = i.costo||0; document.getElementById('e-margin').value = i.margen||0; document.getElementById('e-price').value = i.precio;
                 
-                let count = 0;
-                if (i.imagenes) count = i.imagenes.length;
-                else if (i.imagen) count = 1;
+                app.currentEditImages = i.imagenes || (i.imagen ? [i.imagen] : []);
+                app.renderEditGallery();
+                document.getElementById('e-label').innerText = "";
                 
-                document.getElementById('e-label').innerText = count > 0 ? `${count} fotos actuales` : "Sin fotos";
                 document.getElementById('modalEdicion').style.display='flex';
             },
             delFromModal: () => { if(confirm("¿Eliminar?")) { ref.child(document.getElementById('edit-id').value).remove(); document.getElementById('modalEdicion').style.display='none'; } },
