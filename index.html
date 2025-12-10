@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V30 Final</title>
+    <title>Autopartes Net - V31 Restaurada</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -39,11 +39,12 @@
 
         /* CARDS & UI */
         .card { background: var(--surface); padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+        
+        /* INPUTS & BTNS */
         input, select { width: 100%; padding: 12px 15px; margin: 5px 0; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; outline: none; background: #fcfcfc; transition: border-color 0.3s; }
         input:focus { border-color: var(--primary); background: white; }
         button { padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; display: inline-flex; justify-content: center; align-items: center; gap: 6px; color:white; transition: 0.2s; }
         button:active { transform: scale(0.98); }
-        
         .btn-blue { background: var(--primary); } .btn-green { background: var(--success); } 
         .btn-red { background: var(--danger); } .btn-grey { background: #cbd5e0; color: var(--text); } 
         .btn-whatsapp { background: var(--whatsapp); } .btn-purple { background: var(--role-admin); }
@@ -54,13 +55,14 @@
 
         /* TABLE & CART */
         .table-responsive { width: 100%; border-collapse: collapse; }
-        .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
-        .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 0.95rem; }
+        .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+        .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
         @media (max-width: 768px) {
             .table-responsive thead { display: none; } 
             .table-responsive tr { display: block; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 12px; padding: 15px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
             .table-responsive td { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border: none; }
         }
+
         .cart-item { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 12px; background: #fafafa; }
         .input-mini { padding: 6px; text-align: center; font-size: 13px; margin: 0; border-radius:6px;}
         .label-mini { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; display: block; text-align: center; margin-bottom:2px;}
@@ -69,7 +71,7 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 55, 72, 0.5); backdrop-filter: blur(3px); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; }
         
-        /* GALERÍA */
+        /* GALERÍA DE VISUALIZACION */
         .modal-img-container { text-align: center; background: transparent; box-shadow: none; pointer-events: none; }
         .gallery-wrapper { pointer-events: auto; background: white; padding: 10px; border-radius: 10px; display: inline-block; max-width: 100%; position: relative; }
         .gallery-img { max-width: 100%; max-height: 70vh; border-radius: 8px; object-fit: contain; }
@@ -79,7 +81,7 @@
         .thumb-img { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; }
         .thumb-placeholder { width: 45px; height: 45px; background: #edf2f7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #cbd5e0; }
         
-        /* EDICION FOTOS */
+        /* EDICION DE FOTOS (RESTAURADO) */
         .edit-gallery { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; justify-content: center; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e0; }
         .edit-thumb-wrapper { position: relative; width: 70px; height: 70px; }
         .edit-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e0; }
@@ -100,6 +102,14 @@
         .notification-btn { position: relative; cursor: pointer; margin-right: 15px; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #edf2f7; transition: 0.3s; }
         .badge-count { position: absolute; top: -2px; right: -2px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7em; font-weight: bold; display: none; border: 2px solid white; }
         
+        /* FILTROS PEDIDOS */
+        .order-filters { display: flex; justify-content: center; gap: 5px; margin-bottom: 15px; background: #f7fafc; padding: 5px; border-radius: 10px; flex-wrap: wrap; }
+        .filter-pill { padding: 6px 12px; font-size: 0.75em; border-radius: 20px; cursor: pointer; border: 1px solid transparent; color: #666; transition: 0.2s; background: white; border: 1px solid #eee; }
+        .filter-pill.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: bold; }
+        .stats-box { text-align: center; padding: 15px; background: var(--primary); color: white; border-radius: 10px; margin-bottom: 15px; }
+        .stats-number { font-size: 1.5em; font-weight: 800; }
+        .stats-label { font-size: 0.8em; opacity: 0.9; text-transform: uppercase; }
+
         /* ESTILOS EXTRA */
         .code-badge { background: #e6fffa; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; padding: 3px 8px; border-radius: 6px; display: inline-block; border: 1px solid #b2f5ea; margin-right: 5px;}
         .prov-badge { background: #fffaf0; color: #d69e2e; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; border:1px solid #fceeb5; }
@@ -152,7 +162,7 @@
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
                 
-                <!-- BOTONES ADMIN (DISPLAY NONE FORZADO AQUI, JS LO ACTIVA) -->
+                <!-- BOTONES ADMIN -->
                 <button id="btn-usuarios" class="btn-purple" onclick="app.openUsersModal()" title="Usuarios" style="display:none;">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
@@ -285,19 +295,33 @@
         </div>
     </div>
 
-    <!-- MODAL PEDIDOS -->
+    <!-- MODAL PEDIDOS (AVANZADO) -->
     <div id="modalOrders" class="modal-overlay">
         <div class="modal-content">
-            <h3>🔔 Pedidos</h3>
-            <div style="margin-bottom:10px; text-align:right;">
-                <button class="btn-red" onclick="app.deleteSelectedOrders()" style="font-size:0.8rem; padding:6px 12px;">🗑️ Eliminar Seleccionados</button>
+            <h3>🔔 Pedidos Recibidos</h3>
+            
+            <div class="order-filters">
+                <span class="filter-pill active" onclick="app.filterOrders('hoy', this)">HOY</span>
+                <span class="filter-pill" onclick="app.filterOrders('semana', this)">SEMANA</span>
+                <span class="filter-pill" onclick="app.filterOrders('mes', this)">MES</span>
+                <span class="filter-pill" onclick="app.filterOrders('anio', this)">AÑO</span>
+                <span class="filter-pill" onclick="app.filterOrders('todos', this)">TODOS</span>
             </div>
-            <div id="orders-list" style="max-height:400px; overflow-y:auto;"></div>
+
+            <div class="stats-box">
+                <div class="stats-number">$<span id="stats-total">0.00</span></div>
+                <div class="stats-label">Ventas Periodo</div>
+            </div>
+
+            <div style="margin-bottom:10px; text-align:right;">
+                <button class="btn-red" onclick="app.deleteSelectedOrders()" style="font-size:0.8rem; padding:6px 12px;">🗑️ Borrar Seleccionados</button>
+            </div>
+            <div id="orders-list" style="max-height:300px; overflow-y:auto;"></div>
             <button class="btn-grey" onclick="document.getElementById('modalOrders').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
         </div>
     </div>
 
-    <!-- MODAL EDICION -->
+    <!-- MODAL EDICION (FOTOS RECUPERADAS) -->
     <div id="modalEdicion" class="modal-overlay">
         <div class="modal-content">
             <h3>✏️ Editar</h3>
@@ -312,14 +336,13 @@
                 <div><label style="font-size:0.7em;">LISTA</label><input id="e-price" type="number" style="background:white; font-weight:bold;"></div>
             </div>
             
-            <!-- FOTOS -->
+            <!-- GESTION DE FOTOS -->
             <div class="upload-wrapper" style="text-align:center;">
                 <button class="btn-grey" style="width:100%;">📷 Agregar/Cambiar Fotos</button>
                 <input type="file" id="e-file" accept="image/*" multiple onchange="app.handleFileSelect(this, 'e-label')">
             </div>
             <span id="e-label" class="preview-text"></span>
             
-            <!-- GALERIA EDICION -->
             <div id="e-gallery-container" class="edit-gallery"></div>
 
             <div style="display:flex; gap:10px; margin-top:20px;">
@@ -375,7 +398,8 @@
         } catch (error) { alert("Error Firebase: " + error.message); }
 
         const app = {
-            data: [], cart: [], user: null, userRole: null, clientDiscount: 0, loadedOrders: [],
+            data: [], cart: [], user: null, userRole: null, clientDiscount: 0, 
+            loadedOrders: [], allOrders: [], // Orders array
             currentPage: 1, itemsPerPage: 20, filteredData: [], activeTab: 'TODOS',
             currentGallery: [], galleryIndex: 0, currentEditImages: [],
 
@@ -415,7 +439,6 @@
                 document.getElementById('role-display').innerText = app.userRole.toUpperCase();
 
                 if(app.userRole === 'admin') {
-                    // Forzar mostrar botones admin usando ID directo
                     document.getElementById('btn-usuarios').style.display = 'inline-block';
                     document.getElementById('btn-config').style.display = 'inline-block';
                     document.getElementById('btn-orders').style.display = 'flex';
@@ -608,7 +631,7 @@
                 const cli = document.getElementById('cliente').value;
                 if(!cli) return alert("Falta nombre del cliente");
                 const total = document.getElementById('float-total').innerText;
-                const pedido = { fecha: new Date().toISOString(), cliente: cli, items: app.cart, total: total, estado: 'pendiente' };
+                const pedido = { fecha: new Date().toISOString(), cliente: cli, items: app.cart, total: parseInt(total.replace(/\./g, '')), estado: 'pendiente' };
                 ordersRef.push(pedido);
                 app.toast("Pedido Enviado");
                 if(app.userRole === 'cliente') app.shareWhatsApp();
@@ -617,42 +640,87 @@
             listenOrders: () => {
                 ordersRef.on('value', snap => {
                     const data = snap.val();
-                    let count = 0;
-                    const list = document.getElementById('orders-list'); list.innerHTML = '';
                     if(data) {
-                        app.loadedOrders = Object.keys(data).map(k => ({id:k, ...data[k]})).reverse();
-                        app.loadedOrders.forEach(o => {
-                            if(o.estado === 'pendiente') count++;
-                            const fecha = new Date(o.fecha).toLocaleString();
-                            const checkHtml = `<input type="checkbox" class="order-check" value="${o.id}" style="width:20px;height:20px;margin-right:10px;">`;
-                            list.innerHTML += `<div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}"><div style="display:flex;align-items:center;margin-bottom:5px;">${checkHtml}<div class="order-header" style="flex:1;margin-bottom:0;"><span>${o.cliente}</span> <span>$${o.total}</span></div></div><div style="font-size:0.8em; color:#666; margin-bottom:5px; margin-left:30px;">${fecha}</div><div style="font-size:0.85em; margin-left:30px;">${o.items ? o.items.length : 0} items</div><div style="display:flex; gap:5px; margin-top:5px; margin-left:30px;">${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="flex:1; font-size:0.8em;">Visto</button>` : '<small style="color:green; flex:1; align-self:center;">Procesado</small>'}<button class="btn-blue" onclick="app.printOrderPDF('${o.id}')" style="flex:1; font-size:0.8em;">📄 PDF</button></div></div>`;
-                        });
+                        app.allOrders = Object.keys(data).map(k => ({id:k, ...data[k]})).sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                        app.filterOrders('hoy'); // Default view
                     }
-                    const badge = document.getElementById('badge-orders');
-                    badge.innerText = count;
-                    badge.style.display = count > 0 ? 'block' : 'none';
                 });
+            },
+            filterOrders: (type, btn) => {
+                if(btn) { document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+                const now = new Date();
+                let filtered = [];
+                
+                const isSameDay = (d1, d2) => d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
+                const getWeek = d => { const onejan = new Date(d.getFullYear(),0,1); return Math.ceil((((d - onejan) / 86400000) + onejan.getDay()+1)/7); };
+
+                app.allOrders.forEach(o => {
+                    const d = new Date(o.fecha);
+                    if(type === 'hoy' && isSameDay(d, now)) filtered.push(o);
+                    else if(type === 'semana' && getWeek(d) === getWeek(now) && d.getFullYear() === now.getFullYear()) filtered.push(o);
+                    else if(type === 'mes' && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) filtered.push(o);
+                    else if(type === 'anio' && d.getFullYear() === now.getFullYear()) filtered.push(o);
+                    else if(type === 'todos') filtered.push(o);
+                });
+                app.renderOrderList(filtered);
+            },
+            renderOrderList: (list) => {
+                let totalMoney = 0;
+                let countPending = 0;
+                const container = document.getElementById('orders-list');
+                container.innerHTML = '';
+                
+                if(list.length === 0) { container.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa">No hay pedidos</div>'; }
+
+                list.forEach(o => {
+                    if(o.estado === 'pendiente') countPending++;
+                    totalMoney += parseFloat(o.total) || 0;
+                    const checkHtml = `<input type="checkbox" class="order-check" value="${o.id}" style="width:20px;height:20px;margin-right:10px;">`;
+                    container.innerHTML += `
+                        <div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}">
+                            <div style="display:flex;align-items:center; margin-bottom:5px;">${checkHtml}<div class="order-header" style="flex:1; margin-bottom:0;"><span>${o.cliente}</span> <span>$${(o.total||0).toLocaleString('es-AR')}</span></div></div>
+                            <div style="font-size:0.8em; color:#666; margin-bottom:5px; margin-left:30px;">${new Date(o.fecha).toLocaleString()}</div>
+                            <div style="font-size:0.85em; margin-left:30px;">${o.items ? o.items.length : 0} items</div>
+                            <div style="display:flex; gap:5px; margin-top:5px; margin-left:30px;">
+                                ${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="flex:1; font-size:0.8em;">Visto</button>` : '<small style="color:green; flex:1; align-self:center;">Procesado</small>'}
+                                <button class="btn-blue" onclick="app.printOrderPDF('${o.id}')" style="flex:1; font-size:0.8em;">📄 PDF</button>
+                            </div>
+                        </div>`;
+                });
+                
+                document.getElementById('stats-total').innerText = totalMoney.toLocaleString('es-AR');
+                // Badge counts ALL pending, not just filtered
+                const totalPending = app.allOrders.filter(o => o.estado === 'pendiente').length;
+                const badge = document.getElementById('badge-orders');
+                badge.innerText = totalPending;
+                badge.style.display = totalPending > 0 ? 'block' : 'none';
+                
+                // Store filtered list to access for printing if needed
+                app.loadedOrders = list; 
             },
             deleteSelectedOrders: () => {
                 const checks = document.querySelectorAll('.order-check:checked');
-                if(checks.length === 0) return alert("Selecciona pedidos");
+                if(checks.length === 0) return alert("Selecciona pedidos para borrar");
                 if(!confirm(`¿Borrar ${checks.length} pedidos permanentemente?`)) return;
                 checks.forEach(c => ordersRef.child(c.value).remove());
                 app.toast("Eliminados");
             },
             markOrder: (id) => { ordersRef.child(id).update({estado: 'visto'}); },
             printOrderPDF: (id) => {
-                const order = app.loadedOrders.find(o => o.id === id);
+                const order = app.allOrders.find(o => o.id === id);
                 if(!order) return;
                 const { jsPDF } = window.jspdf; const doc = new jsPDF();
                 doc.setFontSize(18); doc.text("AUTOPARTES NET - PEDIDO", 10, 15);
                 doc.setFontSize(11); doc.text(`Cliente: ${order.cliente}`, 10, 25); doc.text(`Fecha: ${new Date(order.fecha).toLocaleString()}`, 10, 32);
                 const body = (order.items || []).map(c => [c.cant, `${c.codigo||''} ${c.descripcion}`, `$${c.precioFinal}`, `$${c.cant*c.precioFinal}`]);
                 doc.autoTable({ head: [['Cant', 'Descripción', 'Unitario', 'Total']], body: body, startY: 45 });
-                doc.setFontSize(14); doc.text(`TOTAL PEDIDO: $${order.total}`, 10, doc.lastAutoTable.finalY + 15);
+                doc.setFontSize(14); doc.text(`TOTAL PEDIDO: $${(order.total||0).toLocaleString('es-AR')}`, 10, doc.lastAutoTable.finalY + 15);
                 doc.save(`Pedido_${order.cliente}_${id}.pdf`);
             },
-            openOrdersModal: () => { document.getElementById('modalOrders').style.display='flex'; },
+            openOrdersModal: () => { 
+                document.getElementById('modalOrders').style.display='flex'; 
+                app.filterOrders('hoy', document.querySelector('.filter-pill')); 
+            },
 
             // --- USUARIOS ---
             openUsersModal: () => { document.getElementById('modalUsers').style.display = 'flex'; app.loadUsersList(); },
@@ -665,7 +733,7 @@
                             const u = users[key];
                             const badge = u.role === 'admin' ? 'btn-purple' : (u.role === 'cliente' ? 'btn-orange' : 'btn-blue');
                             let info = u.role === 'cliente' ? `<br><small style="color:green">Desc: ${u.descuento}%</small>` : '';
-                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
+                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span class="role-badge ${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
                         });
                     }
                 });
@@ -677,7 +745,6 @@
                 const role = document.getElementById('u-role').value;
                 const disc = parseInt(document.getElementById('u-disc').value) || 0;
                 if(!name || !user || !pass) return alert("Faltan datos");
-                
                 usersRef.push({ nombre: name, user: user, pass: pass, role: role, descuento: disc });
                 app.toast("Usuario Creado");
                 document.getElementById('u-name').value = ''; document.getElementById('u-user').value = ''; document.getElementById('u-pass').value = '';
@@ -714,8 +781,11 @@
             saveEdit: async () => {
                 const id = document.getElementById('edit-id').value;
                 const files = document.getElementById('e-file').files;
+                
+                // 1. Usar copia de la galería actual (con borrados aplicados)
                 let finalImages = [...app.currentEditImages];
 
+                // 2. Procesar nuevas
                 if(files.length > 0) {
                     app.toast("Procesando fotos nuevas...");
                     for(let i=0; i<files.length; i++) {
