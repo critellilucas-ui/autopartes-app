@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V27.2 Fix Fotos</title>
+    <title>Autopartes Net - V27.3 Fix Galería</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -83,10 +83,10 @@
         .thumb-placeholder { width: 45px; height: 45px; background: #edf2f7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #cbd5e0; }
         
         /* GESTION DE FOTOS EN EDICION */
-        .edit-gallery { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; justify-content: center; }
-        .edit-thumb-wrapper { position: relative; width: 60px; height: 60px; }
+        .edit-gallery { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; justify-content: center; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e0; }
+        .edit-thumb-wrapper { position: relative; width: 70px; height: 70px; }
         .edit-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e0; }
-        .delete-img-btn { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .delete-img-btn { position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; }
 
         /* UPLOAD */
         .upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; margin-top: 10px; }
@@ -156,7 +156,7 @@
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
                 
-                <!-- BOTONES ADMIN -->
+                <!-- BOTONES ADMIN (ESTILOS INLINE PARA FORZAR VISIBILIDAD) -->
                 <button id="btn-usuarios" class="btn-purple" onclick="app.openUsersModal()" title="Usuarios" style="display:none;">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
@@ -667,7 +667,6 @@
                 const role = document.getElementById('u-role').value;
                 const disc = parseInt(document.getElementById('u-disc').value) || 0;
                 if(!name || !user || !pass) return alert("Faltan datos");
-                
                 usersRef.push({ nombre: name, user: user, pass: pass, role: role, descuento: disc });
                 app.toast("Usuario Creado");
                 document.getElementById('u-name').value = ''; document.getElementById('u-user').value = ''; document.getElementById('u-pass').value = '';
@@ -699,37 +698,37 @@
                 ref.push(item); app.toast("Guardado");
                 ['n-code','n-desc','n-brand','n-price','n-cost'].forEach(id=>document.getElementById(id).value='');
                 document.getElementById('n-label').innerText = '';
+                // LIMPIAR INPUT DE FOTOS
+                document.getElementById('n-file').value = ''; 
             },
+            
             saveEdit: async () => {
                 const id = document.getElementById('edit-id').value;
-                const files = document.getElementById('e-file').files;
+                const fileInput = document.getElementById('e-file');
 
-                // 1. Empezamos con las imágenes actuales (que pueden haber sido borradas visualmente)
+                // 1. Usar copia de la galería actual (con borrados aplicados)
                 let finalImages = [...app.currentEditImages];
 
-                // 2. Si hay archivos nuevos seleccionados, los comprimimos y agregamos
-                if(files.length > 0) {
+                // 2. Procesar nuevas
+                if(fileInput.files.length > 0) {
                     app.toast("Procesando fotos nuevas...");
-                    for(let i=0; i<files.length; i++) {
-                        finalImages.push(await app.compressImage(files[i]));
+                    for(let i=0; i<fileInput.files.length; i++) {
+                        finalImages.push(await app.compressImage(fileInput.files[i]));
                     }
                 }
 
-                // 3. Preparamos la actualización
+                // 3. Update Object
                 let updates = { 
-                    codigo: document.getElementById('e-code').value, 
-                    descripcion: document.getElementById('e-desc').value, 
-                    marca: document.getElementById('e-brand').value, 
-                    proveedor: document.getElementById('e-prov').value,
-                    costo: parseFloat(document.getElementById('e-cost').value), 
-                    margen: parseFloat(document.getElementById('e-margin').value), 
-                    precio: parseFloat(document.getElementById('e-price').value),
-                    imagenes: finalImages.length > 0 ? finalImages : null, // Si está vacío, borrar la clave en Firebase
-                    imagen: null // Limpiar campo antiguo por compatibilidad
+                    codigo: document.getElementById('e-code').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, proveedor: document.getElementById('e-prov').value,
+                    costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value),
+                    imagenes: finalImages.length > 0 ? finalImages : null, 
+                    imagen: null 
                 };
 
-                // 4. Enviar
-                ref.child(id).update(updates);
+                // 4. Send & Clear
+                await ref.child(id).update(updates);
+                fileInput.value = ''; // LIMPIAR INPUT
+                document.getElementById('e-label').innerText = '';
                 document.getElementById('modalEdicion').style.display='none'; 
                 app.toast("Actualizado correctamente");
             },
@@ -814,4 +813,6 @@
     </script>
 </body>
 </html>
+
+
 
