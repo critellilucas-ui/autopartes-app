@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V31 Restaurada</title>
+    <title>Autopartes Net - V32 Fotos OK</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -71,7 +71,7 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 55, 72, 0.5); backdrop-filter: blur(3px); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; }
         
-        /* GALERÍA DE VISUALIZACION */
+        /* GALERÍA */
         .modal-img-container { text-align: center; background: transparent; box-shadow: none; pointer-events: none; }
         .gallery-wrapper { pointer-events: auto; background: white; padding: 10px; border-radius: 10px; display: inline-block; max-width: 100%; position: relative; }
         .gallery-img { max-width: 100%; max-height: 70vh; border-radius: 8px; object-fit: contain; }
@@ -81,7 +81,7 @@
         .thumb-img { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; }
         .thumb-placeholder { width: 45px; height: 45px; background: #edf2f7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #cbd5e0; }
         
-        /* EDICION DE FOTOS (RESTAURADO) */
+        /* EDICION DE FOTOS */
         .edit-gallery { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; justify-content: center; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e0; }
         .edit-thumb-wrapper { position: relative; width: 70px; height: 70px; }
         .edit-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e0; }
@@ -295,7 +295,7 @@
         </div>
     </div>
 
-    <!-- MODAL PEDIDOS (AVANZADO) -->
+    <!-- MODAL PEDIDOS AVANZADO -->
     <div id="modalOrders" class="modal-overlay">
         <div class="modal-content">
             <h3>🔔 Pedidos Recibidos</h3>
@@ -321,7 +321,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDICION (FOTOS RECUPERADAS) -->
+    <!-- MODAL EDICION (FOTOS FIX) -->
     <div id="modalEdicion" class="modal-overlay">
         <div class="modal-content">
             <h3>✏️ Editar</h3>
@@ -336,13 +336,13 @@
                 <div><label style="font-size:0.7em;">LISTA</label><input id="e-price" type="number" style="background:white; font-weight:bold;"></div>
             </div>
             
-            <!-- GESTION DE FOTOS -->
             <div class="upload-wrapper" style="text-align:center;">
                 <button class="btn-grey" style="width:100%;">📷 Agregar/Cambiar Fotos</button>
                 <input type="file" id="e-file" accept="image/*" multiple onchange="app.handleFileSelect(this, 'e-label')">
             </div>
             <span id="e-label" class="preview-text"></span>
             
+            <!-- GALERIA DE EDICION -->
             <div id="e-gallery-container" class="edit-gallery"></div>
 
             <div style="display:flex; gap:10px; margin-top:20px;">
@@ -398,10 +398,10 @@
         } catch (error) { alert("Error Firebase: " + error.message); }
 
         const app = {
-            data: [], cart: [], user: null, userRole: null, clientDiscount: 0, 
-            loadedOrders: [], allOrders: [], // Orders array
+            data: [], cart: [], user: null, userRole: null, clientDiscount: 0, loadedOrders: [],
             currentPage: 1, itemsPerPage: 20, filteredData: [], activeTab: 'TODOS',
             currentGallery: [], galleryIndex: 0, currentEditImages: [],
+            allOrders: [], // Guardar todos los pedidos para filtrar localmente
 
             login: () => {
                 const u = document.getElementById('user').value.toLowerCase().trim();
@@ -631,7 +631,9 @@
                 const cli = document.getElementById('cliente').value;
                 if(!cli) return alert("Falta nombre del cliente");
                 const total = document.getElementById('float-total').innerText;
-                const pedido = { fecha: new Date().toISOString(), cliente: cli, items: app.cart, total: parseInt(total.replace(/\./g, '')), estado: 'pendiente' };
+                // Parseo correcto del numero (quitando puntos)
+                const totalClean = parseFloat(total.replace(/\./g, '').replace(',','.'));
+                const pedido = { fecha: new Date().toISOString(), cliente: cli, items: app.cart, total: totalClean, estado: 'pendiente' };
                 ordersRef.push(pedido);
                 app.toast("Pedido Enviado");
                 if(app.userRole === 'cliente') app.shareWhatsApp();
@@ -642,15 +644,15 @@
                     const data = snap.val();
                     if(data) {
                         app.allOrders = Object.keys(data).map(k => ({id:k, ...data[k]})).sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-                        app.filterOrders('hoy'); // Default view
+                        app.filterOrders('hoy');
                     }
                 });
             },
+            // FILTROS PEDIDOS
             filterOrders: (type, btn) => {
                 if(btn) { document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
                 const now = new Date();
                 let filtered = [];
-                
                 const isSameDay = (d1, d2) => d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
                 const getWeek = d => { const onejan = new Date(d.getFullYear(),0,1); return Math.ceil((((d - onejan) / 86400000) + onejan.getDay()+1)/7); };
 
@@ -689,13 +691,10 @@
                 });
                 
                 document.getElementById('stats-total').innerText = totalMoney.toLocaleString('es-AR');
-                // Badge counts ALL pending, not just filtered
                 const totalPending = app.allOrders.filter(o => o.estado === 'pendiente').length;
                 const badge = document.getElementById('badge-orders');
                 badge.innerText = totalPending;
                 badge.style.display = totalPending > 0 ? 'block' : 'none';
-                
-                // Store filtered list to access for printing if needed
                 app.loadedOrders = list; 
             },
             deleteSelectedOrders: () => {
@@ -733,7 +732,7 @@
                             const u = users[key];
                             const badge = u.role === 'admin' ? 'btn-purple' : (u.role === 'cliente' ? 'btn-orange' : 'btn-blue');
                             let info = u.role === 'cliente' ? `<br><small style="color:green">Desc: ${u.descuento}%</small>` : '';
-                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span class="role-badge ${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
+                            list.innerHTML += `<tr><td><b>${u.nombre}</b><br><small>${u.user}</small>${info}</td><td><span style="padding:2px 6px; border-radius:4px; font-size:0.7em; color:white;" class="${badge}">${u.role}</span></td><td style="text-align:right;"><button class="btn-red btn-icon" onclick="app.deleteUser('${key}')" style="width:24px;height:24px;font-size:0.8em;">✕</button></td></tr>`;
                         });
                     }
                 });
@@ -887,5 +886,4 @@
     </script>
 </body>
 </html>
-
 
