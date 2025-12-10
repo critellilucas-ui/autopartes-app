@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V27.1 Fix Fotos</title>
+    <title>Autopartes Net - V27.2 Fix Fotos</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -214,6 +214,7 @@
                 <table class="table-responsive">
                     <thead id="table-head">
                         <tr>
+                            <th style="width:60px;">Foto</th>
                             <th style="width:40%;">Descripción / Código</th>
                             <th style="width:20%;">Marca / Prov</th>
                             <th style="text-align:right; width:15%;">Precio</th>
@@ -666,6 +667,7 @@
                 const role = document.getElementById('u-role').value;
                 const disc = parseInt(document.getElementById('u-disc').value) || 0;
                 if(!name || !user || !pass) return alert("Faltan datos");
+                
                 usersRef.push({ nombre: name, user: user, pass: pass, role: role, descuento: disc });
                 app.toast("Usuario Creado");
                 document.getElementById('u-name').value = ''; document.getElementById('u-user').value = ''; document.getElementById('u-pass').value = '';
@@ -701,20 +703,35 @@
             saveEdit: async () => {
                 const id = document.getElementById('edit-id').value;
                 const files = document.getElementById('e-file').files;
-                let updates = { 
-                    codigo: document.getElementById('e-code').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, proveedor: document.getElementById('e-prov').value,
-                    costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value),
-                    imagenes: app.currentEditImages.length > 0 ? app.currentEditImages : null // Corrección V27.1
-                };
+
+                // 1. Empezamos con las imágenes actuales (que pueden haber sido borradas visualmente)
+                let finalImages = [...app.currentEditImages];
+
+                // 2. Si hay archivos nuevos seleccionados, los comprimimos y agregamos
                 if(files.length > 0) {
-                    app.toast("Procesando fotos...");
-                    if (!updates.imagenes) updates.imagenes = [];
+                    app.toast("Procesando fotos nuevas...");
                     for(let i=0; i<files.length; i++) {
-                        updates.imagenes.push(await app.compressImage(files[i]));
+                        finalImages.push(await app.compressImage(files[i]));
                     }
                 }
+
+                // 3. Preparamos la actualización
+                let updates = { 
+                    codigo: document.getElementById('e-code').value, 
+                    descripcion: document.getElementById('e-desc').value, 
+                    marca: document.getElementById('e-brand').value, 
+                    proveedor: document.getElementById('e-prov').value,
+                    costo: parseFloat(document.getElementById('e-cost').value), 
+                    margen: parseFloat(document.getElementById('e-margin').value), 
+                    precio: parseFloat(document.getElementById('e-price').value),
+                    imagenes: finalImages.length > 0 ? finalImages : null, // Si está vacío, borrar la clave en Firebase
+                    imagen: null // Limpiar campo antiguo por compatibilidad
+                };
+
+                // 4. Enviar
                 ref.child(id).update(updates);
-                document.getElementById('modalEdicion').style.display='none'; app.toast("Actualizado");
+                document.getElementById('modalEdicion').style.display='none'; 
+                app.toast("Actualizado correctamente");
             },
             edit: (id) => {
                 const i = app.data.find(x=>x.id===id);
@@ -797,3 +814,4 @@
     </script>
 </body>
 </html>
+
