@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V27 Fotos Full</title>
+    <title>Autopartes Net - V27.1 Fix Fotos</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -55,8 +55,9 @@
 
         /* TABLE & CART */
         .table-responsive { width: 100%; border-collapse: collapse; }
-        .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
-        .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        .table-responsive th { background: #f7fafc; text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+        .table-responsive td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 0.95rem; }
+        
         @media (max-width: 768px) {
             .table-responsive thead { display: none; } 
             .table-responsive tr { display: block; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 12px; padding: 15px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
@@ -213,7 +214,6 @@
                 <table class="table-responsive">
                     <thead id="table-head">
                         <tr>
-                            <th style="width:60px;">Foto</th>
                             <th style="width:40%;">Descripción / Código</th>
                             <th style="width:20%;">Marca / Prov</th>
                             <th style="text-align:right; width:15%;">Precio</th>
@@ -419,7 +419,7 @@
                     
                     const thead = document.querySelector('#table-head tr');
                     if (!thead.innerHTML.includes('Costo')) {
-                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[4]);
+                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thCosto.style.width = "10%"; thead.insertBefore(thCosto, thead.children[4]);
                     }
                     app.listenOrders();
                 } else if(app.userRole === 'vendedor') {
@@ -445,10 +445,10 @@
                 });
             },
 
-            // --- FOTOS & GALERIA ---
+            // --- FOTOS ---
             handleFileSelect: (input, labelId) => {
                 if(input.files && input.files.length > 0) {
-                    document.getElementById(labelId).innerText = `${input.files.length} imágenes listas`;
+                    document.getElementById(labelId).innerText = `${input.files.length} imágenes seleccionadas`;
                 }
             },
             compressImage: (file) => {
@@ -489,8 +489,7 @@
             },
             nextImage: () => { if(app.galleryIndex < app.currentGallery.length - 1) { app.galleryIndex++; app.updateGalleryView(); } },
             prevImage: () => { if(app.galleryIndex > 0) { app.galleryIndex--; app.updateGalleryView(); } },
-            
-            // --- GESTION FOTOS EN EDIT ---
+
             renderEditGallery: () => {
                 const container = document.getElementById('e-gallery-container');
                 container.innerHTML = '';
@@ -540,11 +539,8 @@
                     let btn = `<button class="btn-green btn-icon" onclick="app.addToCart('${i.id}')" style="width:36px;height:36px;">+</button>`;
                     let editBtn = '', costCell = '', priceDisplay = '';
                     
-                    // Imagen Cover
                     let imgCover = i.imagenes ? i.imagenes[0] : (i.imagen ? i.imagen : '');
-                    let imgHtml = imgCover ? 
-                        `<img src="${imgCover}" class="thumb-img" onclick="app.openGallery(app.data.find(x=>x.id=='${i.id}'))">` : 
-                        `<div class="thumb-placeholder">📷</div>`;
+                    let imgHtml = imgCover ? `<img src="${imgCover}" class="thumb-img" onclick="app.openGallery(app.data.find(x=>x.id=='${i.id}'))">` : `<div class="thumb-placeholder">📷</div>`;
 
                     let priceVal = parseFloat(i.precio);
                     if(app.userRole === 'cliente' && app.clientDiscount > 0) {
@@ -708,17 +704,15 @@
                 let updates = { 
                     codigo: document.getElementById('e-code').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, proveedor: document.getElementById('e-prov').value,
                     costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value),
-                    imagenes: app.currentEditImages
+                    imagenes: app.currentEditImages.length > 0 ? app.currentEditImages : null // Corrección V27.1
                 };
-                
-                // Add new photos if selected
                 if(files.length > 0) {
-                     app.toast("Procesando fotos...");
-                     for(let i=0; i<files.length; i++) {
+                    app.toast("Procesando fotos...");
+                    if (!updates.imagenes) updates.imagenes = [];
+                    for(let i=0; i<files.length; i++) {
                         updates.imagenes.push(await app.compressImage(files[i]));
-                     }
+                    }
                 }
-
                 ref.child(id).update(updates);
                 document.getElementById('modalEdicion').style.display='none'; app.toast("Actualizado");
             },
@@ -730,7 +724,6 @@
                 app.currentEditImages = i.imagenes || (i.imagen ? [i.imagen] : []);
                 app.renderEditGallery();
                 document.getElementById('e-label').innerText = "";
-                
                 document.getElementById('modalEdicion').style.display='flex';
             },
             delFromModal: () => { if(confirm("¿Eliminar?")) { ref.child(document.getElementById('edit-id').value).remove(); document.getElementById('modalEdicion').style.display='none'; } },
