@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V28 Gestión Pedidos</title>
+    <title>Autopartes Net - V29 Full</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -72,7 +72,7 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 55, 72, 0.5); backdrop-filter: blur(3px); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; }
         
-        /* GALERÍA VISUALIZACION */
+        /* GALERÍA */
         .modal-img-container { text-align: center; background: transparent; box-shadow: none; pointer-events: none; }
         .gallery-wrapper { pointer-events: auto; background: white; padding: 10px; border-radius: 10px; display: inline-block; max-width: 100%; position: relative; }
         .gallery-img { max-width: 100%; max-height: 70vh; border-radius: 8px; object-fit: contain; }
@@ -214,7 +214,6 @@
                 <table class="table-responsive">
                     <thead id="table-head">
                         <tr>
-                            <th style="width:60px;">Foto</th>
                             <th style="width:40%;">Descripción / Código</th>
                             <th style="width:20%;">Marca / Prov</th>
                             <th style="text-align:right; width:15%;">Precio</th>
@@ -626,22 +625,8 @@
                         app.loadedOrders.forEach(o => {
                             if(o.estado === 'pendiente') count++;
                             const fecha = new Date(o.fecha).toLocaleString();
-                            // Checkbox para eliminar
                             const checkHtml = `<input type="checkbox" class="order-check" value="${o.id}" style="width:20px;height:20px;margin-right:10px;">`;
-                            
-                            list.innerHTML += `
-                                <div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}">
-                                    <div style="display:flex;align-items:center; margin-bottom:5px;">
-                                        ${checkHtml}
-                                        <div class="order-header" style="flex:1; margin-bottom:0;"><span>${o.cliente}</span> <span>$${o.total}</span></div>
-                                    </div>
-                                    <div style="font-size:0.8em; color:#666; margin-bottom:5px; margin-left:30px;">${fecha}</div>
-                                    <div style="font-size:0.85em; margin-left:30px;">${o.items ? o.items.length : 0} items</div>
-                                    <div style="display:flex; gap:5px; margin-top:5px; margin-left:30px;">
-                                        ${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="flex:1; font-size:0.8em;">Visto</button>` : '<small style="color:green; flex:1; align-self:center;">Procesado</small>'}
-                                        <button class="btn-blue" onclick="app.printOrderPDF('${o.id}')" style="flex:1; font-size:0.8em;">📄 PDF</button>
-                                    </div>
-                                </div>`;
+                            list.innerHTML += `<div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}"><div style="display:flex;align-items:center;margin-bottom:5px;">${checkHtml}<div class="order-header" style="flex:1;margin-bottom:0;"><span>${o.cliente}</span> <span>$${o.total}</span></div></div><div style="font-size:0.8em; color:#666; margin-bottom:5px; margin-left:30px;">${fecha}</div><div style="font-size:0.85em; margin-left:30px;">${o.items ? o.items.length : 0} items</div><div style="display:flex; gap:5px; margin-top:5px; margin-left:30px;">${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="flex:1; font-size:0.8em;">Visto</button>` : '<small style="color:green; flex:1; align-self:center;">Procesado</small>'}<button class="btn-blue" onclick="app.printOrderPDF('${o.id}')" style="flex:1; font-size:0.8em;">📄 PDF</button></div></div>`;
                         });
                     }
                     const badge = document.getElementById('badge-orders');
@@ -649,15 +634,13 @@
                     badge.style.display = count > 0 ? 'block' : 'none';
                 });
             },
-            
             deleteSelectedOrders: () => {
                 const checks = document.querySelectorAll('.order-check:checked');
-                if(checks.length === 0) return alert("Selecciona al menos un pedido");
+                if(checks.length === 0) return alert("Selecciona pedidos para borrar");
                 if(!confirm(`¿Borrar ${checks.length} pedidos permanentemente?`)) return;
                 checks.forEach(c => ordersRef.child(c.value).remove());
                 app.toast("Pedidos eliminados");
             },
-
             markOrder: (id) => { ordersRef.child(id).update({estado: 'visto'}); },
             printOrderPDF: (id) => {
                 const order = app.loadedOrders.find(o => o.id === id);
@@ -695,6 +678,7 @@
                 const role = document.getElementById('u-role').value;
                 const disc = parseInt(document.getElementById('u-disc').value) || 0;
                 if(!name || !user || !pass) return alert("Faltan datos");
+                
                 usersRef.push({ nombre: name, user: user, pass: pass, role: role, descuento: disc });
                 app.toast("Usuario Creado");
                 document.getElementById('u-name').value = ''; document.getElementById('u-user').value = ''; document.getElementById('u-pass').value = '';
@@ -834,5 +818,6 @@
     </script>
 </body>
 </html>
+
 
 
