@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V27.3 Fix Galería</title>
+    <title>Autopartes Net - V28 Gestión Pedidos</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -156,7 +156,7 @@
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
                 
-                <!-- BOTONES ADMIN (ESTILOS INLINE PARA FORZAR VISIBILIDAD) -->
+                <!-- BOTONES ADMIN -->
                 <button id="btn-usuarios" class="btn-purple" onclick="app.openUsersModal()" title="Usuarios" style="display:none;">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
@@ -293,6 +293,10 @@
     <div id="modalOrders" class="modal-overlay">
         <div class="modal-content">
             <h3>🔔 Pedidos</h3>
+            <!-- BARRA DE SELECCION -->
+            <div style="margin-bottom:10px; text-align:right;">
+                <button class="btn-red" onclick="app.deleteSelectedOrders()" style="font-size:0.8rem; padding:6px 12px;">🗑️ Eliminar Seleccionados</button>
+            </div>
             <div id="orders-list"></div>
             <button class="btn-grey" onclick="document.getElementById('modalOrders').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
         </div>
@@ -622,7 +626,22 @@
                         app.loadedOrders.forEach(o => {
                             if(o.estado === 'pendiente') count++;
                             const fecha = new Date(o.fecha).toLocaleString();
-                            list.innerHTML += `<div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}"><div class="order-header"><span>${o.cliente}</span> <span>$${o.total}</span></div><div style="font-size:0.8em; color:#666; margin-bottom:5px;">${fecha}</div><div style="font-size:0.85em;">${o.items ? o.items.length : 0} items</div><div style="display:flex; gap:5px; margin-top:5px;">${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="flex:1; font-size:0.8em;">Visto</button>` : '<small style="color:green; flex:1; align-self:center;">Procesado</small>'}<button class="btn-blue" onclick="app.printOrderPDF('${o.id}')" style="flex:1; font-size:0.8em;">📄 PDF</button></div></div>`;
+                            // Checkbox para eliminar
+                            const checkHtml = `<input type="checkbox" class="order-check" value="${o.id}" style="width:20px;height:20px;margin-right:10px;">`;
+                            
+                            list.innerHTML += `
+                                <div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}">
+                                    <div style="display:flex;align-items:center; margin-bottom:5px;">
+                                        ${checkHtml}
+                                        <div class="order-header" style="flex:1; margin-bottom:0;"><span>${o.cliente}</span> <span>$${o.total}</span></div>
+                                    </div>
+                                    <div style="font-size:0.8em; color:#666; margin-bottom:5px; margin-left:30px;">${fecha}</div>
+                                    <div style="font-size:0.85em; margin-left:30px;">${o.items ? o.items.length : 0} items</div>
+                                    <div style="display:flex; gap:5px; margin-top:5px; margin-left:30px;">
+                                        ${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="flex:1; font-size:0.8em;">Visto</button>` : '<small style="color:green; flex:1; align-self:center;">Procesado</small>'}
+                                        <button class="btn-blue" onclick="app.printOrderPDF('${o.id}')" style="flex:1; font-size:0.8em;">📄 PDF</button>
+                                    </div>
+                                </div>`;
                         });
                     }
                     const badge = document.getElementById('badge-orders');
@@ -630,6 +649,15 @@
                     badge.style.display = count > 0 ? 'block' : 'none';
                 });
             },
+            
+            deleteSelectedOrders: () => {
+                const checks = document.querySelectorAll('.order-check:checked');
+                if(checks.length === 0) return alert("Selecciona al menos un pedido");
+                if(!confirm(`¿Borrar ${checks.length} pedidos permanentemente?`)) return;
+                checks.forEach(c => ordersRef.child(c.value).remove());
+                app.toast("Pedidos eliminados");
+            },
+
             markOrder: (id) => { ordersRef.child(id).update({estado: 'visto'}); },
             printOrderPDF: (id) => {
                 const order = app.loadedOrders.find(o => o.id === id);
@@ -698,26 +726,20 @@
                 ref.push(item); app.toast("Guardado");
                 ['n-code','n-desc','n-brand','n-price','n-cost'].forEach(id=>document.getElementById(id).value='');
                 document.getElementById('n-label').innerText = '';
-                // LIMPIAR INPUT DE FOTOS
                 document.getElementById('n-file').value = ''; 
             },
-            
             saveEdit: async () => {
                 const id = document.getElementById('edit-id').value;
-                const fileInput = document.getElementById('e-file');
-
-                // 1. Usar copia de la galería actual (con borrados aplicados)
+                const files = document.getElementById('e-file').files;
                 let finalImages = [...app.currentEditImages];
 
-                // 2. Procesar nuevas
-                if(fileInput.files.length > 0) {
+                if(files.length > 0) {
                     app.toast("Procesando fotos nuevas...");
-                    for(let i=0; i<fileInput.files.length; i++) {
-                        finalImages.push(await app.compressImage(fileInput.files[i]));
+                    for(let i=0; i<files.length; i++) {
+                        finalImages.push(await app.compressImage(files[i]));
                     }
                 }
 
-                // 3. Update Object
                 let updates = { 
                     codigo: document.getElementById('e-code').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, proveedor: document.getElementById('e-prov').value,
                     costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value),
@@ -725,9 +747,8 @@
                     imagen: null 
                 };
 
-                // 4. Send & Clear
-                await ref.child(id).update(updates);
-                fileInput.value = ''; // LIMPIAR INPUT
+                ref.child(id).update(updates);
+                document.getElementById('e-file').value = '';
                 document.getElementById('e-label').innerText = '';
                 document.getElementById('modalEdicion').style.display='none'; 
                 app.toast("Actualizado correctamente");
@@ -813,6 +834,5 @@
     </script>
 </body>
 </html>
-
 
 
