@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autopartes Net - V24 Gestión Pedidos</title>
+    <title>Autopartes Net - V26 Galería</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -32,18 +32,10 @@
         /* HEADER */
         .header-app { background: var(--surface); padding: 15px 20px; border-radius: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
 
-        /* TABS & FILTERS */
+        /* TABS */
         .tabs-wrapper { overflow-x: auto; white-space: nowrap; padding-bottom: 10px; margin-bottom: 15px; -webkit-overflow-scrolling: touch; }
         .tab-btn { display: inline-block; padding: 8px 20px; border-radius: 30px; background: white; border: 1px solid var(--border); color: var(--text-muted); font-weight: 600; cursor: pointer; margin-right: 8px; transition: 0.3s; }
         .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 2px 5px rgba(49,151,149,0.3); }
-
-        /* FILTROS DE PEDIDOS (NUEVO) */
-        .order-filters { display: flex; justify-content: center; gap: 5px; margin-bottom: 15px; background: #f7fafc; padding: 5px; border-radius: 10px; }
-        .filter-pill { padding: 6px 12px; font-size: 0.8em; border-radius: 20px; cursor: pointer; border: 1px solid transparent; color: #666; transition: 0.2s; }
-        .filter-pill.active { background: white; color: var(--primary); border-color: var(--border); font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .stats-box { text-align: center; padding: 15px; background: var(--primary); color: white; border-radius: 10px; margin-bottom: 15px; }
-        .stats-number { font-size: 1.5em; font-weight: 800; }
-        .stats-label { font-size: 0.8em; opacity: 0.9; text-transform: uppercase; }
 
         /* CARDS & UI */
         .card { background: var(--surface); padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border); }
@@ -53,7 +45,6 @@
         input:focus { border-color: var(--primary); background: white; }
         button { padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; display: inline-flex; justify-content: center; align-items: center; gap: 6px; color:white; transition: 0.2s; }
         button:active { transform: scale(0.98); }
-        
         .btn-blue { background: var(--primary); } .btn-green { background: var(--success); } 
         .btn-red { background: var(--danger); } .btn-grey { background: #cbd5e0; color: var(--text); } 
         .btn-whatsapp { background: var(--whatsapp); } .btn-purple { background: var(--role-admin); }
@@ -78,8 +69,23 @@
 
         /* MODALS */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 55, 72, 0.5); backdrop-filter: blur(3px); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; }
         
+        /* GALERÍA */
+        .modal-img-container { text-align: center; background: transparent; box-shadow: none; pointer-events: none; }
+        .gallery-wrapper { pointer-events: auto; background: white; padding: 10px; border-radius: 10px; display: inline-block; max-width: 100%; position: relative; }
+        .gallery-img { max-width: 100%; max-height: 70vh; border-radius: 8px; object-fit: contain; }
+        .gallery-nav { display: flex; justify-content: space-between; margin-top: 10px; }
+        .gallery-counter { font-size: 0.8em; color: #666; align-self: center; }
+
+        .thumb-img { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; }
+        .thumb-placeholder { width: 45px; height: 45px; background: #edf2f7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #cbd5e0; }
+        
+        /* UPLOAD */
+        .upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; margin-top: 10px; }
+        .upload-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
+        .preview-text { font-size: 0.8em; color: var(--success); margin-top: 5px; display: block; text-align: center; font-weight: bold; }
+
         .floating-total { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); border-top: 1px solid var(--border); padding: 15px 20px; justify-content: space-between; align-items: center; z-index: 100; box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05); }
         @media (max-width: 768px) { .floating-total { display: flex; } }
         
@@ -143,7 +149,7 @@
                     <span id="role-display" style="font-size:0.7rem; color:var(--text-muted);">ROL</span>
                 </div>
                 
-                <!-- BOTONES ADMIN -->
+                <!-- BOTONES ADMIN (FORCE DISPLAY) -->
                 <button id="btn-usuarios" class="btn-purple" onclick="app.openUsersModal()" title="Usuarios" style="display:none;">👥</button>
                 <button class="btn-grey" onclick="location.reload()" title="Salir">➜</button>
             </div>
@@ -179,7 +185,16 @@
                             <div><label style="font-size:0.7em;">LISTA</label><input id="n-price" type="number" style="background:#f0fdf4; border-color:var(--success); font-weight:bold;"></div>
                         </div>
                     </div>
-                    <button class="btn-green" onclick="app.add()" style="width:100%; margin-top:15px;">Guardar Producto</button>
+                    
+                    <!-- MULTIPLES FOTOS -->
+                    <div class="upload-wrapper" style="text-align:center;">
+                        <button class="btn-grey" style="width:100%;">📷 Agregar Fotos (Máx 3)</button>
+                        <input type="file" id="n-file" accept="image/*" multiple onchange="app.handleFileSelect(this, 'n-label')">
+                    </div>
+                    <span id="n-label" class="preview-text"></span>
+
+                    <button class="btn-green" onclick="app.add()" style="width:100%; margin-top:15px;">Guardar</button>
+                    
                     <div style="display:flex; gap:10px; margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
                         <label class="btn-blue" style="flex:1; cursor:pointer; font-size:0.85rem; text-align:center;">
                             📂 Excel <input type="file" onchange="app.uploadExcel(this)" style="display:none;">
@@ -192,13 +207,14 @@
                 <table class="table-responsive">
                     <thead id="table-head">
                         <tr>
+                            <th style="width:60px;">Foto</th>
                             <th style="width:40%;">Descripción / Código</th>
                             <th style="width:20%;">Marca / Prov</th>
                             <th style="text-align:right; width:15%;">Precio</th>
                             <th style="text-align:center; width:10%;">+</th>
                         </tr>
                     </thead>
-                    <tbody id="inv-table-body"><tr><td colspan="4" style="text-align:center; padding:30px;">Cargando...</td></tr></tbody>
+                    <tbody id="inv-table-body"><tr><td colspan="5" style="text-align:center; padding:30px;">Cargando...</td></tr></tbody>
                 </table>
                 
                 <!-- PAGINACION -->
@@ -232,6 +248,21 @@
         <button class="btn-whatsapp" onclick="app.submitOrder()" style="padding:10px 20px; border-radius:20px;">Enviar 📲</button>
     </div>
 
+    <!-- MODAL GALERÍA -->
+    <div id="modalPhoto" class="modal-overlay" onclick="this.style.display='none'">
+        <div class="modal-content modal-img-container" onclick="event.stopPropagation()">
+            <div class="gallery-wrapper">
+                <img id="gallery-main" class="gallery-img" src="">
+                <div class="gallery-nav" id="gallery-controls" style="display:none;">
+                    <button class="btn-grey" onclick="app.prevImage()">❮</button>
+                    <span class="gallery-counter" id="gallery-counter">1/1</span>
+                    <button class="btn-grey" onclick="app.nextImage()">❯</button>
+                </div>
+            </div>
+            <button class="btn-grey" onclick="document.getElementById('modalPhoto').style.display='none'" style="width:100%; margin-top:15px; background:white;">Cerrar</button>
+        </div>
+    </div>
+
     <!-- MODAL USUARIOS -->
     <div id="modalUsers" class="modal-overlay">
         <div class="modal-content">
@@ -251,26 +282,11 @@
         </div>
     </div>
 
-    <!-- MODAL PEDIDOS (ESTADISTICAS) -->
+    <!-- MODALES VARIOS -->
     <div id="modalOrders" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-top:0; color:var(--primary);">🔔 Pedidos Recibidos</h3>
-            
-            <!-- FILTROS DE TIEMPO -->
-            <div class="order-filters">
-                <span class="filter-pill active" onclick="app.filterOrders('hoy', this)">HOY</span>
-                <span class="filter-pill" onclick="app.filterOrders('semana', this)">SEMANA</span>
-                <span class="filter-pill" onclick="app.filterOrders('mes', this)">MES</span>
-                <span class="filter-pill" onclick="app.filterOrders('todos', this)">TODOS</span>
-            </div>
-
-            <!-- CAJA DE ESTADÍSTICAS -->
-            <div class="stats-box">
-                <div class="stats-number">$<span id="stats-total">0.00</span></div>
-                <div class="stats-label">Vendido en este periodo</div>
-            </div>
-
-            <div id="orders-list" style="max-height:300px; overflow-y:auto;"></div>
+            <h3>🔔 Pedidos</h3>
+            <div id="orders-list"></div>
             <button class="btn-grey" onclick="document.getElementById('modalOrders').style.display='none'" style="width:100%; margin-top:20px;">Cerrar</button>
         </div>
     </div>
@@ -288,6 +304,13 @@
                 </div>
                 <div><label style="font-size:0.7em;">LISTA</label><input id="e-price" type="number" style="background:white; font-weight:bold;"></div>
             </div>
+            
+            <div class="upload-wrapper" style="text-align:center;">
+                <button class="btn-grey" style="width:100%;">📷 Cambiar/Agregar Fotos</button>
+                <input type="file" id="e-file" accept="image/*" multiple onchange="app.handleFileSelect(this, 'e-label')">
+            </div>
+            <span id="e-label" class="preview-text"></span>
+
             <div style="display:flex; gap:10px; margin-top:20px;">
                 <button class="btn-green" onclick="app.saveEdit()" style="flex:1">Guardar</button>
                 <button class="btn-red" onclick="app.delFromModal()" style="flex:1">Eliminar</button>
@@ -318,7 +341,6 @@
     <div id="toast">Notificación</div>
 
     <script>
-        // 1. CONFIGURACIÓN FIREBASE
         const TELEFONO_EMPRESA = "5491169564080";
         
         const firebaseConfig = {
@@ -342,9 +364,9 @@
         } catch (error) { alert("Error Firebase: " + error.message); }
 
         const app = {
-            data: [], cart: [], user: null, userRole: null, clientDiscount: 0, 
-            allOrders: [], // Almacena TODOS los pedidos para filtrar
+            data: [], cart: [], user: null, userRole: null, clientDiscount: 0, loadedOrders: [],
             currentPage: 1, itemsPerPage: 20, filteredData: [], activeTab: 'TODOS',
+            currentGallery: [], galleryIndex: 0,
 
             // --- LOGIN ---
             login: () => {
@@ -389,7 +411,7 @@
                     
                     const thead = document.querySelector('#table-head tr');
                     if (!thead.innerHTML.includes('Costo')) {
-                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[3]);
+                        const thCosto = document.createElement('th'); thCosto.innerText = "Costo"; thead.insertBefore(thCosto, thead.children[4]);
                     }
                     app.listenOrders();
                 } else if(app.userRole === 'vendedor') {
@@ -398,10 +420,7 @@
                 } else if(app.userRole === 'cliente') {
                     document.getElementById('cliente').value = userData.nombre;
                     document.getElementById('cliente').disabled = true;
-                    
-                    // OCULTAR TABS PARA CLIENTES
                     document.getElementById('tabs-container').style.display = 'none';
-                    
                     if(app.clientDiscount > 0) {
                         document.getElementById('client-discount-display').style.display = 'block';
                         document.getElementById('client-discount-display').innerText = `Tu Descuento: ${app.clientDiscount}%`;
@@ -413,11 +432,73 @@
                 ref.on('value', snap => {
                     const val = snap.val();
                     app.data = val ? Object.keys(val).map(k => ({ id: k, ...val[k] })) : [];
-                    
-                    // Si es cliente, no renderizamos tabs
                     if(app.userRole !== 'cliente') app.renderTabs();
                     app.filter();
                 });
+            },
+
+            // --- FOTOS MULTIPLES ---
+            handleFileSelect: (input, labelId) => {
+                if(input.files && input.files.length > 0) {
+                    document.getElementById(labelId).innerText = `${input.files.length} imágenes seleccionadas`;
+                }
+            },
+            
+            compressImage: (file) => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = (event) => {
+                        const img = new Image();
+                        img.src = event.target.result;
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 600; 
+                            const scaleSize = MAX_WIDTH / img.width;
+                            canvas.width = MAX_WIDTH;
+                            canvas.height = img.height * scaleSize;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            resolve(canvas.toDataURL('image/jpeg', 0.6));
+                        }
+                    }
+                });
+            },
+
+            // GALERÍA
+            openGallery: (item) => {
+                // Recuperar array de imagenes o imagen única antigua
+                app.currentGallery = item.imagenes || (item.imagen ? [item.imagen] : []);
+                
+                if(app.currentGallery.length === 0) return;
+
+                app.galleryIndex = 0;
+                app.updateGalleryView();
+                document.getElementById('modalPhoto').style.display = 'flex';
+            },
+
+            updateGalleryView: () => {
+                document.getElementById('gallery-main').src = app.currentGallery[app.galleryIndex];
+                
+                if(app.currentGallery.length > 1) {
+                    document.getElementById('gallery-controls').style.display = 'flex';
+                    document.getElementById('gallery-counter').innerText = `${app.galleryIndex + 1} / ${app.currentGallery.length}`;
+                } else {
+                    document.getElementById('gallery-controls').style.display = 'none';
+                }
+            },
+
+            nextImage: () => {
+                if(app.galleryIndex < app.currentGallery.length - 1) {
+                    app.galleryIndex++;
+                    app.updateGalleryView();
+                }
+            },
+            prevImage: () => {
+                if(app.galleryIndex > 0) {
+                    app.galleryIndex--;
+                    app.updateGalleryView();
+                }
             },
 
             // --- INVENTARIO & TABS ---
@@ -453,6 +534,12 @@
                     let btn = `<button class="btn-green btn-icon" onclick="app.addToCart('${i.id}')" style="width:36px;height:36px;">+</button>`;
                     let editBtn = '', costCell = '', priceDisplay = '';
                     
+                    // Lógica para mostrar la primera imagen disponible
+                    let imgCover = i.imagenes ? i.imagenes[0] : (i.imagen ? i.imagen : '');
+                    let imgHtml = imgCover ? 
+                        `<img src="${imgCover}" class="thumb-img" onclick="app.openGallery(app.data.find(x=>x.id=='${i.id}'))">` : 
+                        `<div class="thumb-placeholder">📷</div>`;
+
                     let priceVal = parseFloat(i.precio);
                     if(app.userRole === 'cliente' && app.clientDiscount > 0) {
                         let discounted = priceVal * (1 - (app.clientDiscount/100));
@@ -467,6 +554,7 @@
                     }
                     
                     tb.innerHTML += `<tr>
+                        <td style="width:50px;">${imgHtml}</td>
                         <td><span class="code-badge">${i.codigo||'-'}</span><div style="font-weight:600; color:var(--text); margin-top:4px;">${i.descripcion}</div></td>
                         <td><span class="prov-badge">${i.proveedor||'Gral'}</span><br><small style="color:#718096">${i.marca||''}</small></td>
                         ${costCell}
@@ -515,9 +603,7 @@
                 const cli = document.getElementById('cliente').value;
                 if(!cli) return alert("Falta nombre del cliente");
                 const total = document.getElementById('float-total').innerText;
-                // GUARDAR TOTAL NUMERICO LIMPIO
-                const totalNum = parseInt(total.replace(/\./g, '').replace(',','.')); 
-                const pedido = { fecha: new Date().toISOString(), cliente: cli, items: app.cart, total: totalNum, estado: 'pendiente' };
+                const pedido = { fecha: new Date().toISOString(), cliente: cli, items: app.cart, total: total, estado: 'pendiente' };
                 ordersRef.push(pedido);
                 app.toast("Pedido Enviado");
                 if(app.userRole === 'cliente') app.shareWhatsApp();
@@ -526,92 +612,34 @@
             listenOrders: () => {
                 ordersRef.on('value', snap => {
                     const data = snap.val();
+                    let count = 0;
+                    const list = document.getElementById('orders-list'); list.innerHTML = '';
                     if(data) {
-                        app.allOrders = Object.keys(data).map(k => ({id:k, ...data[k]})).reverse();
-                        app.filterOrders('hoy'); // Vista por defecto
+                        app.loadedOrders = Object.keys(data).map(k => ({id:k, ...data[k]})).reverse();
+                        app.loadedOrders.forEach(o => {
+                            if(o.estado === 'pendiente') count++;
+                            const fecha = new Date(o.fecha).toLocaleString();
+                            list.innerHTML += `<div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}"><div class="order-header"><span>${o.cliente}</span> <span>$${o.total}</span></div><div style="font-size:0.8em; color:#666; margin-bottom:5px;">${fecha}</div><div style="font-size:0.85em;">${o.items ? o.items.length : 0} items</div><div style="display:flex; gap:5px; margin-top:5px;">${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="flex:1; font-size:0.8em;">Visto</button>` : '<small style="color:green; flex:1; align-self:center;">Procesado</small>'}<button class="btn-blue" onclick="app.printOrderPDF('${o.id}')" style="flex:1; font-size:0.8em;">📄 PDF</button></div></div>`;
+                        });
                     }
+                    const badge = document.getElementById('badge-orders');
+                    badge.innerText = count;
+                    badge.style.display = count > 0 ? 'block' : 'none';
                 });
             },
-            
-            // NUEVA LOGICA DE FILTRO DE PEDIDOS
-            filterOrders: (type, btnElement) => {
-                // UI Activa
-                if(btnElement) {
-                    document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-                    btnElement.classList.add('active');
-                }
-
-                const now = new Date();
-                let filtered = [];
-                
-                // Helper fechas
-                const isSameDay = (d1, d2) => d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
-                const getWeek = (d) => {
-                    const onejan = new Date(d.getFullYear(), 0, 1);
-                    return Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
-                };
-
-                app.allOrders.forEach(o => {
-                    const d = new Date(o.fecha);
-                    if(type === 'hoy' && isSameDay(d, now)) filtered.push(o);
-                    else if(type === 'semana' && getWeek(d) === getWeek(now) && d.getFullYear() === now.getFullYear()) filtered.push(o);
-                    else if(type === 'mes' && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) filtered.push(o);
-                    else if(type === 'todos') filtered.push(o);
-                });
-
-                app.renderOrderList(filtered);
-            },
-
-            renderOrderList: (list) => {
-                let totalMoney = 0;
-                let countPending = 0;
-                const container = document.getElementById('orders-list');
-                container.innerHTML = '';
-
-                list.forEach(o => {
-                    if(o.estado === 'pendiente') countPending++;
-                    totalMoney += parseFloat(o.total) || 0;
-
-                    const fechaStr = new Date(o.fecha).toLocaleString();
-                    container.innerHTML += `
-                        <div class="order-card" style="border-left: 5px solid ${o.estado==='pendiente'?'orange':'green'}">
-                            <div class="order-header"><span>${o.cliente}</span> <span>$${(o.total||0).toLocaleString('es-AR')}</span></div>
-                            <div style="font-size:0.8em; color:#666; margin-bottom:5px;">${fechaStr}</div>
-                            <div style="font-size:0.85em;">${o.items ? o.items.length : 0} items</div>
-                            <div style="display:flex; gap:5px; margin-top:5px;">
-                                ${o.estado==='pendiente' ? `<button class="btn-green" onclick="app.markOrder('${o.id}')" style="flex:1; font-size:0.8em;">Visto</button>` : '<small style="color:green; flex:1; align-self:center;">Procesado</small>'}
-                                <button class="btn-blue" onclick="app.printOrderPDF('${o.id}')" style="flex:1; font-size:0.8em;">📄 PDF</button>
-                            </div>
-                        </div>`;
-                });
-
-                // Actualizar estadísticas visuales
-                document.getElementById('stats-total').innerText = totalMoney.toLocaleString('es-AR');
-                
-                // Badge global (siempre cuenta pendientes totales, no solo los filtrados)
-                const totalPending = app.allOrders.filter(o => o.estado === 'pendiente').length;
-                const badge = document.getElementById('badge-orders');
-                badge.innerText = totalPending;
-                badge.style.display = totalPending > 0 ? 'block' : 'none';
-            },
-
             markOrder: (id) => { ordersRef.child(id).update({estado: 'visto'}); },
             printOrderPDF: (id) => {
-                const order = app.allOrders.find(o => o.id === id);
+                const order = app.loadedOrders.find(o => o.id === id);
                 if(!order) return;
                 const { jsPDF } = window.jspdf; const doc = new jsPDF();
                 doc.setFontSize(18); doc.text("AUTOPARTES NET - PEDIDO", 10, 15);
                 doc.setFontSize(11); doc.text(`Cliente: ${order.cliente}`, 10, 25); doc.text(`Fecha: ${new Date(order.fecha).toLocaleString()}`, 10, 32);
                 const body = (order.items || []).map(c => [c.cant, `${c.codigo||''} ${c.descripcion}`, `$${c.precioFinal}`, `$${c.cant*c.precioFinal}`]);
                 doc.autoTable({ head: [['Cant', 'Descripción', 'Unitario', 'Total']], body: body, startY: 45 });
-                doc.setFontSize(14); doc.text(`TOTAL PEDIDO: $${order.total.toLocaleString('es-AR')}`, 10, doc.lastAutoTable.finalY + 15);
+                doc.setFontSize(14); doc.text(`TOTAL PEDIDO: $${order.total}`, 10, doc.lastAutoTable.finalY + 15);
                 doc.save(`Pedido_${order.cliente}_${id}.pdf`);
             },
-            openOrdersModal: () => { 
-                document.getElementById('modalOrders').style.display='flex'; 
-                // Resetear filtro a HOY al abrir
-                app.filterOrders('hoy', document.querySelector('.filter-pill')); 
-            },
+            openOrdersModal: () => { document.getElementById('modalOrders').style.display='flex'; },
 
             // --- USUARIOS ---
             openUsersModal: () => { document.getElementById('modalUsers').style.display = 'flex'; app.loadUsersList(); },
@@ -636,7 +664,6 @@
                 const role = document.getElementById('u-role').value;
                 const disc = parseInt(document.getElementById('u-disc').value) || 0;
                 if(!name || !user || !pass) return alert("Faltan datos");
-                
                 usersRef.push({ nombre: name, user: user, pass: pass, role: role, descuento: disc });
                 app.toast("Usuario Creado");
                 document.getElementById('u-name').value = ''; document.getElementById('u-user').value = ''; document.getElementById('u-pass').value = '';
@@ -649,21 +676,65 @@
                 const marg = parseFloat(document.getElementById(p+'-margin').value)||0;
                 document.getElementById(p+'-price').value = Math.round(cost * (1 + marg/100));
             },
-            add: () => {
-                const item = { codigo: document.getElementById('n-code').value || '-', proveedor: document.getElementById('n-prov').value || 'Gral', descripcion: document.getElementById('n-desc').value, marca: document.getElementById('n-brand').value || '', costo: parseFloat(document.getElementById('n-cost').value)||0, margen: parseFloat(document.getElementById('n-margin').value)||0, precio: parseFloat(document.getElementById('n-price').value)||0 };
+            add: async () => {
+                const files = document.getElementById('n-file').files;
+                let imagesList = [];
+                
+                if(files.length > 0) {
+                    app.toast(`Comprimiendo ${files.length} imágenes...`);
+                    for(let i=0; i<files.length; i++) {
+                        // Limitar a 3 imagenes para no saturar
+                        if(i >= 3) break;
+                        const b64 = await app.compressImage(files[i]);
+                        imagesList.push(b64);
+                    }
+                }
+
+                const item = { 
+                    codigo: document.getElementById('n-code').value || '-', proveedor: document.getElementById('n-prov').value || 'Gral', descripcion: document.getElementById('n-desc').value, marca: document.getElementById('n-brand').value || '',
+                    costo: parseFloat(document.getElementById('n-cost').value)||0, margen: parseFloat(document.getElementById('n-margin').value)||0, precio: parseFloat(document.getElementById('n-price').value)||0,
+                    imagenes: imagesList // Nuevo campo Array
+                };
+
                 if(!item.descripcion) return alert("Falta descripción");
                 ref.push(item); app.toast("Guardado");
                 ['n-code','n-desc','n-brand','n-price','n-cost'].forEach(id=>document.getElementById(id).value='');
+                document.getElementById('n-label').innerText = '';
             },
-            saveEdit: () => {
+            saveEdit: async () => {
                 const id = document.getElementById('edit-id').value;
-                ref.child(id).update({ codigo: document.getElementById('e-code').value, proveedor: document.getElementById('e-prov').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value) });
+                const files = document.getElementById('e-file').files;
+                
+                let updates = { 
+                    codigo: document.getElementById('e-code').value, descripcion: document.getElementById('e-desc').value, marca: document.getElementById('e-brand').value, proveedor: document.getElementById('e-prov').value,
+                    costo: parseFloat(document.getElementById('e-cost').value), margen: parseFloat(document.getElementById('e-margin').value), precio: parseFloat(document.getElementById('e-price').value) 
+                };
+
+                if(files.length > 0) {
+                    app.toast("Actualizando imágenes...");
+                    let imagesList = [];
+                    for(let i=0; i<files.length; i++) {
+                        if(i >= 3) break;
+                        imagesList.push(await app.compressImage(files[i]));
+                    }
+                    updates.imagenes = imagesList;
+                    // También actualizar campo antiguo para compatibilidad
+                    updates.imagen = null; 
+                }
+
+                ref.child(id).update(updates);
                 document.getElementById('modalEdicion').style.display='none'; app.toast("Actualizado");
             },
             edit: (id) => {
                 const i = app.data.find(x=>x.id===id);
-                document.getElementById('edit-id').value = id; document.getElementById('e-code').value = i.codigo; document.getElementById('e-prov').value = i.proveedor || 'General'; document.getElementById('e-desc').value = i.descripcion; document.getElementById('e-brand').value = i.marca;
+                document.getElementById('edit-id').value = id; document.getElementById('e-code').value = i.codigo; document.getElementById('e-desc').value = i.descripcion; document.getElementById('e-brand').value = i.marca; document.getElementById('e-prov').value = i.proveedor || 'General';
                 document.getElementById('e-cost').value = i.costo||0; document.getElementById('e-margin').value = i.margen||0; document.getElementById('e-price').value = i.precio;
+                
+                let count = 0;
+                if (i.imagenes) count = i.imagenes.length;
+                else if (i.imagen) count = 1;
+                
+                document.getElementById('e-label').innerText = count > 0 ? `${count} fotos actuales` : "Sin fotos";
                 document.getElementById('modalEdicion').style.display='flex';
             },
             delFromModal: () => { if(confirm("¿Eliminar?")) { ref.child(document.getElementById('edit-id').value).remove(); document.getElementById('modalEdicion').style.display='none'; } },
